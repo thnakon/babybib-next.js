@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NavLinks } from "@/components/nav-links";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Book, Library, PenTool, Bookmark } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 
@@ -68,11 +68,11 @@ export default function Home() {
           </div>
 
           {/* Tech Icons Placeholder */}
-          <div className="mt-12 flex items-center gap-6 opacity-40 grayscale">
-            <div className="h-6 w-6 bg-black dark:bg-white rounded-full" />
-            <div className="h-6 w-10 bg-black dark:bg-white rounded" />
-            <div className="h-6 w-6 bg-black dark:bg-white rounded-sm" />
-            <div className="h-4 w-12 bg-black dark:bg-white rounded" />
+          <div className="mt-12 flex items-center gap-8 opacity-50 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+            <Book className="h-7 w-7 text-zinc-600 dark:text-zinc-400" />
+            <Library className="h-8 w-8 text-[#407bc4]" />
+            <PenTool className="h-7 w-7 text-[#f58e58]" />
+            <Bookmark className="h-6 w-6 text-zinc-600 dark:text-zinc-400" />
           </div>
         </div>
 
