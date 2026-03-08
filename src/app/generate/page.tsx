@@ -51,8 +51,9 @@ export default function GeneratePage() {
     source: "",
     url: ""
   });
-  const [citationStep, setCitationStep] = React.useState(0); // 0 = selection, 1 = form
+  const [citationStep, setCitationStep] = React.useState(0); // 0 = selection, 1 = form, 2 = more
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
+  const [resourceSearch, setResourceSearch] = React.useState("");
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -1063,6 +1064,29 @@ export default function GeneratePage() {
                       exit={{ opacity: 0, scale: 0.95 }}
                       className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar"
                     >
+                      <div className="mb-6 sticky top-0 bg-white dark:bg-zinc-900 z-10 pb-2">
+                        <div className="relative group/search">
+                          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/search:text-[#407bc4] transition-colors">
+                            <Search className="h-4 w-4" />
+                          </div>
+                          <input 
+                            type="text"
+                            value={resourceSearch}
+                            onChange={(e) => setResourceSearch(e.target.value)}
+                            placeholder={language === 'TH' ? 'ค้นหาทรัพยากร...' : 'Search resources...'}
+                            className="w-full pl-10 pr-10 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all"
+                          />
+                          {resourceSearch && (
+                            <button 
+                              onClick={() => setResourceSearch("")}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                            >
+                              <X className="h-3 w-3 text-zinc-400" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {[
                           { id: 'artwork', label: 'Artwork', icon: <Palette className="h-4 w-4" /> },
@@ -1094,12 +1118,15 @@ export default function GeneratePage() {
                           { id: 'broadcast', label: 'TV/Radio Broadcast', icon: <Tv className="h-4 w-4" /> },
                           { id: 'video', label: 'Video', icon: <Video className="h-4 w-4" /> },
                           { id: 'paste', label: 'Write/paste citation', icon: <ClipboardList className="h-4 w-4" /> },
-                        ].map((item) => (
+                        ].filter(item => 
+                          item.label.toLowerCase().includes(resourceSearch.toLowerCase())
+                        ).map((item) => (
                            <button 
                              key={item.id}
                              onClick={() => {
                                setSelectedType(item.id);
                                setCitationStep(1);
+                               setResourceSearch("");
                              }}
                              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-left group"
                            >
@@ -1112,6 +1139,23 @@ export default function GeneratePage() {
                            </button>
                         ))}
                       </div>
+                      {resourceSearch && ([
+                        { id: 'artwork', label: 'Artwork' }, { id: 'blog', label: 'Blog Post' }, { id: 'chapter', label: 'Book Chapter' }, 
+                        { id: 'review', label: 'Book Review' }, { id: 'conference', label: 'Conference Paper' }, { id: 'db-article', label: 'Database Article' }, 
+                        { id: 'dictionary', label: 'Dictionary Entry' }, { id: 'ebook', label: 'E-book' }, { id: 'encyclopedia', label: 'Encyclopedia Entry' }, 
+                        { id: 'film', label: 'Film/Movie' }, { id: 'image', label: 'Image' }, { id: 'interview', label: 'Interview' }, 
+                        { id: 'journal', label: 'Journal Article' }, { id: 'legal-bill', label: 'Legal Bill' }, { id: 'legal-case', label: 'Legal Case' }, 
+                        { id: 'legislation', label: 'Legislation' }, { id: 'magazine', label: 'Magazine Article' }, { id: 'map', label: 'Map' }, 
+                        { id: 'news', label: 'News Article' }, { id: 'patent', label: 'Patent' }, { id: 'personal', label: 'Personal Communication' }, 
+                        { id: 'regulation', label: 'Regulation' }, { id: 'song', label: 'Song' }, { id: 'speech', label: 'Speech' }, 
+                        { id: 'standard', label: 'Standard' }, { id: 'thesis', label: 'Thesis/Dissertation' }, { id: 'broadcast', label: 'TV/Radio Broadcast' }, 
+                        { id: 'video', label: 'Video' }, { id: 'paste', label: 'Write/paste citation' }
+                      ].filter(i => i.label.toLowerCase().includes(resourceSearch.toLowerCase())).length === 0) && (
+                        <div className="flex flex-col items-center justify-center py-12 text-zinc-400">
+                          <Search className="h-8 w-8 mb-3 opacity-20" />
+                          <p className="text-xs">{language === 'TH' ? 'ไม่พบทรัพยากรที่ค้นหา' : 'No resources found'}</p>
+                        </div>
+                      )}
                     </motion.div>
                   ) : (
                     <motion.div 
@@ -1243,7 +1287,10 @@ export default function GeneratePage() {
               <div className="px-8 py-5 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-end gap-4">
                 {(citationStep === 1 || citationStep === 2) && (
                   <button 
-                    onClick={() => setCitationStep(citationStep === 2 ? 0 : 0)}
+                    onClick={() => {
+                      setCitationStep(0);
+                      setResourceSearch("");
+                    }}
                     className="mr-auto flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#407bc4] hover:bg-[#407bc4]/5 rounded-xl transition-all"
                   >
                     <ArrowLeft className="h-4 w-4" /> {language === 'TH' ? 'ย้อนกลับ' : 'Back'}
