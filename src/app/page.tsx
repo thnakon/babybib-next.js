@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
@@ -7,39 +8,78 @@ import { NavLinks } from "@/components/nav-links";
 import { Sparkles, Book, Library, PenTool, Bookmark } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const { language } = useLanguage();
   const t = translations[language].home;
+  const [showIntro, setShowIntro] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div
+            key="intro-overlay"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-[#0a0a0a]"
+          >
+            <div className="flex items-center gap-6">
+              <motion.div layoutId="logo-container" className="relative h-24 w-24 overflow-hidden rounded-2xl">
+                <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
+              </motion.div>
+              <motion.div layoutId="brand-text" className="text-6xl font-bold tracking-tight">
+                <span className="text-[#407bc4]">baby</span>
+                <span className="text-[#f58e58]">bib</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 mx-auto flex w-full max-w-7xl items-center justify-between px-6 sm:px-12 py-4 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <div className="relative h-14 w-14 overflow-hidden rounded-lg">
-            <Image
-              src="/logo.png"
-              alt="Babybib Logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <span className="text-2xl font-bold tracking-tight pr-8">
-            <span className="text-[#407bc4]">baby</span>
-            <span className="text-[#f58e58]">bib</span>
-          </span>
+          {!showIntro ? (
+            <>
+              <motion.div layoutId="logo-container" className="relative h-14 w-14 overflow-hidden rounded-lg">
+                <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
+              </motion.div>
+              <motion.div layoutId="brand-text" className="text-2xl font-bold tracking-tight pr-8">
+                <span className="text-[#407bc4]">baby</span>
+                <span className="text-[#f58e58]">bib</span>
+              </motion.div>
+            </>
+          ) : (
+            <div className="h-14 w-14" /> /* Placeholder space */
+          )}
           
-          <NavLinks />
+          <motion.div animate={{ opacity: showIntro ? 0 : 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+            <NavLinks />
+          </motion.div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <motion.div className="flex items-center gap-4" animate={{ opacity: showIntro ? 0 : 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
           <LanguageDropdown />
           <ThemeToggle />
-        </div>
+        </motion.div>
       </nav>
 
-      <main className="flex flex-col items-center pt-32 pb-20">
+      <motion.main 
+        animate={{ opacity: showIntro ? 0 : 1, y: showIntro ? 20 : 0 }} 
+        initial={{ opacity: 0, y: 20 }} 
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="flex flex-col items-center pt-32 pb-20"
+      >
         {/* Badge */}
         <div className="group mb-12 relative overflow-hidden flex items-center gap-2 rounded-full border border-[#407bc4]/20 dark:border-[#407bc4]/30 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 px-3 py-1 text-sm font-medium cursor-pointer transition-colors hover:border-[#407bc4]/40 dark:hover:border-[#407bc4]/50">
           <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent" />
@@ -96,7 +136,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </main>
+      </motion.main>
     </div>
   );
 }
