@@ -26,6 +26,7 @@ export default function GeneratePage() {
   const [viewMode, setViewMode] = React.useState("Bibliography");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   const [copiedId, setCopiedId] = React.useState<number | null>(null);
+  const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(false);
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -158,8 +159,8 @@ export default function GeneratePage() {
                 </div>
                 <span className="text-sm font-semibold">Project</span>
               </div>
-              <ul className="flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                {projects.map((project, idx) => (
+              <ul className="flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-1">
+                {(isProjectsExpanded ? projects : projects.slice(0, 5)).map((project, idx) => (
                   <li 
                     key={idx}
                     className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg text-sm transition-all cursor-pointer group/item truncate ${
@@ -180,6 +181,18 @@ export default function GeneratePage() {
                   </li>
                 ))}
               </ul>
+              
+              {projects.length > 5 && (
+                <button 
+                  onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
+                  className="flex items-center gap-2 ml-6 text-[10px] font-bold text-zinc-400 hover:text-[#407bc4] transition-colors uppercase tracking-wider group"
+                >
+                  <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${isProjectsExpanded ? 'rotate-180' : ''}`} />
+                  {isProjectsExpanded 
+                    ? (language === 'TH' ? 'แสดงน้อยลง' : 'Show less') 
+                    : (language === 'TH' ? 'แสดงเพิ่มเติม' : 'Show more')}
+                </button>
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
