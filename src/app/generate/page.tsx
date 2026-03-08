@@ -262,7 +262,8 @@ export default function GeneratePage() {
               </div>
 
               {/* View Mode Selector - Centered */}
-              <div className="flex-1 flex justify-center">
+              <div className="flex-1 flex justify-center items-center gap-2">
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">view</span>
                 <div className="flex items-center bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800">
                   {views.map((view) => (
                     <div key={view.id} className="relative group">
@@ -278,7 +279,7 @@ export default function GeneratePage() {
                       </button>
                       
                       {/* Tooltip */}
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-md">
                         {view.label}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900 dark:border-t-zinc-100" />
                       </div>
@@ -325,36 +326,41 @@ export default function GeneratePage() {
               </div>
             </div>
 
-            {/* Tabs */}
-            <div className="flex items-center gap-4 border-b border-transparent mb-4">
-              <button className="flex h-8 items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-3 text-sm font-medium text-black dark:text-white">
-                Preview
-              </button>
-              <button className="flex h-8 items-center px-3 text-sm font-medium text-zinc-500 hover:text-black dark:hover:text-white transition-colors">
-                Code
-              </button>
-            </div>
-
-            {/* Preview Box */}
-            <div className="relative flex min-h-[500px] w-full items-center justify-center rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black p-4 shadow-sm">
+            {/* References Paper Area */}
+            <div className="relative w-full min-h-[600px] bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden flex flex-col pt-12">
+              
+              {/* Paper Top Margin / Line */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-[#407bc4]/10 dark:bg-[#407bc4]/20" />
               
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
-                <button className="flex h-8 items-center gap-2 rounded-md bg-black dark:bg-white px-3 text-xs font-medium text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
-                  Open in v0
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <button className="flex h-7 px-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors uppercase tracking-tight">
+                  <RotateCw className="h-3 w-3" /> Refresh
                 </button>
-                <button className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                  <RotateCw className="h-4 w-4 text-zinc-500" />
-                </button>
-                <button className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                  <SlidersHorizontal className="h-4 w-4 text-zinc-500" />
+                <button className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
                 </button>
               </div>
 
-              {/* Preview Content */}
-              <div className="text-center text-zinc-500 text-sm">
-                Read the <span className="font-semibold underline underline-offset-4 text-black dark:text-white">Babybib Docs</span> — hover to preview, click to dive in.
+              {/* Paper Content */}
+              <div className="px-12 py-8 max-w-4xl mx-auto w-full">
+                <h2 className="text-2xl font-serif text-center mb-10 text-zinc-900 dark:text-zinc-100">References</h2>
+                
+                {/* Empty State */}
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="h-20 w-20 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800">
+                    <Library className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">No citations yet</h3>
+                  <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
+                    Search above or use the "Add new" button to start building your bibliography.
+                  </p>
+                </div>
+              </div>
+
+              {/* Watermark/Footer on paper */}
+              <div className="mt-auto py-8 text-center border-t border-zinc-50 dark:border-zinc-900/50">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-300 dark:text-zinc-800 font-bold">Generated by Babybib</span>
               </div>
             </div>
 
