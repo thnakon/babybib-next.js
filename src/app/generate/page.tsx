@@ -1387,13 +1387,34 @@ export default function GeneratePage() {
                           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
                             <Eye className="h-3.5 w-3.5" /> {language === 'TH' ? 'พรีวิว' : 'Live Preview'}
                           </span>
-                          <button 
-                            onClick={() => setIsStyleOpen(!isStyleOpen)}
-                            className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500 font-bold uppercase tracking-tighter shadow-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex items-center gap-1"
-                          >
-                            {style}
-                            <ChevronDown className="h-3 w-3" />
-                          </button>
+                          <div className="relative">
+                            <button 
+                              onClick={() => setIsStyleOpen(!isStyleOpen)}
+                              className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500 font-bold uppercase tracking-tighter shadow-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex items-center gap-1"
+                            >
+                              {style}
+                              <ChevronDown className={`h-3 w-3 transition-transform ${isStyleOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {isStyleOpen && (
+                              <div className="absolute top-full right-0 mt-1 w-48 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-[60] overflow-hidden flex flex-col">
+                                <div className="py-1 max-h-[200px] overflow-y-auto custom-scrollbar">
+                                  {styles.map((s) => (
+                                    <button
+                                      key={s}
+                                      onClick={() => {
+                                        setStyle(s);
+                                        setIsStyleOpen(false);
+                                      }}
+                                      className={`w-full text-left px-3 py-2 text-[10px] hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${style === s ? 'text-[#407bc4] font-bold bg-zinc-50 dark:bg-zinc-800/50' : 'text-zinc-600 dark:text-zinc-400'}`}
+                                    >
+                                      {s}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         {/* Bibliography Preview */}
