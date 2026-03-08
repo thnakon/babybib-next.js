@@ -206,15 +206,21 @@ export default function GeneratePage() {
               </ul>
             </div>
 
-            <div className="flex items-center gap-3 pt-2 text-[11px] font-semibold text-zinc-500">
-              <div className="flex items-center gap-1.5 cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
-                <Archive className="h-3.5 w-3.5" />
-                <span>Archived</span>
-              </div>
-              <div className="h-3 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
-              <div className="flex items-center gap-1.5 cursor-pointer hover:text-red-500 dark:hover:text-red-400 transition-colors group">
-                <Trash2 className="h-3.5 w-3.5" />
-                <span>Deleted</span>
+            <div className="flex items-center gap-2 pt-2 text-[11px] font-semibold text-zinc-500">
+              <div className="flex items-center bg-zinc-50 dark:bg-zinc-900/50 rounded-full p-1 border border-zinc-100 dark:border-zinc-800 shadow-xs">
+                {/* Archive Button */}
+                <div className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/archived w-8 hover:w-28">
+                  <Archive className="h-3.5 w-3.5 shrink-0" />
+                  <span className="ml-2 opacity-0 group-hover/archived:opacity-100 transition-opacity duration-200 whitespace-nowrap">Archived</span>
+                </div>
+                
+                <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800 mx-1" />
+                
+                {/* Delete Button */}
+                <div className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/deleted w-8 hover:w-24">
+                  <Trash2 className="h-3.5 w-3.5 shrink-0 group-hover/deleted:text-red-500" />
+                  <span className="ml-2 opacity-0 group-hover/deleted:opacity-100 transition-opacity duration-200 whitespace-nowrap group-hover/deleted:text-red-500">Deleted</span>
+                </div>
               </div>
             </div>
 
