@@ -9,7 +9,8 @@ import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
   BookOpen, Triangle, Hexagon, Pencil, Copy, ChevronDown, 
-  ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus
+  ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
+  FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -62,14 +63,30 @@ export default function GeneratePage() {
                 <span className="text-sm font-semibold">Project</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Babybib Next.js</li>
-                <li className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6] cursor-pointer truncate">Preview Link Card</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Smart ISBN API</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Chat UI System</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Attitudes AI Tool</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">E-commerce API</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Admin Dashboard</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Portfolio Templates</li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Globe className="h-3 w-3 shrink-0" /> <span className="truncate">Babybib Next.js</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6] cursor-pointer truncate">
+                  <FileText className="h-3 w-3 shrink-0" /> <span className="truncate">Preview Link Card</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Library className="h-3 w-3 shrink-0" /> <span className="truncate">Smart ISBN API</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Smartphone className="h-3 w-3 shrink-0" /> <span className="truncate">Chat UI System</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Bot className="h-3 w-3 shrink-0" /> <span className="truncate">Attitudes AI Tool</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <ShoppingCart className="h-3 w-3 shrink-0" /> <span className="truncate">E-commerce API</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <LayoutDashboard className="h-3 w-3 shrink-0" /> <span className="truncate">Admin Dashboard</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Briefcase className="h-3 w-3 shrink-0" /> <span className="truncate">Portfolio Templates</span>
+                </li>
               </ul>
             </div>
 
@@ -81,13 +98,27 @@ export default function GeneratePage() {
                 <span className="text-sm font-semibold text-zinc-500">Latest bibliography</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">ราชบัณฑิตยสถาน. (2554). พจนานุกรมฉบับราชบัณฑิตยสถาน...</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">สุกัญญา บำรุงสุข. (2560). ประวัติศาสตร์ไทย...</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Kahneman, D. (2011). Thinking, fast and slow...</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">สมเกียรติ ตั้งกิจวานิชย์. (2565). อนาคตการศึกษาไทย...</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Harari, Y. N. (2014). Sapiens: A brief history...</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">วิทยากร เชียงกูล. (2558). ปรัชญาการเมือง...</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Chomsky, N. (1957). Syntactic structures...</li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Kahneman, D. (2011). Thinking, fast and slow...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Harari, Y. N. (2014). Sapiens: A brief history...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Chomsky, N. (1957). Syntactic structures...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Dawkins, R. (1976). The selfish gene...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Hawking, S. (1988). A brief history of time...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Taleb, N. N. (2007). The black swan...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Gladwell, M. (2008). Outliers: The story of success...</span>
+                </li>
               </ul>
             </div>
 
