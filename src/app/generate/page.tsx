@@ -378,7 +378,7 @@ export default function GeneratePage() {
             </div>
 
             {/* References Paper Area */}
-            <div className="relative w-full min-h-[600px] bg-white dark:bg-[#18181b] rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col pt-12">
+            <div className="relative w-full min-h-[600px] bg-white dark:bg-zinc-900/90 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col pt-12">
               
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -492,8 +492,8 @@ export default function GeneratePage() {
                           {viewMode === "Bibliography and in-text citations" && (
                             <div className="flex flex-col gap-3">
                               <div>{citation.content}</div>
-                              <div className="flex items-center gap-1.5 px-3 py-1 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 border border-[#407bc4]/30 dark:border-[#407bc4]/40 rounded-lg w-fit transition-all hover:bg-[#407bc4]/10 dark:hover:bg-[#407bc4]/20 group/badge cursor-pointer">
-                                <Quote className="h-3 w-3 text-[#407bc4] opacity-70" />
+                              <div className="flex items-center gap-1.5 px-3 py-1 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 border border-[#cce0ff] dark:border-[#407bc4]/40 rounded-full w-fit transition-all hover:bg-[#407bc4]/10 dark:hover:bg-[#407bc4]/20 group/badge cursor-pointer shadow-sm">
+                                <Quote className="h-3 w-3 text-[#407bc4] fill-[#407bc4]/10" />
                                 <span className="text-[11px] font-bold text-[#407bc4] tracking-tight">{citation.inText}</span>
                               </div>
                             </div>
