@@ -1,23 +1,30 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronDown, ChevronRight, Facebook, Instagram, Twitter, MessageCircle } from "lucide-react";
+import { useLanguage } from "@/components/language-context";
+import { translations } from "@/lib/translations";
 
 export function NavLinks() {
+  const { language } = useLanguage();
+  const t = translations[language].nav;
+
   return (
     <div className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-400">
       <Link href="/help" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        Help
+        {t.help}
       </Link>
       <Link href="/guides" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        Guides
+        {t.guides}
       </Link>
       <Link href="/generate" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        Generate
+        {t.generate}
       </Link>
       
       {/* Dropdown for More */}
       <div className="relative group/more">
         <button className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors py-2">
-          More
+          {t.more}
           <ChevronDown className="h-4 w-4" />
         </button>
         <div className="absolute top-full right-0 pt-2 hidden group-hover/more:block">
@@ -26,7 +33,7 @@ export function NavLinks() {
             {/* Nested Sub-Menu for Share */}
             <div className="relative group/share">
               <button className="flex w-full items-center justify-between px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white cursor-default">
-                Share
+                {t.share}
                 <ChevronRight className="h-4 w-4 opacity-50 group-hover/share:opacity-100 transition-opacity" />
               </button>
               
@@ -53,19 +60,19 @@ export function NavLinks() {
               href="/contact" 
               className="px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white"
             >
-              Contact
+              {t.contact}
             </Link>
             <Link 
               href="/terms" 
               className="px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white"
             >
-              Terms of Service
+              {t.terms}
             </Link>
             <Link 
               href="/privacy" 
               className="px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white"
             >
-              Privacy Policy
+              {t.privacy}
             </Link>
           </div>
         </div>
