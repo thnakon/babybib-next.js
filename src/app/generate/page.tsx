@@ -96,15 +96,15 @@ export default function GeneratePage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
-      {/* 
-        Navbar 
-        - Increased size
-      */}
-      <nav className="sticky top-0 z-50 flex w-full h-16 items-center justify-between px-6 sm:px-8 lg:px-12 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="relative h-10 w-10 overflow-hidden rounded-md">
+    <div className="flex h-screen w-full bg-white dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 font-sans overflow-hidden selection:bg-[#407bc4]/20 selection:text-[#407bc4] transition-colors duration-300">
+      
+      {/* Full-Height Left Sidebar (App Style) */}
+      <aside className="hidden md:flex flex-col w-[260px] lg:w-[280px] shrink-0 border-r border-zinc-200 dark:border-zinc-800/60 bg-zinc-50/50 dark:bg-[#0a0a0a]/50 h-full py-6 px-4 z-20">
+        
+        {/* App Logo */}
+        <div className="flex items-center px-2 mb-8">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative h-8 w-8 overflow-hidden rounded-md transition-transform group-hover:scale-105">
               <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
             </div>
             <span className="text-xl font-bold tracking-tight">
@@ -112,31 +112,15 @@ export default function GeneratePage() {
               <span className="text-[#f58e58]">bib</span>
             </span>
           </Link>
-          {/* Nav Links */}
-          <div className="hidden lg:flex items-center ml-4">
-            <NavLinks />
-          </div>
         </div>
-        
-        <div className="flex items-center gap-4">
-          <LanguageDropdown />
-          <ThemeToggle />
-          <button className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-sm font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm">
-            {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
-          </button>
-        </div>
-      </nav>
 
-      {/* Main Container - 3 Column Layout */}
-      <div className="mx-auto flex w-full max-w-screen-2xl items-start">
-        
-        {/* Left Sidebar */}
-        <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
-          <div className="flex flex-col gap-6">
+        {/* Global Add Button */}
+        <button className="flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#407bc4] text-xs font-bold text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm mb-6">
+          <Plus className="h-4 w-4" /> Add Bibliography
+        </button>
 
-            <button className="flex h-8 w-32 mx-auto items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
-              <Plus className="h-3.5 w-3.5" /> Add new
-            </button>
+        {/* Sidebar Scrollable Area */}
+        <div className="flex flex-col gap-6 overflow-y-auto pr-2 pb-4 flex-1 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
             
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
@@ -221,13 +205,36 @@ export default function GeneratePage() {
           </div>
         </aside>
 
-        {/* Center Content Area */}
-        <main className="relative py-6 lg:py-8 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1">
-          <div className="mx-auto w-full min-w-0">
+      {/* Main App Content Area */}
+      <main className="flex-1 flex flex-col min-w-0 h-full relative">
+        
+        {/* Top Navbar / Header */}
+        <header className="h-16 shrink-0 flex items-center justify-between px-6 lg:px-10 border-b border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md z-10 sticky top-0">
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center">
+              <NavLinks />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <LanguageDropdown />
+            <ThemeToggle />
+            <button className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-zinc-900 dark:bg-zinc-100 px-4 text-sm font-medium text-white dark:text-zinc-900 transition-all hover:bg-zinc-800 dark:hover:bg-zinc-300 shadow-sm">
+              {translations[language].nav.signIn}
+            </button>
+          </div>
+        </header>
+
+        {/* Scrollable Work Area */}
+        <div className="flex-1 overflow-y-auto w-full relative">
+          <div className="flex w-full xl:max-w-screen-2xl mx-auto items-start">
             
-            {/* Search Input Section */}
-            <div className="mb-10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            {/* Center Content Area */}
+            <div className="relative py-6 lg:py-10 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1 max-w-5xl mx-auto">
+              
+              {/* Search Input Section */}
+              <div className="mb-10 mt-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex flex-wrap items-center gap-3 sm:gap-6">
                   <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
                     Manual
@@ -262,7 +269,7 @@ export default function GeneratePage() {
                 <input 
                   type="text" 
                   placeholder="Search by ISBN / DOI / URL / Title etc." 
-                  className="w-full h-11 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/5 dark:focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all shadow-sm"
+                  className="w-full h-12 bg-zinc-50 dark:bg-[#0a0a0a]/50 border border-zinc-200/80 dark:border-zinc-800/80 rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/10 dark:focus:ring-[#407bc4]/20 focus:border-[#407bc4] dark:focus:border-[#407bc4] transition-all shadow-sm focus:bg-white dark:focus:bg-[#121214]"
                 />
                 <div className="absolute inset-y-0 right-4 flex items-center gap-2">
                   <kbd className="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-1.5 font-mono text-[10px] font-medium text-zinc-400 opacity-100">
@@ -383,7 +390,7 @@ export default function GeneratePage() {
             </div>
 
             {/* References Paper Area */}
-            <div className="relative w-full min-h-[600px] bg-white dark:bg-[#1c1c1e] rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col pt-12">
+            <div className="relative w-full min-h-[600px] bg-white dark:bg-[#151517] rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col pt-12 ring-1 ring-zinc-950/5 dark:ring-white/5">
               
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -509,28 +516,29 @@ export default function GeneratePage() {
                           )}
                         </div>
 
-                        {/* Hover Actions - Positioned at bottom right to avoid overlap */}
-                        <div className="absolute bottom-2 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
-                          <button className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="Edit">
+                        {/* Hover Actions - Premium Floating Toolbar */}
+                        <div className="absolute bottom-2 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0 bg-white dark:bg-zinc-800/90 backdrop-blur-md p-1 rounded-full border border-zinc-200/80 dark:border-zinc-700/80 shadow-[0_4px_12px_rgb(0,0,0,0.08)]">
+                          <button className="h-7 w-7 flex items-center justify-center rounded-full text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-[#407bc4] transition-all" title="Edit">
                             <Pencil className="h-3 w-3" />
                           </button>
-                          <button className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="In-text citation">
+                          <button className="h-7 w-7 flex items-center justify-center rounded-full text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-[#407bc4] transition-all" title="In-text citation">
                             <Quote className="h-3 w-3" />
                           </button>
                           <button 
                             onClick={() => handleItemCopy(citation.id)}
-                            className={`h-7 w-7 flex items-center justify-center rounded-full border transition-all shadow-sm ${
+                            className={`h-7 w-7 flex items-center justify-center rounded-full transition-all ${
                               copiedId === citation.id 
-                                ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400" 
-                                : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
+                                ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400" 
+                                : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-[#407bc4]"
                             }`} 
                             title="Copy"
                           >
                             {copiedId === citation.id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                           </button>
+                          <div className="w-[1px] h-3.5 bg-zinc-200 dark:bg-zinc-700 mx-0.5" />
                           <button 
                             onClick={() => deleteCitation(citation.id)}
-                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title="Delete"
+                            className="h-7 w-7 flex items-center justify-center rounded-full text-zinc-500 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 transition-all" title="Delete"
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
@@ -559,37 +567,37 @@ export default function GeneratePage() {
             </div>
 
           </div>
-        </main>
 
         {/* Right Sidebar (Registration CTA) */}
-        <aside className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
+        <aside className="hidden xl:sticky top-6 z-30 h-fit w-full shrink-0 py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
           <div className="flex flex-col gap-4">
-            <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md">
-
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+            <div className="p-5 rounded-3xl bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-900/80 dark:to-[#0a0a0c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+              <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-[#407bc4] to-[#32629e] flex items-center justify-center mb-5 text-white shadow-lg shadow-[#407bc4]/20 border border-white/20">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2 tracking-tight">
                 {language === 'TH' ? 'สมัครสมาชิกฟรี' : 'Join for Free'}
               </h3>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mb-5 leading-relaxed">
                 {language === 'TH' 
-                  ? 'สร้างบรรณานุกรมของคุณให้ปลอดภัย และเข้าถึงได้จากทุกที่ทุกเวลา' 
+                  ? 'สร้างบรรณานุกรมของคุณให้ปลอดภัย และเข้าถึงได้จากทุกที่ทุกเวลาด้วยระบบคลาวด์' 
                   : 'Save your bibliographies securely and access them from anywhere, anytime.'}
               </p>
-              <button className="w-full py-2.5 px-4 bg-[#407bc4] text-white text-[11px] font-bold rounded-full hover:bg-[#32629e] transition-all shadow-sm active:scale-95 mb-5 group">
-                {language === 'TH' ? 'รับสิทธิพิเศษตอนนี้' : 'Get exclusive access'} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+              <button className="w-full py-2.5 px-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[11px] font-bold rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-sm active:scale-95 mb-2 group flex items-center justify-center gap-2">
+                {language === 'TH' ? 'เริ่มต้นใช้งาน' : 'Get started'} <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
               </button>
-              
-
             </div>
             
-            <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 opacity-60">
-               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 text-center italic leading-relaxed">
+            <div className="px-4 py-3 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 text-center font-medium leading-relaxed">
                  {language === 'TH' ? '"เครื่องมือที่ช่วยให้งานวิจัยของคุณง่ายขึ้น"' : '"The tool that makes your research easier"'}
                </p>
             </div>
           </div>
         </aside>
-
-      </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
