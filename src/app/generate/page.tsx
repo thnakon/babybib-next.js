@@ -50,8 +50,8 @@ export default function GeneratePage() {
         <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
           <div className="flex flex-col gap-6">
 
-            <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#407bc4] to-[#f58e58] py-2.5 text-sm font-medium text-white shadow-md hover:opacity-90 active:scale-95 transition-all">
-              <Plus className="h-4 w-4" /> Add new
+            <button className="flex h-8 w-full items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
+              <Plus className="h-3.5 w-3.5" /> Add new
             </button>
             
             <div className="flex flex-col gap-2">
