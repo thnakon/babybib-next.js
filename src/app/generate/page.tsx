@@ -378,7 +378,7 @@ export default function GeneratePage() {
             </div>
 
             {/* References Paper Area */}
-            <div className="relative w-full min-h-[600px] bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden flex flex-col pt-12">
+            <div className="relative w-full min-h-[600px] bg-white dark:bg-[#18181b] rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col pt-12">
               
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -490,39 +490,40 @@ export default function GeneratePage() {
                           )}
 
                           {viewMode === "Bibliography and in-text citations" && (
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-3">
                               <div>{citation.content}</div>
-                              <div className="text-[11px] font-bold text-[#407bc4] flex items-center gap-2 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 w-fit px-2 py-0.5 rounded border border-[#407bc4]/20">
-                                <Quote className="h-3 w-3" /> {citation.inText}
+                              <div className="flex items-center gap-1.5 px-3 py-1 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 border border-[#407bc4]/30 dark:border-[#407bc4]/40 rounded-lg w-fit transition-all hover:bg-[#407bc4]/10 dark:hover:bg-[#407bc4]/20 group/badge cursor-pointer">
+                                <Quote className="h-3 w-3 text-[#407bc4] opacity-70" />
+                                <span className="text-[11px] font-bold text-[#407bc4] tracking-tight">{citation.inText}</span>
                               </div>
                             </div>
                           )}
                         </div>
 
-                        {/* Hover Actions */}
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
-                          <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm tooltip-trigger" title="Edit">
-                            <Pencil className="h-3.5 w-3.5" />
+                        {/* Hover Actions - Positioned at bottom right to avoid overlap */}
+                        <div className="absolute bottom-2 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
+                          <button className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="Edit">
+                            <Pencil className="h-3 w-3" />
                           </button>
-                          <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="In-text citation">
-                            <Quote className="h-3.5 w-3.5" />
+                          <button className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="In-text citation">
+                            <Quote className="h-3 w-3" />
                           </button>
                           <button 
                             onClick={() => handleItemCopy(citation.id)}
-                            className={`h-8 w-8 flex items-center justify-center rounded-full border transition-all shadow-sm ${
+                            className={`h-7 w-7 flex items-center justify-center rounded-full border transition-all shadow-sm ${
                               copiedId === citation.id 
                                 ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400" 
-                                : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
+                                : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
                             }`} 
                             title="Copy"
                           >
-                            {copiedId === citation.id ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                            {copiedId === citation.id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                           </button>
                           <button 
                             onClick={() => deleteCitation(citation.id)}
-                            className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title="Delete"
+                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title="Delete"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Trash2 className="h-3 w-3" />
                           </button>
                         </div>
                       </div>
