@@ -19,15 +19,15 @@ export default function GeneratePage() {
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
       {/* 
         Navbar 
-        - Reduced padding, no bottom border, no center nav links
+        - Increased size
       */}
-      <nav className="sticky top-0 z-50 flex w-full h-14 items-center justify-between px-6 sm:px-8 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 flex w-full h-16 items-center justify-between px-6 sm:px-8 lg:px-12 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative h-8 w-8 overflow-hidden rounded-md">
+            <div className="relative h-10 w-10 overflow-hidden rounded-md">
               <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
             </div>
-            <span className="text-lg font-bold tracking-tight">
+            <span className="text-xl font-bold tracking-tight">
               <span className="text-[#407bc4]">Baby</span>
               <span className="text-[#f58e58]">bib</span>
             </span>
@@ -37,7 +37,7 @@ export default function GeneratePage() {
         <div className="flex items-center gap-4">
           <LanguageDropdown />
           <ThemeToggle />
-          <button className="hidden sm:flex h-8 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-xs font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm">
+          <button className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-sm font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm">
             {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
           </button>
         </div>
@@ -47,7 +47,7 @@ export default function GeneratePage() {
       <div className="mx-auto flex w-full max-w-screen-2xl items-start">
         
         {/* Left Sidebar */}
-        <aside className="hidden top-14 z-30 h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8">
+        <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
           <div className="flex flex-col gap-6">
             
             <div className="flex flex-col gap-2">
@@ -169,7 +169,7 @@ export default function GeneratePage() {
         </main>
 
         {/* Right Sidebar (Table of Contents) */}
-        <aside className="hidden xl:sticky top-14 z-30 h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8">
+        <aside className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
           <div className="flex items-center gap-2 mb-4">
             <AlignLeft className="h-4 w-4 text-zinc-500" />
             <span className="text-sm font-medium text-zinc-500">On this page</span>
