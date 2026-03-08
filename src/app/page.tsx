@@ -55,8 +55,8 @@ export default function Home() {
                 <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
               </motion.div>
               <motion.div layoutId="brand-text" className="text-2xl font-bold tracking-tight pr-8">
-                <span className="text-transparent bg-clip-text animate-[shine_3s_linear_infinite] bg-[linear-gradient(110deg,#407bc4,45%,#a0c4f2,55%,#407bc4)] bg-[length:200%_100%]">Baby</span>
-                <span className="text-transparent bg-clip-text animate-[shine_3s_linear_infinite] bg-[linear-gradient(110deg,#f58e58,45%,#fad1bc,55%,#f58e58)] bg-[length:200%_100%]">bib</span>
+                <span className="text-[#407bc4]">Baby</span>
+                <span className="text-[#f58e58]">bib</span>
               </motion.div>
             </>
           ) : (
