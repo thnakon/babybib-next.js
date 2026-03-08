@@ -14,8 +14,9 @@ import {
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
   List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
-  Type, ChevronRight
+  Type, ChevronRight, X, FilePlus
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function GeneratePage() {
   const { language } = useLanguage();
@@ -27,6 +28,14 @@ export default function GeneratePage() {
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   const [copiedId, setCopiedId] = React.useState<number | null>(null);
   const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(false);
+  const [isAddTooltipVisible, setIsAddTooltipVisible] = React.useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+  const [newProject, setNewProject] = React.useState({
+    name: "",
+    description: "",
+    color: "#407bc4",
+    icon: "BookOpen"
+  });
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -148,9 +157,30 @@ export default function GeneratePage() {
         <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
           <div className="flex flex-col gap-6">
 
-            <button className="flex h-8 w-32 mx-auto items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
-              <Plus className="h-3.5 w-3.5" /> Add new
-            </button>
+            <div className="relative group mx-auto">
+              <button 
+                onMouseEnter={() => setIsAddTooltipVisible(true)}
+                onMouseLeave={() => setIsAddTooltipVisible(false)}
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex h-8 w-32 items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add new
+              </button>
+              
+              <AnimatePresence>
+                {isAddTooltipVisible && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 bg-zinc-900 text-white text-[10px] rounded whitespace-nowrap z-50 pointer-events-none"
+                  >
+                    Create a new project
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 border-l-4 border-l-transparent border-r-4 border-r-transparent border-bottom-4 border-b-zinc-900" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
@@ -259,52 +289,47 @@ export default function GeneratePage() {
         <main className="relative py-6 lg:py-8 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1">
           <div className="mx-auto w-full min-w-0">
             
-            {/* Unified Search Section */}
-            <div className="mb-10 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden transition-all focus-within:shadow-md focus-within:border-[#407bc4]/30">
-              {/* Header: Tabs & Tools */}
-              <div className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-50/50 dark:bg-zinc-900/30">
-                <div className="flex flex-wrap items-center gap-4 sm:gap-8">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-200/50 dark:bg-zinc-800 text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                    <span className="h-1 w-1 rounded-full bg-[#407bc4] animate-pulse" />
+            {/* Search Input Section */}
+            <div className="mb-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+                  <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
                     Manual
-                  </div>
+                  </span>
                   
-                  <nav className="flex items-center gap-6">
-                    <button className="relative group flex items-center gap-1.5 text-sm font-bold text-[#407bc4] py-1">
+                  <nav className="flex items-center gap-4 sm:gap-6">
+                    <button className="group flex items-center gap-1.5 text-sm font-semibold text-[#407bc4] border-b-2 border-[#407bc4] pb-1 transition-all">
                       <Book className="h-4 w-4" /> Books
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#407bc4] rounded-full" />
                     </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors py-1">
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
                       <FileText className="h-4 w-4" /> Articles
                     </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors py-1">
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
                       <Globe className="h-4 w-4" /> Websites
                     </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors py-1">
-                      <Plus className="h-3.5 w-3.5" /> More
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
+                      <Plus className="h-4 w-4" /> More
                     </button>
                   </nav>
                 </div>
                 
-                <button className="hidden sm:flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
+                <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
                   <HelpCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Guide</span>
+                  <span className="text-sm font-medium">Help</span>
                 </button>
               </div>
 
-              {/* Input: Search Field */}
-              <div className="p-4 relative group">
-                <div className="absolute inset-y-0 left-8 flex items-center pointer-events-none">
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-zinc-400 group-focus-within:text-[#407bc4] transition-colors" />
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Search by ISBN, DOI, URL or Book Title..." 
-                  className="w-full h-12 bg-zinc-50/50 dark:bg-zinc-800/30 border border-transparent rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:bg-white dark:focus:bg-zinc-800 focus:border-[#407bc4]/20 transition-all"
+                  placeholder="Search by ISBN / DOI / URL / Title etc." 
+                  className="w-full h-11 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/5 dark:focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all shadow-sm"
                 />
-                <div className="absolute inset-y-0 right-8 flex items-center gap-3">
-                  <div className="h-5 w-[1px] bg-zinc-200 dark:bg-zinc-700" />
-                  <kbd className="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded bg-zinc-100 dark:bg-zinc-950 px-1.5 font-mono text-[10px] font-medium text-zinc-400 shadow-inner">
+                <div className="absolute inset-y-0 right-4 flex items-center gap-2">
+                  <kbd className="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-1.5 font-mono text-[10px] font-medium text-zinc-400 opacity-100">
                     <span className="text-xs">⌘</span>K
                   </kbd>
                 </div>
@@ -649,6 +674,121 @@ export default function GeneratePage() {
         </aside>
 
       </div>
+
+      <AnimatePresence>
+        {isCreateModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsCreateModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-[#407bc4]/10 flex items-center justify-center">
+                    <FilePlus className="h-4 w-4 text-[#407bc4]" />
+                  </div>
+                  {language === 'TH' ? 'สร้างโปรเจกต์ใหม่' : 'Create New Project'}
+                </h3>
+                <button 
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4 text-zinc-400" />
+                </button>
+              </div>
+
+              <div className="p-6 flex flex-col gap-5">
+                {/* Project Name */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                    {language === 'TH' ? 'ชื่อโปรเจกต์' : 'Project Name'}
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder={language === 'TH' ? 'ระบุชื่อโปรเจกต์...' : 'Enter project name...'}
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                    {language === 'TH' ? 'รายละเอียด' : 'Description'}
+                  </label>
+                  <textarea 
+                    rows={3}
+                    placeholder={language === 'TH' ? 'ระบุรายละเอียดคร่าวๆ...' : 'Optional description...'}
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Color Selection */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                      {language === 'TH' ? 'ธีมสี' : 'Theme Color'}
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {['#407bc4', '#f58e58', '#10b981', '#ef4444', '#8b5cf6'].map((color) => (
+                        <button 
+                          key={color}
+                          onClick={() => setNewProject({...newProject, color})}
+                          className={`h-6 w-6 rounded-full border-2 transition-transform active:scale-90 ${newProject.color === color ? 'border-zinc-400 scale-110' : 'border-transparent'}`}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Icon Selection */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                      {language === 'TH' ? 'ไอคอน' : 'Icon'}
+                    </label>
+                    <div className="flex gap-2">
+                      {[
+                        { id: 'BookOpen', icon: <BookOpen className="h-3.5 w-3.5" /> },
+                        { id: 'Globe', icon: <Globe className="h-3.5 w-3.5" /> },
+                        { id: 'FileText', icon: <FileText className="h-3.5 w-3.5" /> },
+                      ].map((item) => (
+                        <button 
+                          key={item.id}
+                          className={`h-8 w-8 flex items-center justify-center rounded-lg border transition-all ${newProject.icon === item.id ? 'bg-[#407bc4] text-white border-transparent' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400'}`}
+                        >
+                          {item.icon}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-end gap-3">
+                <button 
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-zinc-700 transition-colors"
+                >
+                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                </button>
+                <button 
+                  className="px-6 py-2 rounded-xl bg-[#407bc4] text-white text-xs font-bold hover:bg-[#32629e] transition-all shadow-md active:scale-95"
+                >
+                  {language === 'TH' ? 'สร้างโปรเจกต์' : 'Create Project'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
