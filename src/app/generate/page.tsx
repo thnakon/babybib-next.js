@@ -125,7 +125,7 @@ export default function GeneratePage() {
 
             <div className="flex flex-col gap-1.5 pt-4 mt-auto">
               <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                Made with 🍼 by Babybib
+                Made by <span className="font-bold"><span className="text-[#407bc4]">Baby</span><span className="text-[#f58e58]">bib</span></span>
               </span>
               <div className="flex items-center gap-2 text-sm text-zinc-400 dark:text-zinc-500 font-medium tracking-tight">
                 <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">Privacy</Link>
