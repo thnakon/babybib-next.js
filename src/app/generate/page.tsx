@@ -58,6 +58,56 @@ export default function GeneratePage() {
   const [copiedBib, setCopiedBib] = React.useState(false);
   const [copiedInText, setCopiedInText] = React.useState(false);
 
+  // Smart Search State
+  const [mainSearchQuery, setMainSearchQuery] = React.useState("");
+  const [isMainSearchDropdownOpen, setIsMainSearchDropdownOpen] = React.useState(false);
+  const [isMainSearching, setIsMainSearching] = React.useState(false);
+  const [mainSearchResults, setMainSearchResults] = React.useState<any[]>([]);
+
+  const mockSearchResults = [
+    { id: '1', title: 'The Design of Everyday Things', authors: [{ firstName: 'Donald', middleName: 'A.', lastName: 'Norman' }], year: '2013', source: 'Basic Books', type: 'book' },
+    { id: '2', title: 'Sapiens: A Brief History of Humankind', authors: [{ firstName: 'Yuval', middleName: 'Noah', lastName: 'Harari' }], year: '2015', source: 'Harper', type: 'book' },
+    { id: '3', title: 'A Brief History of Time', authors: [{ firstName: 'Stephen', middleName: '', lastName: 'Hawking' }], year: '1988', source: 'Bantam Books', type: 'book' },
+    { id: '4', title: 'The Elements of Typographic Style', authors: [{ firstName: 'Robert', middleName: '', lastName: 'Bringhurst' }], year: '1992', source: 'Hartley & Marks', type: 'book' },
+    { id: '5', title: 'Historical Analysis of Design Patterns', authors: [{ firstName: 'Jane', middleName: '', lastName: 'Doe' }], year: '2020', source: 'Journal of Software Engineering', type: 'article' },
+  ];
+
+  const handleMainSearch = (query: string) => {
+    setMainSearchQuery(query);
+    if (query.trim().length > 2) {
+      setIsMainSearching(true);
+      setIsMainSearchDropdownOpen(true);
+      // Simulate API call
+      setTimeout(() => {
+        const results = mockSearchResults.filter(item => 
+          item.title.toLowerCase().includes(query.toLowerCase()) || 
+          item.authors.some(a => a.lastName.toLowerCase().includes(query.toLowerCase()))
+        );
+        setMainSearchResults(results);
+        setIsMainSearching(false);
+      }, 600);
+    } else {
+      setMainSearchResults([]);
+      setIsMainSearchDropdownOpen(false);
+    }
+  };
+
+  const handleSelectSearchResult = (item: any) => {
+    setNewCitationData({
+      authors: item.authors,
+      authorCondition: 'general',
+      year: item.year,
+      title: item.title,
+      source: item.source,
+      url: ''
+    });
+    setSelectedType(item.type);
+    setCitationStep(1);
+    setIsAddCitationModalOpen(true);
+    setIsMainSearchDropdownOpen(false);
+    setMainSearchQuery("");
+  };
+
   const resourceLabels: Record<string, { TH: string, EN: string }> = {
     book: { TH: 'หนังสือ', EN: 'Book' },
     article: { TH: 'วารสาร', EN: 'Journal' },
@@ -420,11 +470,24 @@ export default function GeneratePage() {
 
               <div className="relative group">
                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-zinc-400 group-focus-within:text-[#407bc4] transition-colors" />
+                  {isMainSearching ? (
+                    <RotateCw className="h-5 w-5 text-zinc-400 animate-spin" />
+                  ) : (
+                    <Search className="h-5 w-5 text-zinc-400 group-focus-within:text-[#407bc4] transition-colors" />
+                  )}
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Search by ISBN / DOI / URL / Title etc." 
+                  value={mainSearchQuery}
+                  onChange={(e) => handleMainSearch(e.target.value)}
+                  onFocus={() => {
+                    if (mainSearchResults.length > 0 || isMainSearching) setIsMainSearchDropdownOpen(true);
+                  }}
+                  onBlur={() => {
+                    // Slight delay to allow clicking on results
+                    setTimeout(() => setIsMainSearchDropdownOpen(false), 200);
+                  }}
+                  placeholder={language === 'TH' ? 'ค้นหาด้วย ISBN / DOI / URL / ชื่อเรื่อง ฯลฯ' : 'Search by ISBN / DOI / URL / Title etc.'}
                   className="w-full h-11 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/5 dark:focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all shadow-sm"
                 />
                 <div className="absolute inset-y-0 right-4 flex items-center gap-2">
@@ -432,6 +495,57 @@ export default function GeneratePage() {
                     <span className="text-xs">⌘</span>K
                   </kbd>
                 </div>
+
+                {/* Smart Search Dropdown */}
+                <AnimatePresence>
+                  {isMainSearchDropdownOpen && mainSearchQuery.trim().length > 2 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-14 left-0 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl z-50 overflow-hidden"
+                    >
+                      {isMainSearching ? (
+                        <div className="p-8 flex flex-col items-center justify-center text-zinc-400">
+                          <RotateCw className="h-6 w-6 animate-spin mb-2" />
+                          <span className="text-xs">{language === 'TH' ? 'กำลังค้นหา...' : 'Searching...'}</span>
+                        </div>
+                      ) : mainSearchResults.length > 0 ? (
+                        <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                          {mainSearchResults.map((result) => (
+                            <div key={result.id} className="flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 transition-colors group">
+                              <div className="flex flex-col gap-1 pr-4">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{result.title}</span>
+                                  <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                                    {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
+                                  </span>
+                                </div>
+                                <span className="text-xs text-zinc-500 line-clamp-1">
+                                  {result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ')} ({result.year}) - {result.source}
+                                </span>
+                              </div>
+                              <button 
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleSelectSearchResult(result);
+                                }}
+                                className="h-8 w-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#407bc4]/10 text-[#407bc4] hover:bg-[#407bc4] hover:text-white transition-colors"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-8 flex flex-col items-center justify-center text-zinc-400">
+                          <Search className="h-6 w-6 mb-2 opacity-50" />
+                          <span className="text-xs">{language === 'TH' ? 'ไม่พบผลลัพธ์' : 'No results found'}</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
