@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
+import { NavLinks } from "@/components/nav-links";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
@@ -15,10 +17,12 @@ export default function Home() {
               className="object-contain"
             />
           </div>
-          <span className="text-2xl font-bold tracking-tight">
+          <span className="text-2xl font-bold tracking-tight pr-8">
             <span className="text-[#407bc4]">baby</span>
             <span className="text-[#f58e58]">bib</span>
           </span>
+          
+          <NavLinks />
         </div>
         
         <div className="flex items-center gap-4">
