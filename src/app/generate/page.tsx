@@ -45,7 +45,8 @@ export default function GeneratePage() {
   });
   const [isAddCitationModalOpen, setIsAddCitationModalOpen] = React.useState(false);
   const [newCitationData, setNewCitationData] = React.useState({
-    authors: "",
+    authors: [{ firstName: "", middleName: "", lastName: "" }],
+    authorCondition: "general",
     year: "",
     title: "",
     source: "",
@@ -1209,17 +1210,108 @@ export default function GeneratePage() {
                       {/* Form Section */}
                       <div className="flex-1 p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
                         <div className="flex flex-col gap-6">
-                          <div className="flex flex-col gap-2">
-                            <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                              {language === 'TH' ? 'ผู้แต่ง / บรรณาธิการ' : 'Authors / Editors'}
-                            </label>
-                            <input 
-                              type="text" 
-                              value={newCitationData.authors}
-                              onChange={(e) => setNewCitationData({...newCitationData, authors: e.target.value})}
-                              placeholder={language === 'TH' ? 'นามสกุล, ชื่อต้น...' : 'Last name, First name...'}
-                              className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                            />
+                          <div className="flex flex-col gap-4">
+                            <div className="flex items-center justify-between">
+                              <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                                {language === 'TH' ? 'เงื่อนไขผู้แต่ง' : 'Author Condition'}
+                              </label>
+                              <select 
+                                value={newCitationData.authorCondition}
+                                onChange={(e) => setNewCitationData({...newCitationData, authorCondition: e.target.value})}
+                                className="text-[11px] font-bold text-[#407bc4] bg-[#407bc4]/5 px-2 py-1 rounded-md border-none focus:ring-0 cursor-pointer hover:bg-[#407bc4]/10 transition-colors"
+                              >
+                                <option value="general">{language === 'TH' ? 'ทั่วไป' : 'General'}</option>
+                                <option value="none">{language === 'TH' ? 'ไม่ปรากฏชื่อผู้แต่ง' : 'No author'}</option>
+                                <option value="pseudonym">{language === 'TH' ? 'ผู้แต่งใช้นามแฝง' : 'Pseudonym'}</option>
+                                <option value="royal">{language === 'TH' ? 'ผู้แต่งเป็นราชสกุล เช่น ม.ร.ว.' : 'Royal family'}</option>
+                                <option value="title">{language === 'TH' ? 'ผู้แต่งมีบรรดาศักดิ์ เช่น คุณหญิง' : 'Titled author'}</option>
+                                <option value="monk">{language === 'TH' ? 'ผู้แต่งเป็นพระสงฆ์' : 'Buddhist Monk'}</option>
+                                <option value="editor">{language === 'TH' ? 'ผู้แต่งเป็นบรรณาธิการ' : 'Editor'}</option>
+                                <option value="org">{language === 'TH' ? 'ชื่อหน่วยงาน หรือสถาบัน' : 'Organization'}</option>
+                              </select>
+                            </div>
+
+                            {newCitationData.authorCondition !== 'none' && (
+                              <div className="space-y-4">
+                                {newCitationData.authors.map((author, index) => (
+                                  <div key={index} className="p-4 rounded-2xl bg-zinc-50/50 dark:bg-zinc-800/30 border border-zinc-100 dark:border-zinc-800 relative group/author">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                      <div className="flex flex-col gap-1.5">
+                                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
+                                          {language === 'TH' ? 'ชื่อระบุ' : 'First Name'}
+                                        </label>
+                                        <input 
+                                          type="text" 
+                                          value={author.firstName}
+                                          onChange={(e) => {
+                                            const updated = [...newCitationData.authors];
+                                            updated[index].firstName = e.target.value;
+                                            setNewCitationData({...newCitationData, authors: updated});
+                                          }}
+                                          placeholder="..."
+                                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                                        />
+                                      </div>
+                                      <div className="flex flex-col gap-1.5">
+                                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
+                                          {language === 'TH' ? 'ชื่อกลาง' : 'Middle Name'}
+                                        </label>
+                                        <input 
+                                          type="text" 
+                                          value={author.middleName}
+                                          onChange={(e) => {
+                                            const updated = [...newCitationData.authors];
+                                            updated[index].middleName = e.target.value;
+                                            setNewCitationData({...newCitationData, authors: updated});
+                                          }}
+                                          placeholder="..."
+                                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                                        />
+                                      </div>
+                                      <div className="flex flex-col gap-1.5">
+                                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
+                                          {language === 'TH' ? 'นามสกุล' : 'Last Name'}
+                                        </label>
+                                        <input 
+                                          type="text" 
+                                          value={author.lastName}
+                                          onChange={(e) => {
+                                            const updated = [...newCitationData.authors];
+                                            updated[index].lastName = e.target.value;
+                                            setNewCitationData({...newCitationData, authors: updated});
+                                          }}
+                                          placeholder="..."
+                                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                                        />
+                                      </div>
+                                    </div>
+                                    {newCitationData.authors.length > 1 && (
+                                      <button 
+                                        onClick={() => {
+                                          const updated = newCitationData.authors.filter((_, i) => i !== index);
+                                          setNewCitationData({...newCitationData, authors: updated});
+                                        }}
+                                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg opacity-0 group-hover/author:opacity-100 transition-opacity"
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </button>
+                                    )}
+                                  </div>
+                                ))}
+                                <button 
+                                  onClick={() => {
+                                    setNewCitationData({
+                                      ...newCitationData, 
+                                      authors: [...newCitationData.authors, { firstName: "", middleName: "", lastName: "" }]
+                                    });
+                                  }}
+                                  className="w-full py-2.5 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-500 hover:text-[#407bc4] hover:border-[#407bc4] hover:bg-[#407bc4]/5 transition-all flex items-center justify-center gap-2"
+                                >
+                                  <Plus className="h-3.5 w-3.5" />
+                                  {language === 'TH' ? 'เพิ่มผู้แต่ง' : 'Add Author'}
+                                </button>
+                              </div>
+                            )}
                           </div>
 
                           <div className="grid grid-cols-2 gap-6">
@@ -1296,7 +1388,17 @@ export default function GeneratePage() {
                               <FileText className="h-3 w-3 text-zinc-300" />
                             </div>
                             <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed italic-preview">
-                              {newCitationData.authors ? newCitationData.authors : "Author, A. A."} 
+                              {newCitationData.authorCondition === 'none' 
+                                ? "No author" 
+                                : newCitationData.authors.map((a, i) => {
+                                    const first = a.firstName ? a.firstName.charAt(0) + '.' : '';
+                                    const middle = a.middleName ? ' ' + a.middleName.charAt(0) + '.' : '';
+                                    const last = a.lastName || '';
+                                    if (!last && !first) return i === 0 ? "Author, A. A." : "";
+                                    const name = `${last}${first || middle ? ', ' : ''}${first}${middle}`;
+                                    return name + (i < newCitationData.authors.length - 1 ? ', & ' : '');
+                                  }).join('')
+                              }
                               {newCitationData.year ? ` (${newCitationData.year}). ` : " (Year). "} 
                               <span className="italic">
                                 {newCitationData.title ? newCitationData.title : "Title of the work."}
@@ -1314,7 +1416,10 @@ export default function GeneratePage() {
                               <Quote className="h-3 w-3 text-zinc-300" />
                             </div>
                             <p className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6]">
-                              ({newCitationData.authors ? newCitationData.authors.split(',')[0] : "Author"}, 
+                              ({newCitationData.authorCondition === 'none' 
+                                ? "Title" 
+                                : (newCitationData.authors[0].lastName || "Author")} 
+                               {newCitationData.authors.length > 1 ? " et al." : ""}, 
                                {newCitationData.year || "Year"})
                             </p>
                           </div>
