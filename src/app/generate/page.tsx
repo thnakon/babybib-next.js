@@ -54,6 +54,43 @@ export default function GeneratePage() {
   const [citationStep, setCitationStep] = React.useState(0); // 0 = selection, 1 = form, 2 = more
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const [resourceSearch, setResourceSearch] = React.useState("");
+
+  const resourceLabels: Record<string, { TH: string, EN: string }> = {
+    book: { TH: 'หนังสือ', EN: 'Book' },
+    article: { TH: 'วารสาร', EN: 'Journal' },
+    website: { TH: 'เว็บไซต์', EN: 'Website' },
+    report: { TH: 'รายงาน', EN: 'Report' },
+    news: { TH: 'ข่าวสาร', EN: 'News' },
+    artwork: { TH: 'งานศิลปะ', EN: 'Artwork' },
+    blog: { TH: 'บล็อกโพสต์', EN: 'Blog Post' },
+    chapter: { TH: 'บทในหนังสือ', EN: 'Book Chapter' },
+    review: { TH: 'บทวิจารณ์หนังสือ', EN: 'Book Review' },
+    conference: { TH: 'เอกสารการประชุม', EN: 'Conference Paper' },
+    'db-article': { TH: 'บทความฐานข้อมูล', EN: 'Database Article' },
+    dictionary: { TH: 'พจนานุกรม', EN: 'Dictionary Entry' },
+    ebook: { TH: 'อีบุ๊ก', EN: 'E-book' },
+    encyclopedia: { TH: 'สารานุกรม', EN: 'Encyclopedia Entry' },
+    film: { TH: 'ภาพยนตร์', EN: 'Film/Movie' },
+    image: { TH: 'รูปภาพ', EN: 'Image' },
+    interview: { TH: 'บทสัมภาษณ์', EN: 'Interview' },
+    journal: { TH: 'บทความวารสาร', EN: 'Journal Article' },
+    'legal-bill': { TH: 'ร่างกฎหมาย', EN: 'Legal Bill' },
+    'legal-case': { TH: 'คดีความ', EN: 'Legal Case' },
+    legislation: { TH: 'กฎหมาย', EN: 'Legislation' },
+    magazine: { TH: 'บทความนิตยสาร', EN: 'Magazine Article' },
+    map: { TH: 'แผนที่', EN: 'Map' },
+    'news-article': { TH: 'บทความข่าว', EN: 'News Article' },
+    patent: { TH: 'สิทธิบัตร', EN: 'Patent' },
+    personal: { TH: 'การสื่อสารส่วนตัว', EN: 'Personal Communication' },
+    regulation: { TH: 'ระเบียบข้อบังคับ', EN: 'Regulation' },
+    song: { TH: 'เพลง', EN: 'Song' },
+    speech: { TH: 'สุนทรพจน์', EN: 'Speech' },
+    standard: { TH: 'มาตรฐาน', EN: 'Standard' },
+    thesis: { TH: 'วิทยานิพนธ์', EN: 'Thesis/Dissertation' },
+    broadcast: { TH: 'รายการทีวี/วิทยุ', EN: 'TV/Radio Broadcast' },
+    video: { TH: 'วิดีโอ', EN: 'Video' },
+    paste: { TH: 'เขียน/วางบรรณานุกรม', EN: 'Write/paste citation' },
+  };
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -1001,7 +1038,11 @@ export default function GeneratePage() {
                   </div>
                   {citationStep === 0 
                     ? (language === 'TH' ? 'เลือกประเภททรัพยากร' : 'Select Resource Type')
-                    : (language === 'TH' ? 'กรอกข้อมูลบรรณานุกรม' : 'Cite manually')}
+                    : (citationStep === 2 
+                        ? (language === 'TH' ? 'ทรัพยากรเพิ่มเติม' : 'More Resources')
+                        : (language === 'TH' 
+                            ? `กรอกข้อมูล: ${selectedType ? resourceLabels[selectedType]?.TH : 'บรรณานุกรม'}` 
+                            : `Cite manually: ${selectedType ? resourceLabels[selectedType]?.EN : 'Citation'}`))}
                 </h3>
                 <button 
                   onClick={() => setIsAddCitationModalOpen(false)}
@@ -1107,7 +1148,7 @@ export default function GeneratePage() {
                           { id: 'legislation', label: 'Legislation', icon: <Gavel className="h-4 w-4" /> },
                           { id: 'magazine', label: 'Magazine Article', icon: <Newspaper className="h-4 w-4" /> },
                           { id: 'map', label: 'Map', icon: <MapIcon className="h-4 w-4" /> },
-                          { id: 'news', label: 'News Article', icon: <Newspaper className="h-4 w-4" /> },
+                          { id: 'news-article', label: 'News Article', icon: <Newspaper className="h-4 w-4" /> },
                           { id: 'patent', label: 'Patent', icon: <Award className="h-4 w-4" /> },
                           { id: 'personal', label: 'Personal Communication', icon: <Mail className="h-4 w-4" /> },
                           { id: 'regulation', label: 'Regulation', icon: <Check className="h-4 w-4" /> },
