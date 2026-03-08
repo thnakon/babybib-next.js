@@ -752,8 +752,8 @@ export default function GeneratePage() {
                   {isSettingsOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setIsSettingsOpen(false)} />
-                      <div className="absolute top-full right-0 mt-2 w-64 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-50 overflow-hidden flex flex-col translate-y-0 opacity-100 transition-all">
-                        <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/30">
+                      <div className="absolute top-full right-0 mt-2 w-64 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-50 flex flex-col translate-y-0 opacity-100 transition-all">
+                        <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/30 rounded-t-xl">
                           <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                             <Settings2 className="h-3.5 w-3.5 text-[#407bc4]" /> Bibliography Settings
                           </span>
@@ -829,7 +829,7 @@ export default function GeneratePage() {
                           ))}
                         </div>
 
-                        <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-800/20 border-t border-zinc-100 dark:border-zinc-800">
+                        <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-800/20 border-t border-zinc-100 dark:border-zinc-800 rounded-b-xl">
                           <div className="flex items-start gap-2">
                             <Info className="h-3 w-3 text-[#407bc4] mt-0.5 shrink-0" />
                             <p className="text-[9px] text-zinc-500 leading-tight">
