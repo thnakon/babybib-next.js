@@ -208,19 +208,32 @@ export default function GeneratePage() {
                 {isStyleOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsStyleOpen(false)} />
-                    <div className="absolute top-full left-0 mt-1 w-56 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 py-1 overflow-hidden">
-                      {styles.map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => {
-                            setStyle(s);
-                            setIsStyleOpen(false);
-                          }}
-                          className={`w-full text-left px-3 py-2 text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${style === s ? 'text-[#407bc4] font-bold bg-zinc-50 dark:bg-zinc-800/50' : 'text-zinc-600 dark:text-zinc-400'}`}
-                        >
-                          {s}
+                    <div className="absolute top-full left-0 mt-1 w-64 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 overflow-hidden flex flex-col">
+                      <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30">
+                        <p className="text-[10px] text-zinc-500 leading-relaxed">
+                          Choose a style format your bibliography and citation. <Link href="#" className="text-[#407bc4] hover:underline">Learn More</Link>
+                        </p>
+                      </div>
+                      <div className="py-1">
+                        {styles.map((s) => (
+                          <button
+                            key={s}
+                            onClick={() => {
+                              setStyle(s);
+                              setIsStyleOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${style === s ? 'text-[#407bc4] font-bold bg-zinc-50 dark:bg-zinc-800/50' : 'text-zinc-600 dark:text-zinc-400'}`}
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="px-3 py-2 border-t border-zinc-100 dark:border-zinc-800">
+                        <button className="flex items-center justify-between w-full text-[10px] font-bold text-[#407bc4] hover:underline group">
+                          <span>More Citation styles</span>
+                          <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
                         </button>
-                      ))}
+                      </div>
                     </div>
                   </>
                 )}
