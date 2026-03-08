@@ -95,6 +95,17 @@ export default function GeneratePage() {
     setSettings(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const projects = [
+    { name: "Babybib Next.js", icon: <Globe className="h-3 w-3 shrink-0" />, count: 12, active: false },
+    { name: "Preview Link Card", icon: <FileText className="h-3 w-3 shrink-0" />, count: 5, active: true },
+    { name: "Smart ISBN API", icon: <Library className="h-3 w-3 shrink-0" />, count: 8, active: false },
+    { name: "Chat UI System", icon: <Smartphone className="h-3 w-3 shrink-0" />, count: 3, active: false },
+    { name: "Attitudes AI Tool", icon: <Bot className="h-3 w-3 shrink-0" />, count: 15, active: false },
+    { name: "E-commerce API", icon: <ShoppingCart className="h-3 w-3 shrink-0" />, count: 7, active: false },
+    { name: "Admin Dashboard", icon: <LayoutDashboard className="h-3 w-3 shrink-0" />, count: 10, active: false },
+    { name: "Portfolio Templates", icon: <Briefcase className="h-3 w-3 shrink-0" />, count: 4, active: false },
+  ];
+
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
       {/* 
@@ -145,31 +156,29 @@ export default function GeneratePage() {
                 </div>
                 <span className="text-sm font-semibold">Project</span>
               </div>
-              <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <Globe className="h-3 w-3 shrink-0" /> <span className="truncate">Babybib Next.js</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6] cursor-pointer truncate">
-                  <FileText className="h-3 w-3 shrink-0" /> <span className="truncate">Preview Link Card</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <Library className="h-3 w-3 shrink-0" /> <span className="truncate">Smart ISBN API</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <Smartphone className="h-3 w-3 shrink-0" /> <span className="truncate">Chat UI System</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <Bot className="h-3 w-3 shrink-0" /> <span className="truncate">Attitudes AI Tool</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <ShoppingCart className="h-3 w-3 shrink-0" /> <span className="truncate">E-commerce API</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <LayoutDashboard className="h-3 w-3 shrink-0" /> <span className="truncate">Admin Dashboard</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <Briefcase className="h-3 w-3 shrink-0" /> <span className="truncate">Portfolio Templates</span>
-                </li>
+              <ul className="flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
+                {projects.map((project, idx) => (
+                  <li 
+                    key={idx}
+                    className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg text-sm transition-all cursor-pointer group/item truncate ${
+                      project.active 
+                        ? "bg-[#407bc4]/5 text-[#407bc4] font-semibold dark:bg-[#407bc4]/10 dark:text-[#6ba1e6]" 
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:text-[#407bc4] dark:hover:text-[#6ba1e6]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      {project.icon}
+                      <span className="truncate">{project.name}</span>
+                    </div>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full border transition-all ${
+                      project.active
+                        ? "bg-[#407bc4] text-white border-transparent shadow-sm"
+                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 group-hover/item:border-[#407bc4]/30 group-hover/item:text-[#407bc4]"
+                    }`}>
+                      {project.count}
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
 
