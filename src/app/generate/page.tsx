@@ -51,6 +51,8 @@ export default function GeneratePage() {
     source: "",
     url: ""
   });
+  const [citationStep, setCitationStep] = React.useState(0); // 0 = selection, 1 = form
+  const [selectedType, setSelectedType] = React.useState<string | null>(null);
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -350,7 +352,10 @@ export default function GeneratePage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <button 
-                      onClick={() => setIsAddCitationModalOpen(true)}
+                      onClick={() => {
+                        setCitationStep(0);
+                        setIsAddCitationModalOpen(true);
+                      }}
                       className="flex h-9 items-center gap-2 rounded-xl bg-[#407bc4] px-4 text-xs font-bold text-white shadow-md hover:bg-[#32629e] transition-all active:scale-95 group"
                     >
                       <Plus className="h-4 w-4 transition-transform group-hover:rotate-90" />
@@ -991,9 +996,11 @@ export default function GeneratePage() {
               <div className="flex items-center justify-between px-8 py-5 border-b border-zinc-100 dark:border-zinc-800">
                 <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                   <div className="h-9 w-9 rounded-xl bg-[#407bc4]/10 flex items-center justify-center">
-                    <BookOpen className="h-5 w-5 text-[#407bc4]" />
+                    {citationStep === 0 ? <Plus className="h-5 w-5 text-[#407bc4]" /> : <BookOpen className="h-5 w-5 text-[#407bc4]" />}
                   </div>
-                  {language === 'TH' ? 'เพิ่มรายการบรรณานุกรมใหม่' : 'Add New Citation'}
+                  {citationStep === 0 
+                    ? (language === 'TH' ? 'เลือกประเภททรัพยากร' : 'Select Resource Type')
+                    : (language === 'TH' ? 'กรอกข้อมูลบรรณานุกรม' : 'Cite manually')}
                 </h3>
                 <button 
                   onClick={() => setIsAddCitationModalOpen(false)}
@@ -1003,144 +1010,195 @@ export default function GeneratePage() {
                 </button>
               </div>
 
-              <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-zinc-100 dark:divide-zinc-800">
-                {/* Form Section */}
-                <div className="flex-1 p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
-                  <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                        {language === 'TH' ? 'ผู้แต่ง / บรรณาธิการ' : 'Authors / Editors'}
-                      </label>
-                      <input 
-                        type="text" 
-                        value={newCitationData.authors}
-                        onChange={(e) => setNewCitationData({...newCitationData, authors: e.target.value})}
-                        placeholder={language === 'TH' ? 'นามสกุล, ชื่อต้น...' : 'Last name, First name...'}
-                        className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                          {language === 'TH' ? 'ปีที่พิมพ์' : 'Year'}
-                        </label>
-                        <input 
-                          type="text" 
-                          value={newCitationData.year}
-                          onChange={(e) => setNewCitationData({...newCitationData, year: e.target.value})}
-                          placeholder="2024"
-                          className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                        />
+              <div className="relative">
+                <AnimatePresence mode="wait">
+                  {citationStep === 0 ? (
+                    <motion.div 
+                      key="step0"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      className="p-8"
+                    >
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        {[
+                          { id: 'book', icon: <Book className="h-6 w-6" />, label: { TH: 'หนังสือ', EN: 'Book' } },
+                          { id: 'article', icon: <FileText className="h-6 w-6" />, label: { TH: 'วารสาร', EN: 'Journal' } },
+                          { id: 'website', icon: <Globe className="h-6 w-6" />, label: { TH: 'เว็บไซต์', EN: 'Website' } },
+                          { id: 'report', icon: <Library className="h-6 w-6" />, label: { TH: 'รายงาน', EN: 'Report' } },
+                          { id: 'news', icon: <Smartphone className="h-6 w-6" />, label: { TH: 'ข่าวสาร', EN: 'News' } },
+                          { id: 'other', icon: <Plus className="h-6 w-6" />, label: { TH: 'อื่นๆ', EN: 'More' } },
+                        ].map((type) => (
+                          <button 
+                            key={type.id}
+                            onClick={() => {
+                              setSelectedType(type.id);
+                              setCitationStep(1);
+                            }}
+                            className="flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 hover:border-[#407bc4] hover:bg-white dark:hover:bg-zinc-800 transition-all group scale-100 active:scale-95 shadow-sm hover:shadow-md"
+                          >
+                            <div className="h-14 w-14 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[#407bc4] group-hover:border-[#407bc4]/30 transition-all shadow-sm">
+                              {type.icon}
+                            </div>
+                            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100">
+                              {language === 'TH' ? type.label.TH : type.label.EN}
+                            </span>
+                          </button>
+                        ))}
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                          {language === 'TH' ? 'แหล่งที่มา' : 'Source'}
-                        </label>
-                        <input 
-                          type="text" 
-                          value={newCitationData.source}
-                          onChange={(e) => setNewCitationData({...newCitationData, source: e.target.value})}
-                          placeholder={language === 'TH' ? 'ชื่อวารสาร / สำนักพิมพ์...' : 'Journal / Publisher...'}
-                          className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                        />
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="step1"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-zinc-100 dark:divide-zinc-800"
+                    >
+                      {/* Form Section */}
+                      <div className="flex-1 p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
+                        <div className="flex flex-col gap-6">
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                              {language === 'TH' ? 'ผู้แต่ง / บรรณาธิการ' : 'Authors / Editors'}
+                            </label>
+                            <input 
+                              type="text" 
+                              value={newCitationData.authors}
+                              onChange={(e) => setNewCitationData({...newCitationData, authors: e.target.value})}
+                              placeholder={language === 'TH' ? 'นามสกุล, ชื่อต้น...' : 'Last name, First name...'}
+                              className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="flex flex-col gap-2">
+                              <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                                {language === 'TH' ? 'ปีที่พิมพ์' : 'Year'}
+                              </label>
+                              <input 
+                                type="text" 
+                                value={newCitationData.year}
+                                onChange={(e) => setNewCitationData({...newCitationData, year: e.target.value})}
+                                placeholder="2024"
+                                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                                {language === 'TH' ? 'แหล่งที่มา' : 'Source'}
+                              </label>
+                              <input 
+                                type="text" 
+                                value={newCitationData.source}
+                                onChange={(e) => setNewCitationData({...newCitationData, source: e.target.value})}
+                                placeholder={language === 'TH' ? 'ชื่อวารสาร / สำนักพิมพ์...' : 'Journal / Publisher...'}
+                                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                              {language === 'TH' ? 'ชื่อเรื่อง' : 'Title'}
+                            </label>
+                            <input 
+                              type="text" 
+                              value={newCitationData.title}
+                              onChange={(e) => setNewCitationData({...newCitationData, title: e.target.value})}
+                              placeholder={language === 'TH' ? 'ชื่อบทความหรือหนังสือ...' : 'Article or Book title...'}
+                              className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                              URL / DOI
+                            </label>
+                            <input 
+                              type="text" 
+                              value={newCitationData.url}
+                              onChange={(e) => setNewCitationData({...newCitationData, url: e.target.value})}
+                              placeholder="https://..."
+                              className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                            />
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                        {language === 'TH' ? 'ชื่อเรื่อง' : 'Title'}
-                      </label>
-                      <input 
-                        type="text" 
-                        value={newCitationData.title}
-                        onChange={(e) => setNewCitationData({...newCitationData, title: e.target.value})}
-                        placeholder={language === 'TH' ? 'ชื่อบทความหรือหนังสือ...' : 'Article or Book title...'}
-                        className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                      />
-                    </div>
+                      {/* Preview Section */}
+                      <div className="w-full md:w-[380px] bg-zinc-50/50 dark:bg-zinc-800/30 p-8 flex flex-col gap-6">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                            <Eye className="h-3.5 w-3.5" /> {language === 'TH' ? 'พรีวิว' : 'Live Preview'}
+                          </span>
+                          <span className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500 font-bold uppercase tracking-tighter shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
+                            {style}
+                          </span>
+                        </div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                        URL / DOI
-                      </label>
-                      <input 
-                        type="text" 
-                        value={newCitationData.url}
-                        onChange={(e) => setNewCitationData({...newCitationData, url: e.target.value})}
-                        placeholder="https://..."
-                        className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                      />
-                    </div>
-                  </div>
-                </div>
+                        {/* Bibliography Preview */}
+                        <div className="flex flex-col gap-2.5">
+                          <span className="text-[10px] font-bold text-zinc-400 ml-1">{language === 'TH' ? 'บรรณานุกรม' : 'Bibliography'}</span>
+                          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm min-h-[100px] flex flex-col relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <FileText className="h-3 w-3 text-zinc-300" />
+                            </div>
+                            <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed italic-preview">
+                              {newCitationData.authors ? newCitationData.authors : "Author, A. A."} 
+                              {newCitationData.year ? ` (${newCitationData.year}). ` : " (Year). "} 
+                              <span className="italic">
+                                {newCitationData.title ? newCitationData.title : "Title of the work."}
+                              </span>
+                              {newCitationData.source ? `. ${newCitationData.source}.` : ". Publisher/Source."}
+                            </p>
+                          </div>
+                        </div>
 
-                {/* Preview Section */}
-                <div className="w-full md:w-[380px] bg-zinc-50/50 dark:bg-zinc-800/30 p-8 flex flex-col gap-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                      <Eye className="h-3.5 w-3.5" /> {language === 'TH' ? 'พรีวิว' : 'Live Preview'}
-                    </span>
-                    <span className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500 font-bold uppercase tracking-tighter shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
-                      {style}
-                    </span>
-                  </div>
-
-                  {/* Bibliography Preview */}
-                  <div className="flex flex-col gap-2.5">
-                    <span className="text-[10px] font-bold text-zinc-400 ml-1">{language === 'TH' ? 'บรรณานุกรม' : 'Bibliography'}</span>
-                    <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm min-h-[100px] flex flex-col relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <FileText className="h-3 w-3 text-zinc-300" />
+                        {/* In-text Preview */}
+                        <div className="flex flex-col gap-2.5">
+                          <span className="text-[10px] font-bold text-zinc-400 ml-1">{language === 'TH' ? 'การอ้างอิงในเนื้อหา' : 'In-text citation'}</span>
+                          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm min-h-[60px] flex items-center relative group">
+                            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Quote className="h-3 w-3 text-zinc-300" />
+                            </div>
+                            <p className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6]">
+                              ({newCitationData.authors ? newCitationData.authors.split(',')[0] : "Author"}, 
+                               {newCitationData.year || "Year"})
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed italic-preview">
-                        {newCitationData.authors ? newCitationData.authors : "Author, A. A."} 
-                        {newCitationData.year ? ` (${newCitationData.year}). ` : " (Year). "} 
-                        <span className="italic">
-                          {newCitationData.title ? newCitationData.title : "Title of the work."}
-                        </span>
-                        {newCitationData.source ? `. ${newCitationData.source}.` : ". Publisher/Source."}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* In-text Preview */}
-                  <div className="flex flex-col gap-2.5">
-                    <span className="text-[10px] font-bold text-zinc-400 ml-1">{language === 'TH' ? 'การอ้างอิงในเนื้อหา' : 'In-text citation'}</span>
-                    <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm min-h-[60px] flex items-center relative group">
-                      <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Quote className="h-3 w-3 text-zinc-300" />
-                      </div>
-                      <p className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6]">
-                        ({newCitationData.authors ? newCitationData.authors.split(',')[0] : "Author"}, 
-                         {newCitationData.year || "Year"})
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-auto p-4 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-700 opacity-60">
-                    <p className="text-[10px] text-zinc-500 leading-relaxed text-center italic">
-                      {language === 'TH' 
-                        ? '"ผลลัพธ์จะเป็นไปตามรูปแบบ APA 7th Edition เสมอ"' 
-                        : '"Preview follows the APA 7th Edition formatting style"'}
-                    </p>
-                  </div>
-                </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div className="px-8 py-5 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-end gap-4">
+                {citationStep === 1 && (
+                  <button 
+                    onClick={() => setCitationStep(0)}
+                    className="mr-auto flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#407bc4] hover:bg-[#407bc4]/5 rounded-xl transition-all"
+                  >
+                    <ArrowLeft className="h-4 w-4" /> {language === 'TH' ? 'ย้อนกลับ' : 'Back'}
+                  </button>
+                )}
+                
                 <button 
                   onClick={() => setIsAddCitationModalOpen(false)}
                   className="px-5 py-2.5 text-sm font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
                 >
                   {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                 </button>
-                <button 
-                   onClick={() => setIsAddCitationModalOpen(false)}
-                  className="px-8 py-2.5 rounded-xl bg-[#407bc4] text-white text-sm font-bold hover:bg-[#32629e] transition-all shadow-lg active:scale-95"
-                >
-                  {language === 'TH' ? 'บันทึกรายการ' : 'Save Citation'}
-                </button>
+                
+                {citationStep === 1 && (
+                  <button 
+                    onClick={() => setIsAddCitationModalOpen(false)}
+                    className="px-8 py-2.5 rounded-xl bg-[#407bc4] text-white text-sm font-bold hover:bg-[#32629e] transition-all shadow-lg active:scale-95"
+                  >
+                    {language === 'TH' ? 'บันทึกรายการ' : 'Save Citation'}
+                  </button>
+                )}
               </div>
             </motion.div>
           </div>
