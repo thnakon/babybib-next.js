@@ -13,7 +13,7 @@ import {
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
-  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical
+  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -561,26 +561,52 @@ export default function GeneratePage() {
           </div>
         </main>
 
-        {/* Right Sidebar (Table of Contents) */}
+        {/* Right Sidebar (Registration CTA) */}
         <aside className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
-          <div className="flex items-center gap-2 mb-4">
-            <AlignLeft className="h-4 w-4 text-[#407bc4] dark:text-[#6ba1e6]" />
-            <span className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6]">On this page</span>
-          </div>
-
-          <div className="flex flex-col text-sm border-l border-zinc-200 dark:border-zinc-800">
-            <a href="#" className="border-l-2 border-[#407bc4] -ml-[1px] pl-4 py-1.5 font-medium text-[#407bc4] dark:text-[#6ba1e6]">Installation</a>
-            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Usage</a>
-            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">API Reference</a>
-            
-            <div className="flex flex-col pl-4 mt-1 mb-1 gap-1.5">
-              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCard</a>
-              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCardTrigger</a>
-              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCardContent</a>
-              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCardImage</a>
+          <div className="flex flex-col gap-4">
+            <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md">
+              <div className="h-10 w-10 rounded-2xl bg-[#407bc4] flex items-center justify-center mb-5 text-white shadow-lg shadow-[#407bc4]/20 animate-pulse">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+                {language === 'TH' ? 'สมัครสมาชิกฟรี' : 'Join for Free'}
+              </h3>
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mb-5 leading-relaxed">
+                {language === 'TH' 
+                  ? 'สร้างบรรณานุกรมของคุณให้ปลอดภัย และเข้าถึงได้จากทุกที่ทุกเวลา' 
+                  : 'Save your bibliographies securely and access them from anywhere, anytime.'}
+              </p>
+              <button className="w-full py-2.5 px-4 bg-[#407bc4] text-white text-[11px] font-bold rounded-full hover:bg-[#32629e] transition-all shadow-sm active:scale-95 mb-5 group">
+                {language === 'TH' ? 'รับสิทธิพิเศษตอนนี้' : 'Get exclusive access'} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+              </button>
+              
+              <div className="flex flex-col gap-3 border-t border-zinc-100 dark:border-zinc-800 pt-5">
+                <div className="flex items-center gap-2 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <div className="h-5 w-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shadow-sm">
+                    <ShieldCheck className="h-3 w-3 text-green-600 dark:text-green-400" />
+                  </div>
+                  {language === 'TH' ? 'พื้นที่เก็บข้อมูลคลาวด์' : 'Secure Cloud Storage'}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <div className="h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shadow-sm">
+                    <RotateCw className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  {language === 'TH' ? 'ส่งออกได้หลายรูปแบบ' : 'Multi-format Export'}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <div className="h-5 w-5 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shadow-sm">
+                    <Bot className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  {language === 'TH' ? 'ค้นหา ISBN อัตโนมัติ' : 'Auto-ISBN Search'}
+                </div>
+              </div>
             </div>
-
-            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors mt-2">Credits</a>
+            
+            <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 opacity-60">
+               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 text-center italic leading-relaxed">
+                 {language === 'TH' ? '"เครื่องมือที่ช่วยให้งานวิจัยของคุณง่ายขึ้น"' : '"The tool that makes your research easier"'}
+               </p>
+            </div>
           </div>
         </aside>
 
