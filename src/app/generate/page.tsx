@@ -37,6 +37,12 @@ export default function GeneratePage() {
     icon: "BookOpen"
   });
   const [projectMenuIdx, setProjectMenuIdx] = React.useState<number | null>(null);
+  const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
+  const [importRefFiles, setImportRefFiles] = React.useState({
+    ris: null as string | null,
+    bib: null as string | null,
+    backup: null as string | null
+  });
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -340,10 +346,13 @@ export default function GeneratePage() {
                     {language === 'TH' ? 'เพิ่ม รายการบรรณานุกรม' : 'New Citation'}
                   </button>
                   
-                  <button className="flex h-9 items-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all active:scale-95">
-                    <FileUp className="h-4 w-4" />
-                    {language === 'TH' ? 'นำเข้า' : 'Import'}
-                  </button>
+                  <button 
+                      onClick={() => setIsImportModalOpen(true)}
+                      className="flex h-9 items-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all active:scale-95"
+                    >
+                      <FileUp className="h-4 w-4" />
+                      {language === 'TH' ? 'นำเข้า' : 'Import'}
+                    </button>
                 </div>
                 
                 <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
@@ -841,6 +850,112 @@ export default function GeneratePage() {
                   className="px-6 py-2 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
                 >
                   {language === 'TH' ? 'สร้างโปรเจกต์' : 'Create Project'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isImportModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsImportModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-[#407bc4]/10 flex items-center justify-center">
+                    <FileUp className="h-4 w-4 text-[#407bc4]" />
+                  </div>
+                  {language === 'TH' ? 'นำเข้าบรรณานุกรม' : 'Import Bibliography'}
+                </h3>
+                <button 
+                  onClick={() => setIsImportModalOpen(false)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4 text-zinc-400" />
+                </button>
+              </div>
+
+              <div className="p-6 flex flex-col gap-6">
+                {/* RIS file */}
+                <div className="flex flex-col gap-2">
+                   <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                     .RIS file
+                   </label>
+                   <div className="group relative flex items-center justify-between gap-3 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 hover:border-[#407bc4]/50 transition-all cursor-pointer">
+                     <span className="text-xs text-zinc-500 overflow-hidden truncate">
+                       {importRefFiles.ris || (language === 'TH' ? 'ยังไม่ได้เลือกไฟล์' : 'No file chosen')}
+                     </span>
+                     <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#407bc4] group-hover:text-white group-hover:border-transparent transition-all">
+                       {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
+                     </button>
+                     <input 
+                       type="file" accept=".ris" className="absolute inset-0 opacity-0 cursor-pointer" 
+                       onChange={(e) => setImportRefFiles({...importRefFiles, ris: e.target.files?.[0]?.name || null})} 
+                     />
+                   </div>
+                </div>
+
+                {/* BibTeX file */}
+                <div className="flex flex-col gap-2">
+                   <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                     BibTeX file
+                   </label>
+                   <div className="group relative flex items-center justify-between gap-3 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 hover:border-[#407bc4]/50 transition-all cursor-pointer">
+                     <span className="text-xs text-zinc-500 overflow-hidden truncate">
+                       {importRefFiles.bib || (language === 'TH' ? 'ยังไม่ได้เลือกไฟล์' : 'No file chosen')}
+                     </span>
+                     <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#407bc4] group-hover:text-white group-hover:border-transparent transition-all">
+                       {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
+                     </button>
+                     <input 
+                       type="file" accept=".bib,.bibtex" className="absolute inset-0 opacity-0 cursor-pointer" 
+                       onChange={(e) => setImportRefFiles({...importRefFiles, bib: e.target.files?.[0]?.name || null})} 
+                     />
+                   </div>
+                </div>
+
+                {/* Load backup */}
+                <div className="flex flex-col gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                   <label className="text-[11px] font-bold text-[#f58e58] uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                     <RotateCw className="h-3 w-3" /> Load Backup
+                   </label>
+                   <div className="group relative flex items-center justify-between gap-3 p-3 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/40 hover:border-[#f58e58]/50 transition-all cursor-pointer">
+                     <span className="text-xs text-zinc-500 overflow-hidden truncate">
+                       {importRefFiles.backup || (language === 'TH' ? 'ยังไม่ได้เลือกไฟล์' : 'No file chosen')}
+                     </span>
+                     <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#f58e58] group-hover:text-white group-hover:border-transparent transition-all">
+                       {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
+                     </button>
+                     <input 
+                       type="file" className="absolute inset-0 opacity-0 cursor-pointer" 
+                       onChange={(e) => setImportRefFiles({...importRefFiles, backup: e.target.files?.[0]?.name || null})} 
+                     />
+                   </div>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-end gap-3">
+                <button 
+                  onClick={() => setIsImportModalOpen(false)}
+                  className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-zinc-700 transition-colors"
+                >
+                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                </button>
+                <button 
+                  className="px-8 py-2.5 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
+                >
+                  {language === 'TH' ? 'บันทึก' : 'Save'}
                 </button>
               </div>
             </motion.div>
