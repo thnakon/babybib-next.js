@@ -78,16 +78,16 @@ export default function GeneratePage() {
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
                   <Triangle className="h-3 w-3 text-zinc-500" />
                 </div>
-                <span className="text-sm font-semibold text-zinc-500">Animate UI</span>
+                <span className="text-sm font-semibold text-zinc-500">Latest bibliography</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Avatar Group</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Code</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Code Tabs</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Cursor</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">GitHub Stars Wheel</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Tabs</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Tooltip</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">ราชบัณฑิตยสถาน. (2554). พจนานุกรมฉบับราชบัณฑิตยสถาน...</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">สุกัญญา บำรุงสุข. (2560). ประวัติศาสตร์ไทย...</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Kahneman, D. (2011). Thinking, fast and slow...</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">สมเกียรติ ตั้งกิจวานิชย์. (2565). อนาคตการศึกษาไทย...</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Harari, Y. N. (2014). Sapiens: A brief history...</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">วิทยากร เชียงกูล. (2558). ปรัชญาการเมือง...</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Chomsky, N. (1957). Syntactic structures...</li>
               </ul>
             </div>
 
