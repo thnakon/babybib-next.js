@@ -47,7 +47,7 @@ export default function GeneratePage() {
       <div className="mx-auto flex w-full max-w-screen-2xl items-start">
         
         {/* Left Sidebar */}
-        <aside className="fixed top-14 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8">
+        <aside className="hidden top-14 z-30 h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8">
           <div className="flex flex-col gap-6">
             
             <div className="flex flex-col gap-2">
@@ -169,7 +169,7 @@ export default function GeneratePage() {
         </main>
 
         {/* Right Sidebar (Table of Contents) */}
-        <aside className="fixed top-14 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto py-6 xl:block lg:w-[240px] pr-6 sm:pr-8">
+        <aside className="hidden xl:sticky top-14 z-30 h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8">
           <div className="flex items-center gap-2 mb-4">
             <AlignLeft className="h-4 w-4 text-zinc-500" />
             <span className="text-sm font-medium text-zinc-500">On this page</span>
