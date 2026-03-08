@@ -329,16 +329,10 @@ export default function GeneratePage() {
             {/* References Paper Area */}
             <div className="relative w-full min-h-[600px] bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden flex flex-col pt-12">
               
-              {/* Paper Top Margin / Line */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-[#407bc4]/10 dark:bg-[#407bc4]/20" />
-              
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
                 <button className="flex h-7 px-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors uppercase tracking-tight">
                   <RotateCw className="h-3 w-3" /> Refresh
-                </button>
-                <button className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                  <SlidersHorizontal className="h-3.5 w-3.5" />
                 </button>
               </div>
 
