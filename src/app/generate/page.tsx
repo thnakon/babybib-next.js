@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import Image from "next/image";
 import Link from "next/link";
+import { NavLinks } from "@/components/nav-links";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
@@ -111,13 +112,9 @@ export default function GeneratePage() {
               <span className="text-[#f58e58]">bib</span>
             </span>
           </Link>
-
           {/* Nav Links */}
-          <div className="hidden lg:flex items-center gap-6 ml-4">
-            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Features</Link>
-            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Pricing</Link>
-            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Docs</Link>
-            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Blog</Link>
+          <div className="hidden lg:flex items-center ml-4">
+            <NavLinks />
           </div>
         </div>
         
