@@ -11,7 +11,7 @@ import {
   BookOpen, Triangle, Pencil, Copy, ChevronDown, 
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
-  Heart, ShieldCheck, MessageCircle
+  Heart, ShieldCheck, Search, HelpCircle, Book
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -143,26 +143,50 @@ export default function GeneratePage() {
         <main className="relative py-6 lg:py-8 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1">
           <div className="mx-auto w-full min-w-0">
             
-            {/* Header / Nav Buttons */}
-            {/* Header Citation Box */}
-            <div className="bg-[#f58e58] dark:bg-[#e67e45] rounded-2xl p-4 sm:p-8 mb-8 shadow-2xl shadow-[#f58e58]/20 transition-all border border-white/10">
-              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                <div className="flex items-center gap-4 sm:gap-10">
-                  <button className="text-sm font-bold bg-white text-[#f58e58] px-5 py-2 rounded-xl shadow-md transform hover:scale-105 transition-transform active:scale-95">Websites</button>
-                  <button className="text-sm font-semibold text-white/90 hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-white hover:after:w-full after:transition-all">Books</button>
-                  <button className="text-sm font-semibold text-white/90 hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-white hover:after:w-full after:transition-all">Articles</button>
-                  <button className="text-sm font-semibold text-white/90 hover:text-white transition-colors">+ More</button>
+            {/* Search Input Section */}
+            <div className="mb-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+                  <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
+                    Manual
+                  </span>
+                  
+                  <nav className="flex items-center gap-4 sm:gap-6">
+                    <button className="group flex items-center gap-1.5 text-sm font-semibold text-[#407bc4] border-b-2 border-[#407bc4] pb-1 transition-all">
+                      <Book className="h-4 w-4" /> Books
+                    </button>
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
+                      <FileText className="h-4 w-4" /> Articles
+                    </button>
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
+                      <Globe className="h-4 w-4" /> Websites
+                    </button>
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
+                      <Plus className="h-4 w-4" /> More
+                    </button>
+                  </nav>
                 </div>
-                <button className="flex items-center gap-2 text-sm font-bold text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl transition-all border border-white/20">
-                  <MessageCircle className="h-4 w-4 fill-white/20" /> Help
+                
+                <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
+                  <HelpCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Help</span>
                 </button>
               </div>
+
               <div className="relative group">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-zinc-400 group-focus-within:text-[#407bc4] transition-colors" />
+                </div>
                 <input 
                   type="text" 
-                  placeholder="Paste URL of the website you want to cite"
-                  className="w-full h-16 px-8 rounded-2xl bg-white text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-2xl transition-all text-base sm:text-lg font-medium border-0"
+                  placeholder="Search by ISBN / DOI / URL / Title etc." 
+                  className="w-full h-14 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-12 pr-16 text-base font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/5 dark:focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all shadow-sm"
                 />
+                <div className="absolute inset-y-0 right-4 flex items-center gap-2">
+                  <kbd className="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-1.5 font-mono text-[10px] font-medium text-zinc-400 opacity-100">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
+                </div>
               </div>
             </div>
 
