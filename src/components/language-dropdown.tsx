@@ -18,7 +18,7 @@ export function LanguageDropdown() {
     <div className="relative">
       <button
         onClick={toggleOpen}
-        className="flex h-9 items-center gap-2 rounded-full px-3 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400 text-sm font-medium transition-colors"
+        className="flex h-9 items-center gap-2 rounded-full px-3 hover:bg-black/5 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 text-sm font-medium transition-colors"
       >
         <Globe className="h-4 w-4" />
         <span>{language}</span>
@@ -37,6 +37,12 @@ export function LanguageDropdown() {
             className="flex w-full items-center px-4 py-2 text-sm text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors"
           >
             ภาษาไทย
+          </button>
+          <button
+            onClick={() => selectLanguage("ZH")}
+            className="flex w-full items-center px-4 py-2 text-sm text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors"
+          >
+            中文
           </button>
         </div>
       )}

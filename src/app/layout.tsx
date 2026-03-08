@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${outfit.className} antialiased bg-white dark:bg-[#0a0a0a]`}
+        className={`${outfit.variable} font-sans antialiased bg-white dark:bg-[#0a0a0a]`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
