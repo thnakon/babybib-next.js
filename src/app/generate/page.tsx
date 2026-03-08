@@ -163,7 +163,7 @@ export default function GeneratePage() {
                 onMouseEnter={() => setIsAddTooltipVisible(true)}
                 onMouseLeave={() => setIsAddTooltipVisible(false)}
                 onClick={() => setIsCreateModalOpen(true)}
-                className="flex h-8 w-32 items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm"
+                className="flex h-8 w-32 items-center justify-center gap-1.5 rounded-md bg-[#f58e58] text-xs font-medium text-white hover:bg-[#e67e43] active:scale-95 transition-all shadow-sm"
               >
                 <Plus className="h-3.5 w-3.5" /> Add new
               </button>
@@ -269,8 +269,8 @@ export default function GeneratePage() {
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
-                  <Triangle className="h-3 w-3 text-zinc-500" />
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-[#f58e58]/10 dark:bg-[#f58e58]/20">
+                  <Triangle className="h-3 w-3 text-[#f58e58] dark:text-[#f58e58]" />
                 </div>
                 <span className="text-sm font-semibold text-zinc-500">Latest bibliography</span>
               </div>
@@ -691,7 +691,7 @@ export default function GeneratePage() {
                   ? 'สร้างบรรณานุกรมของคุณให้ปลอดภัย และเข้าถึงได้จากทุกที่ทุกเวลา' 
                   : 'Save your bibliographies securely and access them from anywhere, anytime.'}
               </p>
-              <button className="w-full py-2.5 px-4 bg-[#407bc4] text-white text-[11px] font-bold rounded-full hover:bg-[#32629e] transition-all shadow-sm active:scale-95 mb-5 group">
+              <button className="w-full py-2.5 px-4 bg-[#f58e58] text-white text-[11px] font-bold rounded-full hover:bg-[#e67e43] transition-all shadow-sm active:scale-95 mb-5 group">
                 {language === 'TH' ? 'รับสิทธิพิเศษตอนนี้' : 'Get exclusive access'} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
               </button>
               
@@ -726,8 +726,8 @@ export default function GeneratePage() {
             >
               <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800">
                 <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-[#407bc4]/10 flex items-center justify-center">
-                    <FilePlus className="h-4 w-4 text-[#407bc4]" />
+                  <div className="h-8 w-8 rounded-lg bg-[#f58e58]/10 flex items-center justify-center">
+                    <FilePlus className="h-4 w-4 text-[#f58e58]" />
                   </div>
                   {language === 'TH' ? 'สร้างโปรเจกต์ใหม่' : 'Create New Project'}
                 </h3>
@@ -838,7 +838,7 @@ export default function GeneratePage() {
                   {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                 </button>
                 <button 
-                  className="px-6 py-2 rounded-xl bg-[#407bc4] text-white text-xs font-bold hover:bg-[#32629e] transition-all shadow-md active:scale-95"
+                  className="px-6 py-2 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
                 >
                   {language === 'TH' ? 'สร้างโปรเจกต์' : 'Create Project'}
                 </button>
