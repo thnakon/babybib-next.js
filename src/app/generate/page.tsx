@@ -11,7 +11,7 @@ import {
   BookOpen, Triangle, Pencil, Copy, ChevronDown, 
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
-  Heart, ShieldCheck, Search
+  Heart, ShieldCheck, MessageCircle
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -144,24 +144,27 @@ export default function GeneratePage() {
           <div className="mx-auto w-full min-w-0">
             
             {/* Header / Nav Buttons */}
-            {/* Search Bar Section */}
-            <div className="relative flex items-center mb-8 max-w-md">
-              <div className="absolute left-3 flex h-4 w-4 items-center justify-center text-zinc-400">
-                <Search className="h-4 w-4" />
+            {/* Header Citation Box */}
+            <div className="bg-[#f58e58] dark:bg-[#e67e45] rounded-2xl p-4 sm:p-8 mb-8 shadow-2xl shadow-[#f58e58]/20 transition-all border border-white/10">
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <div className="flex items-center gap-4 sm:gap-10">
+                  <button className="text-sm font-bold bg-white text-[#f58e58] px-5 py-2 rounded-xl shadow-md transform hover:scale-105 transition-transform active:scale-95">Websites</button>
+                  <button className="text-sm font-semibold text-white/90 hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-white hover:after:w-full after:transition-all">Books</button>
+                  <button className="text-sm font-semibold text-white/90 hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-white hover:after:w-full after:transition-all">Articles</button>
+                  <button className="text-sm font-semibold text-white/90 hover:text-white transition-colors">+ More</button>
+                </div>
+                <button className="flex items-center gap-2 text-sm font-bold text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl transition-all border border-white/20">
+                  <MessageCircle className="h-4 w-4 fill-white/20" /> Help
+                </button>
               </div>
-              <input 
-                type="text" 
-                placeholder="Search components, guides, or bibliography..." 
-                className="h-10 w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#407bc4] focus:ring-2 focus:ring-[#407bc4]/10"
-              />
-              <div className="absolute right-3 hidden sm:flex items-center gap-1 text-[10px] font-medium text-zinc-400">
-                <kbd className="rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5">⌘</kbd>
-                <kbd className="rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5">K</kbd>
+              <div className="relative group">
+                <input 
+                  type="text" 
+                  placeholder="Paste URL of the website you want to cite"
+                  className="w-full h-16 px-8 rounded-2xl bg-white text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-2xl transition-all text-base sm:text-lg font-medium border-0"
+                />
               </div>
             </div>
-
-            <p className="text-lg text-zinc-500 mb-4">Displays a preview image of a link when hovered.</p>
-            <p className="text-sm text-zinc-500 italic mb-8">Made by <span className="text-black dark:text-white font-medium not-italic">imskyleen</span></p>
 
             {/* Utility Buttons */}
             <div className="flex flex-wrap items-center gap-2 mb-8">
