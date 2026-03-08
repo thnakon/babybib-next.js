@@ -204,6 +204,29 @@ export default function GeneratePage() {
     showToast(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
   };
 
+  const [inTextCopiedId, setInTextCopiedId] = React.useState<number | null>(null);
+
+  const handleEditCitation = (citation: any) => {
+    setNewCitationData({
+      authors: [{ firstName: '', middleName: '', lastName: citation.authorText || 'Author' }],
+      authorCondition: 'general',
+      year: citation.year?.toString() || '2024',
+      title: citation.titleText || 'Title',
+      source: '',
+      url: ''
+    });
+    setSelectedType(citation.type || 'book'); 
+    setCitationStep(1);
+    setIsAddCitationModalOpen(true);
+  };
+
+  const handleCopyInTextCitation = (id: number, inText: string) => {
+    navigator.clipboard.writeText(inText);
+    setInTextCopiedId(id);
+    showToast(language === 'TH' ? 'คัดลอก In-text citation สำเร็จ' : 'In-text citation copied successfully');
+    setTimeout(() => setInTextCopiedId(null), 2000);
+  };
+
   const handleCopy = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -938,11 +961,22 @@ export default function GeneratePage() {
 
                         {/* Hover Actions - Positioned at bottom right to avoid overlap */}
                         <div className="absolute bottom-2 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
-                          <button className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="Edit">
+                          <button 
+                            onClick={() => handleEditCitation(citation)}
+                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title={language === 'TH' ? "แก้ไข" : "Edit"}
+                          >
                             <Pencil className="h-3 w-3" />
                           </button>
-                          <button className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="In-text citation">
-                            <Quote className="h-3 w-3" />
+                          <button 
+                            onClick={() => handleCopyInTextCitation(citation.id, citation.inText)}
+                            className={`h-7 w-7 flex items-center justify-center rounded-full border transition-all shadow-sm ${
+                              inTextCopiedId === citation.id
+                                ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400"
+                                : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
+                            }`} 
+                            title={language === 'TH' ? "คัดลอก In-text citation" : "Copy In-text citation"}
+                          >
+                            {inTextCopiedId === citation.id ? <Check className="h-3 w-3" /> : <Quote className="h-3 w-3" />}
                           </button>
                           <button 
                             onClick={() => handleItemCopy(citation.id)}
