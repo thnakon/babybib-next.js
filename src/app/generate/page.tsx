@@ -259,47 +259,52 @@ export default function GeneratePage() {
         <main className="relative py-6 lg:py-8 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1">
           <div className="mx-auto w-full min-w-0">
             
-            {/* Search Input Section */}
-            <div className="mb-10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                <div className="flex flex-wrap items-center gap-3 sm:gap-6">
-                  <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
+            {/* Unified Search Section */}
+            <div className="mb-10 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden transition-all focus-within:shadow-md focus-within:border-[#407bc4]/30">
+              {/* Header: Tabs & Tools */}
+              <div className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-50/50 dark:bg-zinc-900/30">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-8">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-200/50 dark:bg-zinc-800 text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    <span className="h-1 w-1 rounded-full bg-[#407bc4] animate-pulse" />
                     Manual
-                  </span>
+                  </div>
                   
-                  <nav className="flex items-center gap-4 sm:gap-6">
-                    <button className="group flex items-center gap-1.5 text-sm font-semibold text-[#407bc4] border-b-2 border-[#407bc4] pb-1 transition-all">
+                  <nav className="flex items-center gap-6">
+                    <button className="relative group flex items-center gap-1.5 text-sm font-bold text-[#407bc4] py-1">
                       <Book className="h-4 w-4" /> Books
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#407bc4] rounded-full" />
                     </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors py-1">
                       <FileText className="h-4 w-4" /> Articles
                     </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors py-1">
                       <Globe className="h-4 w-4" /> Websites
                     </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
-                      <Plus className="h-4 w-4" /> More
+                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors py-1">
+                      <Plus className="h-3.5 w-3.5" /> More
                     </button>
                   </nav>
                 </div>
                 
-                <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
+                <button className="hidden sm:flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
                   <HelpCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Help</span>
+                  <span className="text-sm font-medium">Guide</span>
                 </button>
               </div>
 
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              {/* Input: Search Field */}
+              <div className="p-4 relative group">
+                <div className="absolute inset-y-0 left-8 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-zinc-400 group-focus-within:text-[#407bc4] transition-colors" />
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Search by ISBN / DOI / URL / Title etc." 
-                  className="w-full h-11 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/5 dark:focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all shadow-sm"
+                  placeholder="Search by ISBN, DOI, URL or Book Title..." 
+                  className="w-full h-12 bg-zinc-50/50 dark:bg-zinc-800/30 border border-transparent rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:bg-white dark:focus:bg-zinc-800 focus:border-[#407bc4]/20 transition-all"
                 />
-                <div className="absolute inset-y-0 right-4 flex items-center gap-2">
-                  <kbd className="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-1.5 font-mono text-[10px] font-medium text-zinc-400 opacity-100">
+                <div className="absolute inset-y-0 right-8 flex items-center gap-3">
+                  <div className="h-5 w-[1px] bg-zinc-200 dark:bg-zinc-700" />
+                  <kbd className="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded bg-zinc-100 dark:bg-zinc-950 px-1.5 font-mono text-[10px] font-medium text-zinc-400 shadow-inner">
                     <span className="text-xs">⌘</span>K
                   </kbd>
                 </div>
