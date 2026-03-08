@@ -67,12 +67,12 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Tech Icons Placeholder */}
-          <div className="mt-12 flex items-center gap-8 opacity-50 grayscale transition-all hover:grayscale-0 hover:opacity-100">
-            <Book className="h-7 w-7 text-zinc-600 dark:text-zinc-400" />
-            <Library className="h-8 w-8 text-[#407bc4]" />
-            <PenTool className="h-7 w-7 text-[#f58e58]" />
-            <Bookmark className="h-6 w-6 text-zinc-600 dark:text-zinc-400" />
+          {/* Tech Icons */}
+          <div className="mt-12 flex items-center gap-8 opacity-70">
+            <Book className="h-7 w-7 text-zinc-500 dark:text-zinc-400 hover:-translate-y-1.5 hover:rotate-6 hover:scale-110 transition-transform cursor-pointer" />
+            <Library className="h-8 w-8 text-[#407bc4] hover:-translate-y-1.5 hover:-rotate-6 hover:scale-110 transition-transform cursor-pointer" />
+            <PenTool className="h-7 w-7 text-[#f58e58] hover:-translate-y-1.5 hover:rotate-12 hover:scale-110 transition-transform cursor-pointer" />
+            <Bookmark className="h-6 w-6 text-zinc-500 dark:text-zinc-400 hover:-translate-y-1.5 hover:-rotate-12 hover:scale-110 transition-transform cursor-pointer" />
           </div>
         </div>
 
