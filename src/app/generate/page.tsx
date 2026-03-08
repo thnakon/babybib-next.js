@@ -52,7 +52,7 @@ export default function GeneratePage() {
         <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
           <div className="flex flex-col gap-6">
 
-            <button className="flex h-8 w-32 items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
+            <button className="flex h-8 w-32 mx-auto items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
               <Plus className="h-3.5 w-3.5" /> Add new
             </button>
             
@@ -123,7 +123,7 @@ export default function GeneratePage() {
               </ul>
             </div>
 
-            <div className="flex flex-col gap-1.5 pt-4 mt-auto">
+            <div className="flex flex-col items-center gap-1.5 pt-4 mt-auto mx-auto pb-4">
               <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
                 Made by <span className="font-bold"><span className="text-[#407bc4]">Baby</span><span className="text-[#f58e58]">bib</span></span>
               </span>
