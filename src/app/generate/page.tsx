@@ -1,16 +1,22 @@
+"use client";
+
 import React from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NavLinks } from "@/components/nav-links";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/components/language-context";
+import { translations } from "@/lib/translations";
 
 export default function GeneratePage() {
+  const { language } = useLanguage();
+
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
       {/* Navigation (simplified version for top layer) */}
-      <nav className="fixed top-0 left-0 right-0 z-50 mx-auto flex w-full max-w-7xl items-center justify-between px-6 sm:px-12 py-4 backdrop-blur-sm bg-white/50 dark:bg-black/50 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-3">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex w-full items-center justify-between px-6 sm:px-12 py-4 backdrop-blur-sm bg-white/50 dark:bg-black/50 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-lg">
               <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
@@ -26,6 +32,9 @@ export default function GeneratePage() {
         <div className="flex items-center gap-4">
           <LanguageDropdown />
           <ThemeToggle />
+          <button className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-sm font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm">
+            {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
+          </button>
         </div>
       </nav>
 
