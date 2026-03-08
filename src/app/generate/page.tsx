@@ -148,7 +148,7 @@ export default function GeneratePage() {
           <div className="mx-auto w-full min-w-0">
             
             {/* Search Input Section */}
-            <div className="mb-10">
+            <div className="mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex flex-wrap items-center gap-3 sm:gap-6">
                   <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
