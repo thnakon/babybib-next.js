@@ -50,7 +50,7 @@ export default function GeneratePage() {
         <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
           <div className="flex flex-col gap-6">
 
-            <button className="flex h-8 w-full items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
+            <button className="flex h-8 w-32 items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
               <Plus className="h-3.5 w-3.5" /> Add new
             </button>
             
@@ -59,17 +59,17 @@ export default function GeneratePage() {
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-[#407bc4]/10 dark:bg-[#407bc4]/20">
                   <BookOpen className="h-3 w-3 text-[#407bc4] dark:text-[#6ba1e6]" />
                 </div>
-                <span className="text-sm font-semibold">Guide</span>
+                <span className="text-sm font-semibold">Project</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Introduction</li>
-                <li className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6] cursor-pointer">Installation</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Accessibility</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">MCP</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Troubleshooting</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Changelog</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Roadmap</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Other animated distributions</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Babybib Next.js</li>
+                <li className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6] cursor-pointer truncate">Preview Link Card</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Smart ISBN API</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Chat UI System</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Attitudes AI Tool</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">E-commerce API</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Admin Dashboard</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">Portfolio Templates</li>
               </ul>
             </div>
 
