@@ -9,7 +9,7 @@ import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
   BookOpen, Triangle, Hexagon, Pencil, Copy, ChevronDown, 
-  ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft 
+  ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -49,23 +49,27 @@ export default function GeneratePage() {
         {/* Left Sidebar */}
         <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
           <div className="flex flex-col gap-6">
+
+            <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#407bc4] to-[#f58e58] py-2.5 text-sm font-medium text-white shadow-md hover:opacity-90 active:scale-95 transition-all">
+              <Plus className="h-4 w-4" /> Add new
+            </button>
             
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
-                  <BookOpen className="h-3 w-3 text-zinc-500" />
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-[#407bc4]/10 dark:bg-[#407bc4]/20">
+                  <BookOpen className="h-3 w-3 text-[#407bc4] dark:text-[#6ba1e6]" />
                 </div>
                 <span className="text-sm font-semibold">Guide</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Introduction</li>
-                <li className="text-sm font-medium text-black dark:text-white cursor-pointer">Installation</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Accessibility</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">MCP</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Troubleshooting</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Changelog</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Roadmap</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Other animated distributions</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Introduction</li>
+                <li className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6] cursor-pointer">Installation</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Accessibility</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">MCP</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Troubleshooting</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Changelog</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Roadmap</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Other animated distributions</li>
               </ul>
             </div>
 
@@ -74,16 +78,16 @@ export default function GeneratePage() {
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
                   <Triangle className="h-3 w-3 text-zinc-500" />
                 </div>
-                <span className="text-sm font-semibold">Animate UI</span>
+                <span className="text-sm font-semibold text-zinc-500">Animate UI</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Avatar Group</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Code</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Code Tabs</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Cursor</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">GitHub Stars Wheel</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Tabs</li>
-                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white cursor-pointer transition-colors">Tooltip</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Avatar Group</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Code</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Code Tabs</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Cursor</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">GitHub Stars Wheel</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Tabs</li>
+                <li className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors">Tooltip</li>
               </ul>
             </div>
 
@@ -171,23 +175,23 @@ export default function GeneratePage() {
         {/* Right Sidebar (Table of Contents) */}
         <aside className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
           <div className="flex items-center gap-2 mb-4">
-            <AlignLeft className="h-4 w-4 text-zinc-500" />
-            <span className="text-sm font-medium text-zinc-500">On this page</span>
+            <AlignLeft className="h-4 w-4 text-[#407bc4] dark:text-[#6ba1e6]" />
+            <span className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6]">On this page</span>
           </div>
 
           <div className="flex flex-col text-sm border-l border-zinc-200 dark:border-zinc-800">
-            <a href="#" className="border-l-2 border-black dark:border-white -ml-[1px] pl-4 py-1.5 font-medium text-black dark:text-white">Installation</a>
-            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-black dark:hover:text-white transition-colors">Usage</a>
-            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-black dark:hover:text-white transition-colors">API Reference</a>
+            <a href="#" className="border-l-2 border-[#407bc4] -ml-[1px] pl-4 py-1.5 font-medium text-[#407bc4] dark:text-[#6ba1e6]">Installation</a>
+            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Usage</a>
+            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">API Reference</a>
             
             <div className="flex flex-col pl-4 mt-1 mb-1 gap-1.5">
-              <a href="#" className="pl-4 text-zinc-500 hover:text-black dark:hover:text-white transition-colors">PreviewLinkCard</a>
-              <a href="#" className="pl-4 text-zinc-500 hover:text-black dark:hover:text-white transition-colors">PreviewLinkCardTrigger</a>
-              <a href="#" className="pl-4 text-zinc-500 hover:text-black dark:hover:text-white transition-colors">PreviewLinkCardContent</a>
-              <a href="#" className="pl-4 text-zinc-500 hover:text-black dark:hover:text-white transition-colors">PreviewLinkCardImage</a>
+              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCard</a>
+              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCardTrigger</a>
+              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCardContent</a>
+              <a href="#" className="pl-4 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">PreviewLinkCardImage</a>
             </div>
 
-            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-black dark:hover:text-white transition-colors mt-2">Credits</a>
+            <a href="#" className="border-l-2 border-transparent -ml-[1px] pl-4 py-1.5 text-zinc-500 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors mt-2">Credits</a>
           </div>
         </aside>
 
