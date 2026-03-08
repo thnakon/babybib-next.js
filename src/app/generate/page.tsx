@@ -492,9 +492,9 @@ export default function GeneratePage() {
                           {viewMode === "Bibliography and in-text citations" && (
                             <div className="flex flex-col gap-3">
                               <div>{citation.content}</div>
-                              <div className="flex items-center gap-1.5 px-3 py-1 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 border border-[#cce0ff] dark:border-[#407bc4]/40 rounded-full w-fit transition-all hover:bg-[#407bc4]/10 dark:hover:bg-[#407bc4]/20 group/badge cursor-pointer shadow-sm">
-                                <Quote className="h-3 w-3 text-[#407bc4] fill-[#407bc4]/10" />
-                                <span className="text-[11px] font-bold text-[#407bc4] tracking-tight">{citation.inText}</span>
+                              <div className="flex items-center gap-2 px-3.5 py-1.5 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 border border-[#cce0ff] dark:border-[#407bc4]/40 rounded-full w-fit transition-all hover:bg-[#407bc4]/10 dark:hover:bg-[#407bc4]/20 group/badge cursor-pointer shadow-sm">
+                                <Quote className="h-3 w-3 text-[#407bc4] shrink-0 opacity-80" />
+                                <span className="text-[11px] font-bold text-[#407bc4] tracking-tight leading-none">{citation.inText}</span>
                               </div>
                             </div>
                           )}
