@@ -565,9 +565,7 @@ export default function GeneratePage() {
         <aside className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
           <div className="flex flex-col gap-4">
             <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md">
-              <div className="h-10 w-10 rounded-2xl bg-[#407bc4] flex items-center justify-center mb-5 text-white shadow-lg shadow-[#407bc4]/20 animate-pulse">
-                <Sparkles className="h-5 w-5" />
-              </div>
+
               <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 {language === 'TH' ? 'สมัครสมาชิกฟรี' : 'Join for Free'}
               </h3>
