@@ -14,7 +14,7 @@ import {
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
   List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
-  Type, ChevronRight, X, FilePlus, FileUp, Eye
+  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -1018,32 +1018,98 @@ export default function GeneratePage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="p-8"
+                      className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar"
                     >
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {[
-                          { id: 'book', icon: <Book className="h-6 w-6" />, label: { TH: 'หนังสือ', EN: 'Book' } },
-                          { id: 'article', icon: <FileText className="h-6 w-6" />, label: { TH: 'วารสาร', EN: 'Journal' } },
-                          { id: 'website', icon: <Globe className="h-6 w-6" />, label: { TH: 'เว็บไซต์', EN: 'Website' } },
-                          { id: 'report', icon: <Library className="h-6 w-6" />, label: { TH: 'รายงาน', EN: 'Report' } },
-                          { id: 'news', icon: <Smartphone className="h-6 w-6" />, label: { TH: 'ข่าวสาร', EN: 'News' } },
-                          { id: 'other', icon: <Plus className="h-6 w-6" />, label: { TH: 'อื่นๆ', EN: 'More' } },
+                          { id: 'book', icon: <Book className="h-6 w-6" />, label: { TH: 'หนังสือ', EN: 'Book' }, color: '#407bc4' },
+                          { id: 'article', icon: <FileText className="h-6 w-6" />, label: { TH: 'วารสาร', EN: 'Journal' }, color: '#10b981' },
+                          { id: 'website', icon: <Globe className="h-6 w-6" />, label: { TH: 'เว็บไซต์', EN: 'Website' }, color: '#f59e0b' },
+                          { id: 'report', icon: <Library className="h-6 w-6" />, label: { TH: 'รายงาน', EN: 'Report' }, color: '#ef4444' },
+                          { id: 'news', icon: <Newspaper className="h-6 w-6" />, label: { TH: 'ข่าวสาร', EN: 'News' }, color: '#8b5cf6' },
+                          { id: 'more', icon: <Plus className="h-6 w-6" />, label: { TH: 'อื่นๆ', EN: 'More' }, color: '#f58e58' },
                         ].map((type) => (
                           <button 
                             key={type.id}
                             onClick={() => {
-                              setSelectedType(type.id);
-                              setCitationStep(1);
+                              if (type.id === 'more') {
+                                setCitationStep(2); // Step 2 for extended resource selection
+                              } else {
+                                setSelectedType(type.id);
+                                setCitationStep(1);
+                              }
                             }}
-                            className="flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 hover:border-[#407bc4] hover:bg-white dark:hover:bg-zinc-800 transition-all group scale-100 active:scale-95 shadow-sm hover:shadow-md"
+                            className="flex flex-col items-center justify-center gap-4 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 hover:bg-white dark:hover:bg-zinc-800 transition-all group scale-100 active:scale-95 shadow-sm hover:shadow-md h-full"
+                            style={{ '--hover-color': type.color } as any}
                           >
-                            <div className="h-14 w-14 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[#407bc4] group-hover:border-[#407bc4]/30 transition-all shadow-sm">
+                            <div 
+                              className="h-14 w-14 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:border-transparent transition-all shadow-sm"
+                              style={{ color: type.color, backgroundColor: `${type.color}10` } as any}
+                            >
                               {type.icon}
                             </div>
                             <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100">
                               {language === 'TH' ? type.label.TH : type.label.EN}
                             </span>
                           </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ) : citationStep === 2 ? (
+                    <motion.div 
+                      key="step2"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar"
+                    >
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {[
+                          { id: 'artwork', label: 'Artwork', icon: <Palette className="h-4 w-4" /> },
+                          { id: 'blog', label: 'Blog Post', icon: <Hash className="h-4 w-4" /> },
+                          { id: 'chapter', label: 'Book Chapter', icon: <Book className="h-4 w-4" /> },
+                          { id: 'review', label: 'Book Review', icon: <Briefcase className="h-4 w-4" /> },
+                          { id: 'conference', label: 'Conference Paper', icon: <FileText className="h-4 w-4" /> },
+                          { id: 'db-article', label: 'Database Article', icon: <FileCode className="h-4 w-4" /> },
+                          { id: 'dictionary', label: 'Dictionary Entry', icon: <Languages className="h-4 w-4" /> },
+                          { id: 'ebook', label: 'E-book', icon: <Book className="h-4 w-4" /> },
+                          { id: 'encyclopedia', label: 'Encyclopedia Entry', icon: <Library className="h-4 w-4" /> },
+                          { id: 'film', label: 'Film/Movie', icon: <Film className="h-4 w-4" /> },
+                          { id: 'image', label: 'Image', icon: <Palette className="h-4 w-4" /> },
+                          { id: 'interview', label: 'Interview', icon: <Mic2 className="h-4 w-4" /> },
+                          { id: 'journal', label: 'Journal Article', icon: <FileText className="h-4 w-4" /> },
+                          { id: 'legal-bill', label: 'Legal Bill', icon: <Gavel className="h-4 w-4" /> },
+                          { id: 'legal-case', label: 'Legal Case', icon: <Scale className="h-4 w-4" /> },
+                          { id: 'legislation', label: 'Legislation', icon: <Gavel className="h-4 w-4" /> },
+                          { id: 'magazine', label: 'Magazine Article', icon: <Newspaper className="h-4 w-4" /> },
+                          { id: 'map', label: 'Map', icon: <MapIcon className="h-4 w-4" /> },
+                          { id: 'news', label: 'News Article', icon: <Newspaper className="h-4 w-4" /> },
+                          { id: 'patent', label: 'Patent', icon: <Award className="h-4 w-4" /> },
+                          { id: 'personal', label: 'Personal Communication', icon: <Mail className="h-4 w-4" /> },
+                          { id: 'regulation', label: 'Regulation', icon: <Check className="h-4 w-4" /> },
+                          { id: 'song', label: 'Song', icon: <Music className="h-4 w-4" /> },
+                          { id: 'speech', label: 'Speech', icon: <Mic2 className="h-4 w-4" /> },
+                          { id: 'standard', label: 'Standard', icon: <Check className="h-4 w-4" /> },
+                          { id: 'thesis', label: 'Thesis/Dissertation', icon: <Library className="h-4 w-4" /> },
+                          { id: 'broadcast', label: 'TV/Radio Broadcast', icon: <Tv className="h-4 w-4" /> },
+                          { id: 'video', label: 'Video', icon: <Video className="h-4 w-4" /> },
+                          { id: 'paste', label: 'Write/paste citation', icon: <ClipboardList className="h-4 w-4" /> },
+                        ].map((item) => (
+                           <button 
+                             key={item.id}
+                             onClick={() => {
+                               setSelectedType(item.id);
+                               setCitationStep(1);
+                             }}
+                             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-left group"
+                           >
+                             <div className="text-zinc-400 group-hover:text-[#407bc4] transition-colors">
+                               {item.icon}
+                             </div>
+                             <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 ">
+                               {item.label}
+                             </span>
+                           </button>
                         ))}
                       </div>
                     </motion.div>
@@ -1175,9 +1241,9 @@ export default function GeneratePage() {
               </div>
 
               <div className="px-8 py-5 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-end gap-4">
-                {citationStep === 1 && (
+                {(citationStep === 1 || citationStep === 2) && (
                   <button 
-                    onClick={() => setCitationStep(0)}
+                    onClick={() => setCitationStep(citationStep === 2 ? 0 : 0)}
                     className="mr-auto flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#407bc4] hover:bg-[#407bc4]/5 rounded-xl transition-all"
                   >
                     <ArrowLeft className="h-4 w-4" /> {language === 'TH' ? 'ย้อนกลับ' : 'Back'}
