@@ -18,14 +18,14 @@ export function LanguageDropdown() {
     <div className="relative">
       <button
         onClick={toggleOpen}
-        className="flex h-9 items-center gap-2 rounded-full px-3 hover:bg-black/5 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 text-sm font-medium transition-colors"
+        className="flex h-9 items-center gap-2 rounded-full px-3 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 text-sm font-medium transition-colors"
       >
         <Globe className="h-4 w-4" />
         <span>{language}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-32 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg py-1">
+        <div className="absolute right-0 top-11 z-50 w-32 rounded-xl bg-white dark:bg-zinc-900 shadow-lg py-1">
           <button
             onClick={() => selectLanguage("EN")}
             className="flex w-full items-center px-4 py-2 text-sm text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors"
