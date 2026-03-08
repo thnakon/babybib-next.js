@@ -36,6 +36,7 @@ export default function GeneratePage() {
     color: "#407bc4",
     icon: "BookOpen"
   });
+  const [projectMenuIdx, setProjectMenuIdx] = React.useState<number | null>(null);
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
@@ -203,11 +204,52 @@ export default function GeneratePage() {
                       {project.icon}
                       <span className="truncate">{project.name}</span>
                     </div>
-                    <button className={`opacity-0 group-hover/item:opacity-100 p-0.5 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all ${
-                      project.active ? "text-[#407bc4]" : "text-zinc-400"
-                    }`}>
-                      <MoreVertical className="h-3.5 w-3.5" />
-                    </button>
+                    <div className="relative">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setProjectMenuIdx(projectMenuIdx === idx ? null : idx);
+                        }}
+                        className={`opacity-0 group-hover/item:opacity-100 p-0.5 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all ${
+                          project.active || projectMenuIdx === idx ? "opacity-100 text-[#407bc4]" : "text-zinc-400"
+                        }`}
+                      >
+                        <MoreVertical className="h-3.5 w-3.5" />
+                      </button>
+
+                      <AnimatePresence>
+                        {projectMenuIdx === idx && (
+                          <>
+                            <div className="fixed inset-0 z-40" onClick={() => setProjectMenuIdx(null)} />
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                              className="absolute right-0 mt-1 w-36 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-50 py-1.5 overflow-hidden"
+                            >
+                              {[
+                                { id: 'edit', label: language === 'TH' ? 'แก้ไข' : 'Edit', icon: <Pencil className="h-3 w-3" /> },
+                                { id: 'duplicate', label: language === 'TH' ? 'ทำสำเนา' : 'Duplicate', icon: <Copy className="h-3 w-3" /> },
+                                { id: 'archive', label: language === 'TH' ? 'ย้ายไปคลัง' : 'Archive', icon: <Archive className="h-3 w-3" /> },
+                                { id: 'delete', label: language === 'TH' ? 'ลบ' : 'Delete', icon: <Trash2 className="h-3 w-3" />, color: 'text-red-500' },
+                              ].map((option) => (
+                                <button
+                                  key={option.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setProjectMenuIdx(null);
+                                  }}
+                                  className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${option.color || 'text-zinc-600 dark:text-zinc-400'}`}
+                                >
+                                  {option.icon}
+                                  {option.label}
+                                </button>
+                              ))}
+                            </motion.div>
+                          </>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </li>
                 ))}
               </ul>
