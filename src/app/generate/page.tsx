@@ -123,19 +123,17 @@ export default function GeneratePage() {
               </ul>
             </div>
 
-            <div className="flex flex-col gap-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-              <Link href="/" className="flex items-center gap-2 group">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-pink-100 dark:bg-pink-500/10 group-hover:bg-pink-100 dark:group-hover:bg-pink-500/20 transition-colors">
-                  <Heart className="h-3 w-3 text-pink-500" />
-                </div>
-                <span className="text-sm font-semibold text-zinc-500 group-hover:text-black dark:group-hover:text-white transition-colors">Made with Babybib</span>
-              </Link>
-              <Link href="#" className="flex items-center gap-2 group mt-1">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-[#407bc4]/10 dark:bg-[#407bc4]/10 group-hover:bg-[#407bc4]/20 dark:group-hover:bg-[#407bc4]/20 transition-colors">
-                  <ShieldCheck className="h-3 w-3 text-[#407bc4]" />
-                </div>
-                <span className="text-sm font-semibold text-zinc-500 group-hover:text-[#407bc4] transition-colors">Privacy Terms</span>
-              </Link>
+            <div className="flex flex-col gap-1.5 pt-4 mt-auto">
+              <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                Made with 🍼 by Babybib
+              </span>
+              <div className="flex items-center gap-2 text-sm text-zinc-400 dark:text-zinc-500 font-medium tracking-tight">
+                <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">Privacy</Link>
+                <span className="text-zinc-300 dark:text-zinc-700">&bull;</span>
+                <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">Terms</Link>
+                <span className="text-zinc-300 dark:text-zinc-700">&bull;</span>
+                <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">About</Link>
+              </div>
             </div>
 
           </div>
