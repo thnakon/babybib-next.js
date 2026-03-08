@@ -14,7 +14,7 @@ import {
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
   List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
-  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList
+  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -215,6 +215,8 @@ export default function GeneratePage() {
     'Date added (newest-oldest)',
     'Date added (oldest-newest)'
   ];
+
+  const RECOMMENDED_OPTIONS = ['Sarabun', '12pt', 'Author (A-Z)'];
 
   // Bibliography Settings
   const [settings, setSettings] = React.useState({
@@ -817,9 +819,12 @@ export default function GeneratePage() {
                                       <button
                                         key={opt}
                                         onClick={() => option.handler(opt)}
-                                        className={`text-left px-3 py-2 rounded-md text-[10px] transition-colors ${option.value === opt ? 'bg-zinc-100 dark:bg-zinc-800 text-[#407bc4] font-bold' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`}
+                                        className={`flex items-center gap-1.5 text-left px-3 py-2 rounded-md text-[10px] transition-colors ${option.value === opt ? 'bg-zinc-100 dark:bg-zinc-800 text-[#407bc4] font-bold' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`}
                                       >
-                                        {opt}
+                                        <span>{opt}</span>
+                                        {RECOMMENDED_OPTIONS.includes(opt) && (
+                                          <Star className="h-2.5 w-2.5 text-amber-400 fill-amber-400 shrink-0" />
+                                        )}
                                       </button>
                                     ))}
                                   </motion.div>
