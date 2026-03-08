@@ -13,7 +13,8 @@ import {
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
-  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical
+  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
+  Type, ChevronRight
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -85,10 +86,11 @@ export default function GeneratePage() {
 
   // Bibliography Settings
   const [settings, setSettings] = React.useState({
-    alphabetical: true,
     hangingIndent: true,
     doubleSpaced: false,
-    showUrls: true,
+    font: "Times New Roman",
+    textSize: "12pt",
+    sortBy: "Author",
   });
 
   const toggleSetting = (key: keyof typeof settings) => {
@@ -434,10 +436,8 @@ export default function GeneratePage() {
                         
                         <div className="p-2 flex flex-col gap-1">
                           {[
-                            { id: 'alphabetical', label: 'Sort Alphabetically', desc: 'Order by author last name' },
                             { id: 'hangingIndent', label: 'Hanging Indent', desc: 'Second line indentation' },
                             { id: 'doubleSpaced', label: 'Double Spacing', desc: 'Increase vertical spacing' },
-                            { id: 'showUrls', label: 'Show URLs / DOI', desc: 'Display electronic links' },
                           ].map((item) => (
                             <button
                               key={item.id}
@@ -448,12 +448,33 @@ export default function GeneratePage() {
                                 <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
                                   {item.label}
                                 </span>
-                                <span className="text-[9px] text-zinc-400 dark:text-zinc-500">
+                                <span className="text-[10px] text-zinc-400 group-hover:text-zinc-500 transition-colors">
                                   {item.desc}
                                 </span>
                               </div>
-                              <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-200 ease-in-out ${settings[item.id as keyof typeof settings] ? 'bg-[#407bc4]' : 'bg-zinc-200 dark:bg-zinc-700'}`}>
-                                <div className={`w-3.5 h-3.5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ease-in-out ${settings[item.id as keyof typeof settings] ? 'translate-x-3.5' : 'translate-x-0'}`} />
+                              <div className={`h-4 w-7 rounded-full transition-colors relative ${settings[item.id as keyof typeof settings] ? 'bg-[#407bc4]' : 'bg-zinc-200 dark:bg-zinc-700'}`}>
+                                <div className={`absolute top-0.5 left-0.5 h-3 w-3 rounded-full bg-white transition-transform ${settings[item.id as keyof typeof settings] ? 'translate-x-3' : 'translate-x-0'}`} />
+                              </div>
+                            </button>
+                          ))}
+                          
+                          <div className="h-[1px] bg-zinc-100 dark:bg-zinc-800 my-1 mx-2" />
+                          
+                          {[
+                            { label: 'Font', value: settings.font },
+                            { label: 'Text size', value: settings.textSize },
+                            { label: 'Sort by', value: settings.sortBy },
+                          ].map((option) => (
+                            <button
+                              key={option.label}
+                              className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors group text-left"
+                            >
+                              <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
+                                {option.label}
+                              </span>
+                              <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100">
+                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">{option.value}</span>
+                                <ChevronRight className="h-3 w-3 text-zinc-400 group-hover:text-[#407bc4]" />
                               </div>
                             </button>
                           ))}
