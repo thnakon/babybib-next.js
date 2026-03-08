@@ -57,13 +57,16 @@ export default function GeneratePage() {
   ];
 
   const bibliographyData = [
-    "Kahneman, D. (2011). Thinking, fast and slow. Farrar, Straus and Giroux.",
-    "Harari, Y. N. (2014). Sapiens: A brief history of humankind. Vintage Books.",
-    "Chomsky, N. (1957). Syntactic structures. Mouton & Co.",
-    "Dawkins, R. (1976). The selfish gene. Oxford University Press.",
-    "Hawking, S. (1988). A brief history of time. Bantam Books.",
-    "Taleb, N. N. (2007). The black swan: The impact of the highly improbable. Random House.",
-    "Gladwell, M. (2008). Outliers: The story of success. Little, Brown and Company."
+    "Kahneman, D. (2011). Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments. Farrar, Straus and Giroux.",
+    "Harari, Y. N. (2014). Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology. Vintage Books.",
+    "Chomsky, N. (1957). Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language. Mouton & Co.",
+    "Dawkins, R. (1976). The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission. Oxford University Press.",
+    "Hawking, S. (1988). A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics. Bantam Books.",
+    "Taleb, N. N. (2007). The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems. Random House.",
+    "Gladwell, M. (2008). Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement. Little, Brown and Company.",
+    "Diamond, J. M. (1997). Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history. W. W. Norton & Company.",
+    "Pinker, S. (2011). The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation. Viking Penguin.",
+    "Sapiens, Y. N. (2018). 21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world. Jonathan Cape."
   ];
 
   return (
@@ -433,7 +436,7 @@ export default function GeneratePage() {
                         className={`text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`}
                         style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}
                       >
-                        {index + 1}. {citation}
+                        {citation}
                       </div>
                     ))}
                   </div>
