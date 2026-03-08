@@ -34,8 +34,8 @@ export default function Home() {
 
       <main className="flex flex-col items-center pt-32 pb-20">
         {/* Badge */}
-        <div className="group mb-12 relative overflow-hidden flex items-center gap-2 rounded-full border border-[#407bc4]/20 dark:border-[#407bc4]/30 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 px-3 py-1 text-sm font-medium cursor-pointer transition-colors hover:border-[#407bc4]/40 dark:hover:border-[#407bc4]/50">
-          <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent" />
+        <div className="group mb-12 relative overflow-hidden flex items-center gap-2 rounded-full border border-[#407bc4]/20 dark:border-[#407bc4]/30 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 px-3 py-1 text-sm font-medium cursor-pointer transition-colors hover:border-[#407bc4]/40 dark:hover:border-[#407bc4]/50 hover:bg-[#407bc4]/10 dark:hover:bg-[#407bc4]/20">
+          <div className="absolute top-0 bottom-0 -left-10 w-1/2 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-[#407bc4]/40 dark:via-white/60 to-transparent" />
           <span className="relative z-10 flex items-center gap-1 rounded-full bg-[#f58e58] px-2 py-0.5 text-[10px] text-white">
             <Sparkles className="h-3 w-3" /> New
           </span>
