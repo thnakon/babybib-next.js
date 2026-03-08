@@ -2,54 +2,87 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#0a0a0a] font-sans selection:bg-purple-500/30">
-      {/* Background Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full bg-purple-500/10 blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-blue-500/10 blur-[120px]" />
-
-      <main className="z-10 flex flex-col items-center px-6 text-center">
-        <div className="mb-8 flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg shadow-purple-500/20">
-            <span className="text-2xl font-bold text-white">B</span>
+    <div className="min-h-screen bg-white font-sans text-black selection:bg-zinc-100">
+      {/* Navigation */}
+      <nav className="fixed top-0 z-50 flex w-full items-center justify-between px-6 py-4 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+          <div className="relative h-8 w-8 overflow-hidden rounded-lg">
+            <Image
+              src="/logo.png"
+              alt="Babybib Logo"
+              fill
+              className="object-contain"
+            />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-white">Babybib</h2>
+          <span className="text-xl font-bold tracking-tight">Babybib</span>
+        </div>
+        
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-500">
+             <span className="text-zinc-900">3418</span> ★
+          </div>
+          <div className="flex h-8 w-14 items-center rounded-full bg-zinc-100 p-1">
+            <div className="h-6 w-6 rounded-full bg-white shadow-sm" />
+          </div>
+        </div>
+      </nav>
+
+      <main className="flex flex-col items-center pt-32 pb-20">
+        {/* Badge */}
+        <div className="mb-12 flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50/50 px-3 py-1 text-sm font-medium">
+          <span className="rounded-full bg-black px-1.5 py-0.5 text-[10px] text-white">New</span>
+          <span className="text-zinc-600">Smart ISBN Search</span>
         </div>
 
-        <h1 className="max-w-4xl bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-7xl">
-          Everything your library <br /> needs, at your fingertips.
-        </h1>
+        {/* Hero Section */}
+        <div className="flex flex-col items-center px-4 text-center">
+          <h1 className="max-w-4xl text-5xl font-bold tracking-tight sm:text-7xl">
+            Manage your library <br /> with smooth style
+          </h1>
+          <p className="mt-8 max-w-2xl text-lg text-zinc-500">
+            A fully featured, open-source book management system. Browse a list of 
+            books, track collections and ISBNs that you can install and use in your projects.
+          </p>
 
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
-          The modern bibliography companion for collectors and researchers. 
-          Search ISBN markers, track your collection, and organize your reading list with ease.
-        </p>
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+            <button className="flex h-12 items-center gap-2 rounded-xl bg-black px-8 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-95">
+              Get Started →
+            </button>
+            <button className="flex h-12 items-center rounded-xl bg-zinc-100 px-8 text-sm font-semibold text-zinc-900 transition-all hover:bg-zinc-200 active:scale-95">
+              Browse Collections
+            </button>
+          </div>
 
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-          <button className="h-12 rounded-full bg-white px-8 text-sm font-semibold text-black transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95">
-            Get Started
-          </button>
-          <button className="h-12 rounded-full border border-zinc-800 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-zinc-700">
-            Learn More
-          </button>
+          {/* Tech Icons Placeholder */}
+          <div className="mt-12 flex items-center gap-6 opacity-40 grayscale">
+            <div className="h-6 w-6 bg-black rounded-full" />
+            <div className="h-6 w-10 bg-black rounded" />
+            <div className="h-6 w-6 bg-black rounded-sm" />
+            <div className="h-4 w-12 bg-black rounded" />
+          </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
+        {/* Feature Grid */}
+        <div className="mt-24 grid grid-cols-1 gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl w-full">
           {[
-            { title: "Smart Search", desc: "Instant ISBN lookup and metadata retrieval." },
-            { title: "Cloud Sync", desc: "Your library, accessible from any device." },
-            { title: "Collections", desc: "Organize books into beautiful custom lists." }
-          ].map((feature, i) => (
-            <div key={i} className="group relative rounded-2xl border border-zinc-800 bg-white/5 p-6 text-left backdrop-blur-sm transition-all hover:border-zinc-700">
-              <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-              <p className="mt-2 text-sm text-zinc-500">{feature.desc}</p>
+            { title: "Primitives", icon: "□" },
+            { title: "Components", icon: "⬚" },
+            { title: "Icons", icon: "✧" },
+            { title: "Soon...", icon: "⋯" }
+          ].map((card, i) => (
+            <div key={i} className="group relative flex aspect-[1.2/1] flex-col rounded-2xl bg-zinc-50 p-6 transition-all hover:bg-zinc-100/80">
+              <span className="mb-auto text-center font-serif italic text-zinc-400 text-xl">{card.title}</span>
+              <div className="flex h-full items-center justify-center">
+                <div className="h-24 w-40 rounded-xl bg-zinc-200/50 flex flex-col p-4 gap-2">
+                   <div className="h-4 w-8 bg-zinc-300 rounded" />
+                   <div className="h-2 w-24 bg-zinc-300 rounded" />
+                   <div className="h-2 w-20 bg-zinc-300 rounded" />
+                </div>
+              </div>
             </div>
           ))}
         </div>
       </main>
-
-      <footer className="absolute bottom-8 text-zinc-600 text-sm">
-        © 2026 Babybib. All rights reserved.
-      </footer>
     </div>
   );
 }
