@@ -731,40 +731,65 @@ export default function GeneratePage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4">
                   {/* Color Selection */}
                   <div className="flex flex-col gap-2">
                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
                       {language === 'TH' ? 'ธีมสี' : 'Theme Color'}
                     </label>
-                    <div className="flex flex-wrap gap-2">
-                      {['#407bc4', '#f58e58', '#10b981', '#ef4444', '#8b5cf6'].map((color) => (
+                    <div className="flex flex-wrap gap-2.5">
+                      {['#407bc4', '#f58e58', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#facc15', '#71717a'].map((color) => (
                         <button 
                           key={color}
                           onClick={() => setNewProject({...newProject, color})}
-                          className={`h-6 w-6 rounded-full border-2 transition-transform active:scale-90 ${newProject.color === color ? 'border-zinc-400 scale-110' : 'border-transparent'}`}
+                          className={`h-7 w-7 rounded-full border-2 transition-transform active:scale-90 flex items-center justify-center ${newProject.color === color ? 'border-zinc-400 scale-110' : 'border-transparent hover:scale-105'}`}
                           style={{ backgroundColor: color }}
-                        />
+                        >
+                          {newProject.color === color && <Check className="h-3 w-3 text-white" />}
+                        </button>
                       ))}
                     </div>
                   </div>
 
                   {/* Icon Selection */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                      {language === 'TH' ? 'ไอคอน' : 'Icon'}
+                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1 flex justify-between">
+                      <span>{language === 'TH' ? 'ไอคอน' : 'Icon'}</span>
+                      <span className="text-[10px] lowercase opacity-60">Scroll for more</span>
                     </label>
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-6 gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-700/50 max-h-32 overflow-y-auto custom-scrollbar">
                       {[
-                        { id: 'BookOpen', icon: <BookOpen className="h-3.5 w-3.5" /> },
-                        { id: 'Globe', icon: <Globe className="h-3.5 w-3.5" /> },
-                        { id: 'FileText', icon: <FileText className="h-3.5 w-3.5" /> },
+                        { id: 'BookOpen', icon: <BookOpen /> },
+                        { id: 'Globe', icon: <Globe /> },
+                        { id: 'FileText', icon: <FileText /> },
+                        { id: 'Library', icon: <Library /> },
+                        { id: 'Archive', icon: <Archive /> },
+                        { id: 'Book', icon: <Book /> },
+                        { id: 'Pencil', icon: <Pencil /> },
+                        { id: 'Quote', icon: <Quote /> },
+                        { id: 'Sparkles', icon: <Sparkles /> },
+                        { id: 'Bot', icon: <Bot /> },
+                        { id: 'Search', icon: <Search /> },
+                        { id: 'Settings2', icon: <Settings2 /> },
+                        { id: 'Briefcase', icon: <Briefcase /> },
+                        { id: 'LayoutDashboard', icon: <LayoutDashboard /> },
+                        { id: 'ShoppingCart', icon: <ShoppingCart /> },
+                        { id: 'Smartphone', icon: <Smartphone /> },
+                        { id: 'Heart', icon: <Heart /> },
+                        { id: 'ShieldCheck', icon: <ShieldCheck /> },
+                        { id: 'Info', icon: <Info /> },
+                        { id: 'HelpCircle', icon: <HelpCircle /> },
                       ].map((item) => (
                         <button 
                           key={item.id}
-                          className={`h-8 w-8 flex items-center justify-center rounded-lg border transition-all ${newProject.icon === item.id ? 'bg-[#407bc4] text-white border-transparent' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400'}`}
+                          onClick={() => setNewProject({...newProject, icon: item.id})}
+                          className={`h-9 w-9 flex items-center justify-center rounded-xl border transition-all ${
+                            newProject.icon === item.id 
+                              ? 'bg-[#407bc4] text-white border-transparent scale-105 shadow-md ring-2 ring-[#407bc4]/20' 
+                              : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-600'
+                          }`}
                         >
-                          {item.icon}
+                          {React.cloneElement(item.icon as React.ReactElement<any>, { className: "h-4 w-4" })}
                         </button>
                       ))}
                     </div>
