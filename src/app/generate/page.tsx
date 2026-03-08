@@ -378,7 +378,7 @@ export default function GeneratePage() {
             </div>
 
             {/* References Paper Area */}
-            <div className="relative w-full min-h-[600px] bg-white dark:bg-zinc-900/90 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col pt-12">
+            <div className="relative w-full min-h-[600px] bg-white dark:bg-[#1c1c1e] rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col pt-12">
               
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -492,8 +492,11 @@ export default function GeneratePage() {
                           {viewMode === "Bibliography and in-text citations" && (
                             <div className="flex flex-col gap-3">
                               <div>{citation.content}</div>
-                              <div className="inline-flex items-center px-4 py-1.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-full w-fit group cursor-pointer transition-all hover:bg-blue-100 dark:hover:bg-blue-900/30">
-                                <span className="text-[11px] font-bold text-[#407bc4] tracking-tight whitespace-nowrap">
+                              <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-50/80 dark:bg-[#407bc4]/10 border border-blue-200/60 dark:border-[#407bc4]/30 rounded-full w-fit group cursor-help transition-all hover:bg-white dark:hover:bg-[#407bc4]/20 shadow-sm border-dashed">
+                                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white dark:bg-blue-900/50 flex items-center justify-center border border-blue-100 dark:border-[#407bc4]/20 shadow-xs">
+                                  <Quote className="h-2.5 w-2.5 text-[#407bc4] fill-[#407bc4]/10" />
+                                </div>
+                                <span className="text-[12px] font-bold text-[#407bc4] tracking-tight leading-none">
                                   {citation.inText}
                                 </span>
                               </div>
