@@ -8,18 +8,31 @@ import Link from "next/link";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
-  BookOpen, Triangle, Pencil, Copy, ChevronDown, 
+  BookOpen, Triangle, Pencil, Copy, ChevronDown, Check,
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
-  Heart, ShieldCheck, Search, HelpCircle, Book
+  Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet
 } from "lucide-react";
 
 export default function GeneratePage() {
   const { language } = useLanguage();
   const [style, setStyle] = React.useState("APA - 7th Edition");
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
+  const [isExportOpen, setIsExportOpen] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const styles = ["APA - 7th Edition", "MLA - 9th Edition", "Harvard", "Chicago", "AMA", "CSE"];
+  const exportFormats = [
+    { name: "Word (.docx)", icon: <FileText className="h-3 w-3" /> },
+    { name: "PDF (.pdf)", icon: <FileSpreadsheet className="h-3 w-3" /> },
+    { name: "BibTeX (.bib)", icon: <FileCode className="h-3 w-3" /> },
+    { name: "RIS (.ris)", icon: <FileJson className="h-3 w-3" /> },
+  ];
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
@@ -148,7 +161,7 @@ export default function GeneratePage() {
           <div className="mx-auto w-full min-w-0">
             
             {/* Search Input Section */}
-            <div className="mb-4">
+            <div className="mb-10">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex flex-wrap items-center gap-3 sm:gap-6">
                   <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
@@ -195,7 +208,7 @@ export default function GeneratePage() {
             </div>
 
             {/* Utility Buttons */}
-            <div className="flex flex-wrap items-center gap-2 mb-8">
+            <div className="flex flex-wrap items-center gap-2 mb-5 -mt-4">
               <div className="relative">
                 <button 
                   onClick={() => setIsStyleOpen(!isStyleOpen)}
@@ -239,12 +252,42 @@ export default function GeneratePage() {
                 )}
               </div>
 
-              <button className="flex h-8 items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800/80 px-3 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                <Copy className="h-3 w-3" /> Copy Citation
-              </button>
-              <button className="flex h-8 items-center gap-1 rounded-md bg-zinc-100 dark:bg-zinc-800/80 pl-3 pr-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                Export <ChevronDown className="h-3 w-3 ml-1 text-zinc-500" />
-              </button>
+              <div className="ml-auto flex items-center gap-2">
+                <button 
+                  onClick={handleCopy}
+                  className="flex h-8 items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800/80 px-3 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors border border-zinc-200 dark:border-zinc-800"
+                >
+                  {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+                
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsExportOpen(!isExportOpen)}
+                    className="flex h-8 items-center gap-1 rounded-md bg-[#407bc4] pl-3 pr-2 text-xs font-medium text-white hover:bg-[#32629e] transition-colors shadow-sm"
+                  >
+                    <Download className="h-3 w-3 mr-1" /> Export <ChevronDown className={`h-3 w-3 ml-1 transition-transform ${isExportOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {isExportOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsExportOpen(false)} />
+                      <div className="absolute top-full right-0 mt-1 w-40 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 py-1 overflow-hidden">
+                        {exportFormats.map((format) => (
+                          <button
+                            key={format.name}
+                            onClick={() => setIsExportOpen(false)}
+                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-xs text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          >
+                            <span className="text-zinc-400">{format.icon}</span>
+                            {format.name}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Tabs */}
