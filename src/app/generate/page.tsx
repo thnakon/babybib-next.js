@@ -55,6 +55,8 @@ export default function GeneratePage() {
   const [citationStep, setCitationStep] = React.useState(0); // 0 = selection, 1 = form, 2 = more
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const [resourceSearch, setResourceSearch] = React.useState("");
+  const [copiedBib, setCopiedBib] = React.useState(false);
+  const [copiedInText, setCopiedInText] = React.useState(false);
 
   const resourceLabels: Record<string, { TH: string, EN: string }> = {
     book: { TH: 'หนังสือ', EN: 'Book' },
@@ -1039,11 +1041,21 @@ export default function GeneratePage() {
                   </div>
                   {citationStep === 0 
                     ? (language === 'TH' ? 'เลือกประเภททรัพยากร' : 'Select Resource Type')
-                    : (citationStep === 2 
+                    : citationStep === 2 
                         ? (language === 'TH' ? 'ทรัพยากรเพิ่มเติม' : 'More Resources')
-                        : (language === 'TH' 
-                            ? `กรอกข้อมูล: ${selectedType ? resourceLabels[selectedType]?.TH : 'บรรณานุกรม'}` 
-                            : `Cite manually: ${selectedType ? resourceLabels[selectedType]?.EN : 'Citation'}`))}
+                        : (
+                          <button 
+                            onClick={() => setCitationStep(0)}
+                            className="flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 px-2 py-1 -ml-2 rounded-lg transition-all text-left"
+                          >
+                            <span className="font-bold">
+                              {language === 'TH' 
+                                ? `กรอกข้อมูล: ${selectedType ? resourceLabels[selectedType]?.TH : 'บรรณานุกรม'}` 
+                                : `Cite manually: ${selectedType ? resourceLabels[selectedType]?.EN : 'Citation'}`}
+                            </span>
+                            <ChevronDown className="h-4 w-4 text-zinc-400 group-hover:text-[#407bc4]" />
+                          </button>
+                        )}
                 </h3>
                 <button 
                   onClick={() => setIsAddCitationModalOpen(false)}
@@ -1375,14 +1387,29 @@ export default function GeneratePage() {
                           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
                             <Eye className="h-3.5 w-3.5" /> {language === 'TH' ? 'พรีวิว' : 'Live Preview'}
                           </span>
-                          <span className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500 font-bold uppercase tracking-tighter shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
+                          <button 
+                            onClick={() => setIsStyleOpen(!isStyleOpen)}
+                            className="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500 font-bold uppercase tracking-tighter shadow-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex items-center gap-1"
+                          >
                             {style}
-                          </span>
+                            <ChevronDown className="h-3 w-3" />
+                          </button>
                         </div>
 
                         {/* Bibliography Preview */}
                         <div className="flex flex-col gap-2.5">
-                          <span className="text-[10px] font-bold text-zinc-400 ml-1">{language === 'TH' ? 'บรรณานุกรม' : 'Bibliography'}</span>
+                          <div className="flex items-center justify-between ml-1">
+                            <span className="text-[10px] font-bold text-zinc-400">{language === 'TH' ? 'บรรณานุกรม' : 'Bibliography'}</span>
+                            <button 
+                              onClick={() => {
+                                setCopiedBib(true);
+                                setTimeout(() => setCopiedBib(false), 2000);
+                              }}
+                              className="h-6 w-6 flex items-center justify-center rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                            >
+                              {copiedBib ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3 text-zinc-400" />}
+                            </button>
+                          </div>
                           <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm min-h-[100px] flex flex-col relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                               <FileText className="h-3 w-3 text-zinc-300" />
@@ -1410,7 +1437,18 @@ export default function GeneratePage() {
 
                         {/* In-text Preview */}
                         <div className="flex flex-col gap-2.5">
-                          <span className="text-[10px] font-bold text-zinc-400 ml-1">{language === 'TH' ? 'การอ้างอิงในเนื้อหา' : 'In-text citation'}</span>
+                          <div className="flex items-center justify-between ml-1">
+                            <span className="text-[10px] font-bold text-zinc-400">{language === 'TH' ? 'การอ้างอิงในเนื้อหา' : 'In-text citation'}</span>
+                            <button 
+                              onClick={() => {
+                                setCopiedInText(true);
+                                setTimeout(() => setCopiedInText(false), 2000);
+                              }}
+                              className="h-6 w-6 flex items-center justify-center rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                            >
+                              {copiedInText ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3 text-zinc-400" />}
+                            </button>
+                          </div>
                           <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm min-h-[60px] flex items-center relative group">
                             <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                               <Quote className="h-3 w-3 text-zinc-300" />
