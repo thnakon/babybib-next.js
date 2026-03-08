@@ -56,6 +56,16 @@ export default function GeneratePage() {
     { name: "RIS (.ris)", icon: <FileJson className="h-3 w-3" /> },
   ];
 
+  const bibliographyData = [
+    "Kahneman, D. (2011). Thinking, fast and slow. Farrar, Straus and Giroux.",
+    "Harari, Y. N. (2014). Sapiens: A brief history of humankind. Vintage Books.",
+    "Chomsky, N. (1957). Syntactic structures. Mouton & Co.",
+    "Dawkins, R. (1976). The selfish gene. Oxford University Press.",
+    "Hawking, S. (1988). A brief history of time. Bantam Books.",
+    "Taleb, N. N. (2007). The black swan: The impact of the highly improbable. Random House.",
+    "Gladwell, M. (2008). Outliers: The story of success. Little, Brown and Company."
+  ];
+
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
       {/* 
@@ -415,16 +425,30 @@ export default function GeneratePage() {
               <div className="px-12 py-8 max-w-4xl mx-auto w-full">
                 <h2 className="text-2xl font-serif text-center mb-10 text-zinc-900 dark:text-zinc-100">References</h2>
                 
-                {/* Empty State */}
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="h-20 w-20 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800">
-                    <Library className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+                {bibliographyData.length > 0 ? (
+                  <div className="flex flex-col gap-6">
+                    {bibliographyData.map((citation, index) => (
+                      <div 
+                        key={index} 
+                        className={`text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`}
+                        style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}
+                      >
+                        {index + 1}. {citation}
+                      </div>
+                    ))}
                   </div>
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">No citations yet</h3>
-                  <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
-                    Search above or use the "Add new" button to start building your bibliography.
-                  </p>
-                </div>
+                ) : (
+                  /* Empty State */
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="h-20 w-20 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800">
+                      <Library className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">No citations yet</h3>
+                    <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
+                      Search above or use the "Add new" button to start building your bibliography.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Watermark/Footer on paper */}
