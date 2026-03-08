@@ -12,7 +12,7 @@ import {
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
-  List, LayoutList, Settings2, Info
+  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -24,16 +24,36 @@ export default function GeneratePage() {
   const [viewMode, setViewMode] = React.useState("Bibliography");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   
-  // Bibliography Settings
-  const [settings, setSettings] = React.useState({
-    alphabetical: true,
-    hangingIndent: true,
-    doubleSpaced: false,
-    showUrls: true,
-  });
+  // Bibliography Data State
+  const [citations, setCitations] = React.useState([
+    { id: 1, content: <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</> },
+    { id: 2, content: <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</> },
+    { id: 3, content: <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</> },
+    { id: 4, content: <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</> },
+    { id: 5, content: <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</> },
+    { id: 6, content: <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</> },
+    { id: 7, content: <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</> },
+    { id: 8, content: <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</> },
+    { id: 9, content: <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</> },
+    { id: 10, content: <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</> },
+  ]);
 
-  const toggleSetting = (key: keyof typeof settings) => {
-    setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+  // Drag and Drop State
+  const dragItem = React.useRef<number | null>(null);
+  const dragOverItem = React.useRef<number | null>(null);
+
+  const handleSort = () => {
+    if (dragItem.current === null || dragOverItem.current === null) return;
+    const _citations = [...citations];
+    const draggedItemContent = _citations.splice(dragItem.current, 1)[0];
+    _citations.splice(dragOverItem.current, 0, draggedItemContent);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setCitations(_citations);
+  };
+
+  const deleteCitation = (id: number) => {
+    setCitations(prev => prev.filter(c => c.id !== id));
   };
 
   const handleCopy = () => {
@@ -56,18 +76,17 @@ export default function GeneratePage() {
     { name: "RIS (.ris)", icon: <FileJson className="h-3 w-3" /> },
   ];
 
-  const bibliographyData = [
-    <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</>,
-    <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</>,
-    <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</>,
-    <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</>,
-    <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</>,
-    <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</>,
-    <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</>,
-    <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</>,
-    <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</>,
-    <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</>
-  ];
+  // Bibliography Settings
+  const [settings, setSettings] = React.useState({
+    alphabetical: true,
+    hangingIndent: true,
+    doubleSpaced: false,
+    showUrls: true,
+  });
+
+  const toggleSetting = (key: keyof typeof settings) => {
+    setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
@@ -428,15 +447,48 @@ export default function GeneratePage() {
               <div className="px-24 py-16 max-w-5xl mx-auto w-full">
                 <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">References</h2>
                 
-                {bibliographyData.length > 0 ? (
-                  <div className="flex flex-col gap-6">
-                    {bibliographyData.map((citation, index) => (
+                {citations.length > 0 ? (
+                  <div className="flex flex-col gap-1">
+                    {citations.map((citation, index) => (
                       <div 
-                        key={index} 
-                        className={`text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`}
-                        style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}
+                        key={citation.id} 
+                        draggable
+                        onDragStart={() => (dragItem.current = index)}
+                        onDragEnter={() => (dragOverItem.current = index)}
+                        onDragEnd={handleSort}
+                        onDragOver={(e) => e.preventDefault()}
+                        className="group relative flex items-start gap-4 p-4 -mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all cursor-default"
                       >
-                        {citation}
+                        {/* Drag Handle */}
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity mt-1 cursor-grab active:cursor-grabbing text-zinc-300 dark:text-zinc-700">
+                          <GripVertical className="h-4 w-4" />
+                        </div>
+
+                        <div 
+                          className={`flex-1 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 transition-all ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`}
+                          style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}
+                        >
+                          {citation.content}
+                        </div>
+
+                        {/* Hover Actions */}
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                          <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm tooltip-trigger" title="Edit">
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="In-text citation">
+                            <Quote className="h-3.5 w-3.5" />
+                          </button>
+                          <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="Copy">
+                            <Copy className="h-3.5 w-3.5" />
+                          </button>
+                          <button 
+                            onClick={() => deleteCitation(citation.id)}
+                            className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title="Delete"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
