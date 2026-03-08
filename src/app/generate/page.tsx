@@ -57,16 +57,16 @@ export default function GeneratePage() {
   ];
 
   const bibliographyData = [
-    "Kahneman, D. (2011). Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments. Farrar, Straus and Giroux.",
-    "Harari, Y. N. (2014). Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology. Vintage Books.",
-    "Chomsky, N. (1957). Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language. Mouton & Co.",
-    "Dawkins, R. (1976). The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission. Oxford University Press.",
-    "Hawking, S. (1988). A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics. Bantam Books.",
-    "Taleb, N. N. (2007). The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems. Random House.",
-    "Gladwell, M. (2008). Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement. Little, Brown and Company.",
-    "Diamond, J. M. (1997). Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history. W. W. Norton & Company.",
-    "Pinker, S. (2011). The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation. Viking Penguin.",
-    "Sapiens, Y. N. (2018). 21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world. Jonathan Cape."
+    <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</>,
+    <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</>,
+    <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</>,
+    <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</>,
+    <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</>,
+    <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</>,
+    <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</>,
+    <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</>,
+    <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</>,
+    <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</>
   ];
 
   return (
