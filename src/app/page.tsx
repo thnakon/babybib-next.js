@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NavLinks } from "@/components/nav-links";
@@ -84,7 +85,7 @@ export default function Home() {
         className="flex flex-col items-center pt-32 pb-20"
       >
         {/* Badge */}
-        <div className="group relative mb-12 inline-flex overflow-hidden rounded-full p-[2px] cursor-pointer">
+        <Link href="/generate" className="group relative mb-12 inline-flex overflow-hidden rounded-full p-[2px] cursor-pointer">
           <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#407bc4_50%,#f58e58_100%)]" />
           <span className="inline-flex h-full w-full items-center gap-2 rounded-full bg-white/95 dark:bg-[#0a0a0a]/95 px-3 py-1 text-sm font-medium transition-colors group-hover:bg-white dark:group-hover:bg-[#0a0a0a] backdrop-blur-xl">
             <span className="flex items-center gap-1 rounded-full bg-[#f58e58] px-2 py-0.5 text-[10px] text-white">
@@ -92,7 +93,7 @@ export default function Home() {
             </span>
             <span className="text-[#407bc4] dark:text-[#6ba1e6]">{t.badge}</span>
           </span>
-        </div>
+        </Link>
 
         {/* Hero Section */}
         <div className="flex flex-col items-center px-4 text-center">
@@ -104,9 +105,9 @@ export default function Home() {
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-            <button className="flex h-12 items-center gap-2 rounded-xl bg-[#407bc4] px-8 text-sm font-semibold text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-lg shadow-[#407bc4]/20">
+            <Link href="/generate" className="flex h-12 items-center gap-2 rounded-xl bg-[#407bc4] px-8 text-sm font-semibold text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-lg shadow-[#407bc4]/20">
               {t.btnGetStarted}
-            </button>
+            </Link>
             <button className="flex h-12 items-center rounded-xl bg-[#f58e58]/10 px-8 text-sm font-semibold text-[#dd7742] dark:text-[#f58e58] transition-all hover:bg-[#f58e58]/20 active:scale-95">
               {t.btnBrowse}
             </button>
