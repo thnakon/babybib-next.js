@@ -13,7 +13,7 @@ import {
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
-  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive
+  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -170,13 +170,11 @@ export default function GeneratePage() {
                       {project.icon}
                       <span className="truncate">{project.name}</span>
                     </div>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full border transition-all ${
-                      project.active
-                        ? "bg-[#407bc4] text-white border-transparent shadow-sm"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 group-hover/item:border-[#407bc4]/30 group-hover/item:text-[#407bc4]"
+                    <button className={`opacity-0 group-hover/item:opacity-100 p-0.5 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all ${
+                      project.active ? "text-[#407bc4]" : "text-zinc-400"
                     }`}>
-                      {project.count}
-                    </span>
+                      <MoreVertical className="h-3.5 w-3.5" />
+                    </button>
                   </li>
                 ))}
               </ul>
