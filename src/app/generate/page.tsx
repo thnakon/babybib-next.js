@@ -16,6 +16,10 @@ import {
 
 export default function GeneratePage() {
   const { language } = useLanguage();
+  const [style, setStyle] = React.useState("APA - 7th Edition");
+  const [isStyleOpen, setIsStyleOpen] = React.useState(false);
+
+  const styles = ["APA - 7th Edition", "MLA - 9th Edition", "Harvard", "Chicago", "AMA", "CSE"];
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
@@ -192,14 +196,41 @@ export default function GeneratePage() {
 
             {/* Utility Buttons */}
             <div className="flex flex-wrap items-center gap-2 mb-8">
+              <div className="relative">
+                <button 
+                  onClick={() => setIsStyleOpen(!isStyleOpen)}
+                  className="flex h-8 items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800/80 px-3 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors border border-zinc-200 dark:border-zinc-800"
+                >
+                  <span className="text-zinc-400">Style:</span> {style}
+                  <ChevronDown className={`h-3 w-3 transition-transform ${isStyleOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {isStyleOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsStyleOpen(false)} />
+                    <div className="absolute top-full left-0 mt-1 w-56 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 py-1 overflow-hidden">
+                      {styles.map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => {
+                            setStyle(s);
+                            setIsStyleOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ${style === s ? 'text-[#407bc4] font-bold bg-zinc-50 dark:bg-zinc-800/50' : 'text-zinc-600 dark:text-zinc-400'}`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
               <button className="flex h-8 items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800/80 px-3 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                <Pencil className="h-3 w-3" /> Edit on GitHub
-              </button>
-              <button className="flex h-8 items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800/80 px-3 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                <Copy className="h-3 w-3" /> Copy Markdown
+                <Copy className="h-3 w-3" /> Copy Citation
               </button>
               <button className="flex h-8 items-center gap-1 rounded-md bg-zinc-100 dark:bg-zinc-800/80 pl-3 pr-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                Open <ChevronDown className="h-3 w-3 ml-1 text-zinc-500" />
+                Export <ChevronDown className="h-3 w-3 ml-1 text-zinc-500" />
               </button>
             </div>
 
