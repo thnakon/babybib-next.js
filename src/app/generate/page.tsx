@@ -13,8 +13,7 @@ import {
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
-  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles,
-  Archive, Type, ArrowDownAz, Trash
+  List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -90,9 +89,6 @@ export default function GeneratePage() {
     hangingIndent: true,
     doubleSpaced: false,
     showUrls: true,
-    font: "Serif",
-    textSize: "Medium",
-    sortBy: "Author",
   });
 
   const toggleSetting = (key: keyof typeof settings) => {
@@ -136,9 +132,9 @@ export default function GeneratePage() {
         
         {/* Left Sidebar */}
         <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
 
-            <button className="flex h-9 w-32 mx-auto items-center justify-center gap-1.5 rounded-full bg-[#407bc4] text-xs font-bold text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm mb-2">
+            <button className="flex h-8 w-32 mx-auto items-center justify-center gap-1.5 rounded-md bg-[#407bc4] text-xs font-medium text-white hover:bg-[#32629e] active:scale-95 transition-all shadow-sm">
               <Plus className="h-3.5 w-3.5" /> Add new
             </button>
             
@@ -147,7 +143,7 @@ export default function GeneratePage() {
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-[#407bc4]/10 dark:bg-[#407bc4]/20">
                   <BookOpen className="h-3 w-3 text-[#407bc4] dark:text-[#6ba1e6]" />
                 </div>
-                <span className="text-sm font-bold">Project</span>
+                <span className="text-sm font-semibold">Project</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
                 <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
@@ -159,126 +155,78 @@ export default function GeneratePage() {
                 <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
                   <Library className="h-3 w-3 shrink-0" /> <span className="truncate">Smart ISBN API</span>
                 </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Smartphone className="h-3 w-3 shrink-0" /> <span className="truncate">Chat UI System</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Bot className="h-3 w-3 shrink-0" /> <span className="truncate">Attitudes AI Tool</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <ShoppingCart className="h-3 w-3 shrink-0" /> <span className="truncate">E-commerce API</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <LayoutDashboard className="h-3 w-3 shrink-0" /> <span className="truncate">Admin Dashboard</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <Briefcase className="h-3 w-3 shrink-0" /> <span className="truncate">Portfolio Templates</span>
+                </li>
               </ul>
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
-                  <Triangle className="h-2.5 w-2.5 text-zinc-500" />
+                  <Triangle className="h-3 w-3 text-zinc-500" />
                 </div>
-                <span className="text-sm font-bold text-zinc-600 dark:text-zinc-400">Latest bibliography</span>
+                <span className="text-sm font-semibold text-zinc-500">Latest bibliography</span>
               </div>
-              <ul className="flex flex-col gap-1.5 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-4">
-                {citations.slice(0, 5).map((citation) => (
-                  <li key={citation.id} className="flex items-start text-[13px] text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                    <span className="truncate">{citation.inText.replace(/[()]/g, '')} ...</span>
-                  </li>
-                ))}
+              <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Kahneman, D. (2011). Thinking, fast and slow...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Harari, Y. N. (2014). Sapiens: A brief history...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Chomsky, N. (1957). Syntactic structures...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Dawkins, R. (1976). The selfish gene...</span>
+                </li>
+                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                  <span className="truncate">Hawking, S. (1988). A brief history of time...</span>
+                </li>
               </ul>
+            </div>
 
-              <div className="flex flex-col gap-3 ml-2.5 border-l border-zinc-200 dark:border-zinc-800 pl-4">
-                <button className="flex items-center gap-2 text-[13px] text-zinc-500 hover:text-[#407bc4] transition-colors group">
-                  <Archive className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" /> Archived Projects
-                </button>
-                <button className="flex items-center gap-2 text-[13px] text-zinc-500 hover:text-red-500 transition-colors group">
-                  <Trash className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" /> Recently deleted
-                </button>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
+                  <Archive className="h-3 w-3 text-zinc-500" />
+                </div>
+                <span className="text-sm font-semibold text-zinc-500">Archived Projects</span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 mt-2">
-               <div className="flex items-center gap-2">
-                 <div className="flex h-5 w-5 items-center justify-center rounded bg-[#407bc4]/10 dark:bg-[#407bc4]/20 text-[#407bc4]">
-                   <Settings2 className="h-3 w-3" />
-                 </div>
-                 <span className="text-sm font-bold">Bibliography Settings</span>
-               </div>
-               
-               <div className="flex flex-col gap-5 pl-7">
-                  {/* Toggles */}
-                  <div className="flex flex-col gap-3">
-                    <label className="flex items-center justify-between cursor-pointer group">
-                      <span className="text-xs text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 transition-colors">Alphabetical</span>
-                      <input type="checkbox" className="sr-only" checked={settings.alphabetical} onChange={() => toggleSetting('alphabetical')} />
-                      <div className={`w-8 h-4 rounded-full transition-colors relative ${settings.alphabetical ? 'bg-[#407bc4]' : 'bg-zinc-200 dark:bg-zinc-800'}`}>
-                        <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${settings.alphabetical ? 'translate-x-4' : ''}`} />
-                      </div>
-                    </label>
-                    <label className="flex items-center justify-between cursor-pointer group">
-                      <span className="text-xs text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 transition-colors">Double spaced</span>
-                      <input type="checkbox" className="sr-only" checked={settings.doubleSpaced} onChange={() => toggleSetting('doubleSpaced')} />
-                      <div className={`w-8 h-4 rounded-full transition-colors relative ${settings.doubleSpaced ? 'bg-[#407bc4]' : 'bg-zinc-200 dark:bg-zinc-800'}`}>
-                        <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${settings.doubleSpaced ? 'translate-x-4' : ''}`} />
-                      </div>
-                    </label>
-                  </div>
-
-                  {/* New Dropdown Settings */}
-                  <div className="flex flex-col gap-3 pb-4">
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold text-zinc-400">
-                        <Type className="h-3 w-3" /> Font Family
-                      </div>
-                      <select 
-                        value={settings.font}
-                        onChange={(e) => setSettings(prev => ({...prev, font: e.target.value}))}
-                        className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#407bc4] transition-all"
-                      >
-                        <option>Serif</option>
-                        <option>Sans-serif</option>
-                        <option>Mono</option>
-                      </select>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold text-zinc-400">
-                        <List className="h-3 w-3" /> Text Size
-                      </div>
-                      <div className="grid grid-cols-3 gap-1">
-                        {['Small', 'Medium', 'Large'].map((size) => (
-                          <button 
-                            key={size}
-                            onClick={() => setSettings(prev => ({...prev, textSize: size}))}
-                            className={`py-1 text-[10px] font-medium rounded-md border transition-all ${
-                              settings.textSize === size 
-                                ? 'bg-[#407bc4] text-white border-[#407bc4]' 
-                                : 'bg-white dark:bg-zinc-900 text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300'
-                            }`}
-                          >
-                            {size}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold text-zinc-400">
-                        <ArrowDownAz className="h-3 w-3" /> Sort By
-                      </div>
-                      <select 
-                        value={settings.sortBy}
-                        onChange={(e) => setSettings(prev => ({...prev, sortBy: e.target.value}))}
-                        className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#407bc4] transition-all"
-                      >
-                        <option>Author</option>
-                        <option>Publication Year</option>
-                        <option>Title</option>
-                        <option>Recently Added</option>
-                      </select>
-                    </div>
-                  </div>
-               </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
+                  <Trash2 className="h-3 w-3 text-zinc-500" />
+                </div>
+                <span className="text-sm font-semibold text-zinc-500">Recently deleted</span>
+              </div>
             </div>
 
             <div className="flex flex-col items-center gap-1.5 pt-4 mt-auto mx-auto pb-4">
-              <span className="text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
+              <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
                 Made by <span className="font-bold"><span className="text-[#407bc4]">Baby</span><span className="text-[#f58e58]">bib</span></span>
               </span>
-              <div className="flex items-center gap-3 text-[10px] text-zinc-400 dark:text-zinc-600 font-medium">
-                <Link href="#" className="hover:text-[#407bc4] transition-colors">Privacy</Link>
-                <Link href="#" className="hover:text-[#407bc4] transition-colors">Terms</Link>
-                <Link href="#" className="hover:text-[#407bc4] transition-colors">About</Link>
+              <div className="flex items-center gap-2 text-sm text-zinc-400 dark:text-zinc-500 font-medium tracking-tight">
+                <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">Privacy</Link>
+                <span className="text-zinc-300 dark:text-zinc-700">&bull;</span>
+                <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">Terms</Link>
+                <span className="text-zinc-300 dark:text-zinc-700">&bull;</span>
+                <Link href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors text-zinc-400 dark:text-zinc-500 decoration-transparent underline-offset-4 hover:underline">About</Link>
               </div>
             </div>
 
@@ -519,14 +467,8 @@ export default function GeneratePage() {
               </div>
 
               {/* Paper Content */}
-              <div 
-                className={`px-24 py-16 max-w-5xl mx-auto w-full transition-all duration-300 ${
-                  settings.font === 'Serif' ? 'font-serif' : settings.font === 'Mono' ? 'font-mono' : 'font-sans'
-                } ${
-                  settings.textSize === 'Small' ? 'text-sm' : settings.textSize === 'Large' ? 'text-lg' : 'text-base'
-                }`}
-              >
-                <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100 italic">References</h2>
+              <div className="px-24 py-16 max-w-5xl mx-auto w-full">
+                <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">References</h2>
                 
                 {citations.length > 0 ? (
                   <div className="flex flex-col gap-1">
