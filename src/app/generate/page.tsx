@@ -23,19 +23,20 @@ export default function GeneratePage() {
   const [copied, setCopied] = React.useState(false);
   const [viewMode, setViewMode] = React.useState("Bibliography");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
+  const [copiedId, setCopiedId] = React.useState<number | null>(null);
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
-    { id: 1, content: <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</> },
-    { id: 2, content: <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</> },
-    { id: 3, content: <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</> },
-    { id: 4, content: <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</> },
-    { id: 5, content: <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</> },
-    { id: 6, content: <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</> },
-    { id: 7, content: <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</> },
-    { id: 8, content: <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</> },
-    { id: 9, content: <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</> },
-    { id: 10, content: <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</> },
+    { id: 1, inText: "(Kahneman, 2011)", content: <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</> },
+    { id: 2, inText: "(Harari, 2014)", content: <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</> },
+    { id: 3, inText: "(Chomsky, 1957)", content: <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</> },
+    { id: 4, inText: "(Dawkins, 1976)", content: <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</> },
+    { id: 5, inText: "(Hawking, 1988)", content: <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</> },
+    { id: 6, inText: "(Taleb, 2007)", content: <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</> },
+    { id: 7, inText: "(Gladwell, 2008)", content: <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</> },
+    { id: 8, inText: "(Diamond, 1997)", content: <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</> },
+    { id: 9, inText: "(Pinker, 2011)", content: <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</> },
+    { id: 10, inText: "(Harari, 2018)", content: <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</> },
   ]);
 
   // Drag and Drop State
@@ -59,6 +60,11 @@ export default function GeneratePage() {
   const handleCopy = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleItemCopy = (id: number) => {
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
   const styles = ["APA - 7th Edition", "MLA - 9th Edition", "Harvard", "Chicago", "AMA", "CSE"];
@@ -465,10 +471,32 @@ export default function GeneratePage() {
                         </div>
 
                         <div 
-                          className={`flex-1 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 transition-all ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`}
+                          className={`flex-1 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 transition-all ${
+                            viewMode === "Bibliography" || viewMode === "Bibliography and in-text citations"
+                              ? (settings.hangingIndent ? 'pl-8 -indent-8' : '')
+                              : ''
+                          }`}
                           style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}
                         >
-                          {citation.content}
+                          {viewMode === "Bibliography" && (
+                            <div>{citation.content}</div>
+                          )}
+                          
+                          {viewMode === "Plain list" && (
+                            <div className="flex items-center gap-3">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#407bc4] shrink-0" />
+                              {citation.content}
+                            </div>
+                          )}
+
+                          {viewMode === "Bibliography and in-text citations" && (
+                            <div className="flex flex-col gap-2">
+                              <div>{citation.content}</div>
+                              <div className="text-[11px] font-bold text-[#407bc4] flex items-center gap-2 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 w-fit px-2 py-0.5 rounded border border-[#407bc4]/20">
+                                <Quote className="h-3 w-3" /> {citation.inText}
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         {/* Hover Actions */}
@@ -479,8 +507,16 @@ export default function GeneratePage() {
                           <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="In-text citation">
                             <Quote className="h-3.5 w-3.5" />
                           </button>
-                          <button className="h-8 w-8 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title="Copy">
-                            <Copy className="h-3.5 w-3.5" />
+                          <button 
+                            onClick={() => handleItemCopy(citation.id)}
+                            className={`h-8 w-8 flex items-center justify-center rounded-full border transition-all shadow-sm ${
+                              copiedId === citation.id 
+                                ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400" 
+                                : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
+                            }`} 
+                            title="Copy"
+                          >
+                            {copiedId === citation.id ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                           </button>
                           <button 
                             onClick={() => deleteCitation(citation.id)}
