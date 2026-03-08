@@ -578,26 +578,7 @@ export default function GeneratePage() {
                 {language === 'TH' ? 'รับสิทธิพิเศษตอนนี้' : 'Get exclusive access'} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
               </button>
               
-              <div className="flex flex-col gap-3 border-t border-zinc-100 dark:border-zinc-800 pt-5">
-                <div className="flex items-center gap-2 text-[10px] text-zinc-600 dark:text-zinc-400">
-                  <div className="h-5 w-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shadow-sm">
-                    <ShieldCheck className="h-3 w-3 text-green-600 dark:text-green-400" />
-                  </div>
-                  {language === 'TH' ? 'พื้นที่เก็บข้อมูลคลาวด์' : 'Secure Cloud Storage'}
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-zinc-600 dark:text-zinc-400">
-                  <div className="h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shadow-sm">
-                    <RotateCw className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  {language === 'TH' ? 'ส่งออกได้หลายรูปแบบ' : 'Multi-format Export'}
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-zinc-600 dark:text-zinc-400">
-                  <div className="h-5 w-5 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shadow-sm">
-                    <Bot className="h-3 w-3 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  {language === 'TH' ? 'ค้นหา ISBN อัตโนมัติ' : 'Auto-ISBN Search'}
-                </div>
-              </div>
+
             </div>
             
             <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 opacity-60">
