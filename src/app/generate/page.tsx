@@ -194,7 +194,7 @@ export default function GeneratePage() {
                 {(isProjectsExpanded ? projects : projects.slice(0, 5)).map((project, idx) => (
                   <li 
                     key={idx}
-                    className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg text-sm transition-all cursor-pointer group/item truncate ${
+                    className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg text-sm transition-all cursor-pointer group/item ${
                       project.active 
                         ? "bg-[#407bc4]/5 text-[#407bc4] font-semibold dark:bg-[#407bc4]/10 dark:text-[#6ba1e6]" 
                         : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:text-[#407bc4] dark:hover:text-[#6ba1e6]"
