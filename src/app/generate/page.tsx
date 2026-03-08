@@ -334,6 +334,9 @@ export default function GeneratePage() {
                 <button className="flex h-7 px-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors uppercase tracking-tight">
                   <RotateCw className="h-3 w-3" /> Refresh
                 </button>
+                <button className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm">
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                </button>
               </div>
 
               {/* Paper Content */}
