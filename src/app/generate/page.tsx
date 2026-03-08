@@ -173,8 +173,35 @@ export default function GeneratePage() {
     setCitations(_citations);
   };
 
+  const [deletedCitations, setDeletedCitations] = React.useState<any[]>([]);
+  const [toastMessage, setToastMessage] = React.useState<string | null>(null);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
   const deleteCitation = (id: number) => {
-    setCitations(prev => prev.filter(c => c.id !== id));
+    const citationToDelete = citations.find(c => c.id === id);
+    if (citationToDelete) {
+      setDeletedCitations(prev => [citationToDelete, ...prev]);
+      setCitations(prev => prev.filter(c => c.id !== id));
+      showToast(language === 'TH' ? 'ลบรายการบรรณานุกรมสำเร็จ' : 'Citation deleted successfully');
+    }
+  };
+
+  const restoreCitation = (id: number) => {
+    const citationToRestore = deletedCitations.find(c => c.id === id);
+    if (citationToRestore) {
+      setCitations(prev => [...prev, citationToRestore]);
+      setDeletedCitations(prev => prev.filter(c => c.id !== id));
+      showToast(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
+    }
+  };
+  
+  const permanentlyDeleteCitation = (id: number) => {
+    setDeletedCitations(prev => prev.filter(c => c.id !== id));
+    showToast(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
   };
 
   const handleCopy = () => {
@@ -986,6 +1013,60 @@ export default function GeneratePage() {
                  {language === 'TH' ? '"เครื่องมือที่ช่วยให้งานวิจัยของคุณง่ายขึ้น"' : '"The tool that makes your research easier"'}
                </p>
             </div>
+
+            <AnimatePresence>
+              {deletedCitations.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all overflow-hidden"
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="p-1.5 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                      <Trash2 className="h-4 w-4" />
+                    </div>
+                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                      {language === 'TH' ? 'รายการที่ลบไป' : 'Deleted Items'}
+                    </h3>
+                    <span className="flex items-center justify-center h-5 w-5 rounded-full bg-red-100 dark:bg-red-900/30 text-[10px] font-bold text-red-600 dark:text-red-400 ml-auto transition-transform hover:scale-110">
+                      {deletedCitations.length}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
+                    <AnimatePresence>
+                      {deletedCitations.map(citation => (
+                        <motion.div 
+                          key={citation.id}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 relative group flex items-start justify-between gap-2 shadow-sm hover:border-red-200 dark:hover:border-red-900/50 transition-colors"
+                        >
+                          <div className="text-[10px] text-zinc-500 line-clamp-2 leading-relaxed flex-1 pt-0.5">
+                            {citation.authorText ? `${citation.authorText} (${citation.year}). ${citation.titleText}` : citation.content}
+                          </div>
+                          <div className="flex flex-col gap-1 items-center shrink-0">
+                            <button 
+                              onClick={() => restoreCitation(citation.id)}
+                              className="h-6 w-6 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-emerald-600 rounded-md transition-colors" title={language === 'TH' ? 'กู้คืน' : 'Restore'}
+                            >
+                              <RotateCw className="h-3 w-3" />
+                            </button>
+                            <button 
+                              onClick={() => permanentlyDeleteCitation(citation.id)}
+                              className="h-6 w-6 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 rounded-md transition-colors" title={language === 'TH' ? 'ลบถาวร' : 'Delete Permanently'}
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </aside>
 
@@ -1739,6 +1820,22 @@ export default function GeneratePage() {
           </div>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-4 py-3 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-xl shadow-black/10 border border-zinc-800 dark:border-zinc-200"
+          >
+            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500/20 text-green-400 dark:text-green-600">
+              <Check className="h-3 w-3" />
+            </div>
+            <span className="text-sm font-medium">{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
