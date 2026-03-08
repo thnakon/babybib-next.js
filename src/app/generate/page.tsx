@@ -199,21 +199,19 @@ export default function GeneratePage() {
               </ul>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
+            <div className="flex flex-col gap-4 pt-2">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors">
                   <Archive className="h-3 w-3 text-zinc-500" />
                 </div>
-                <span className="text-sm font-semibold text-zinc-500">Archived Projects</span>
+                <span className="text-sm font-semibold text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors">Archived Projects</span>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
+              
+              <div className="flex items-center gap-2 cursor-pointer group">
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors">
                   <Trash2 className="h-3 w-3 text-zinc-500" />
                 </div>
-                <span className="text-sm font-semibold text-zinc-500">Recently deleted</span>
+                <span className="text-sm font-semibold text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors">Recently deleted</span>
               </div>
             </div>
 
