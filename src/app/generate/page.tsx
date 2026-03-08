@@ -14,7 +14,7 @@ import {
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
   List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
-  Type, ChevronRight, X, FilePlus
+  Type, ChevronRight, X, FilePlus, FileUp
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -334,25 +334,16 @@ export default function GeneratePage() {
             {/* Search Input Section */}
             <div className="mb-10">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                <div className="flex flex-wrap items-center gap-3 sm:gap-6">
-                  <span className="inline-flex items-center rounded-full bg-[#407bc4]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#407bc4] dark:bg-[#407bc4]/20">
-                    Manual
-                  </span>
+                <div className="flex items-center gap-3">
+                  <button className="flex h-9 items-center gap-2 rounded-xl bg-[#407bc4] px-4 text-xs font-bold text-white shadow-md hover:bg-[#32629e] transition-all active:scale-95 group">
+                    <Plus className="h-4 w-4 transition-transform group-hover:rotate-90" />
+                    {language === 'TH' ? 'เพิ่ม รายการบรรณานุกรม' : 'New Citation'}
+                  </button>
                   
-                  <nav className="flex items-center gap-4 sm:gap-6">
-                    <button className="group flex items-center gap-1.5 text-sm font-semibold text-[#407bc4] border-b-2 border-[#407bc4] pb-1 transition-all">
-                      <Book className="h-4 w-4" /> Books
-                    </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
-                      <FileText className="h-4 w-4" /> Articles
-                    </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
-                      <Globe className="h-4 w-4" /> Websites
-                    </button>
-                    <button className="group flex items-center gap-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 pb-1 transition-all">
-                      <Plus className="h-4 w-4" /> More
-                    </button>
-                  </nav>
+                  <button className="flex h-9 items-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all active:scale-95">
+                    <FileUp className="h-4 w-4" />
+                    {language === 'TH' ? 'นำเข้า' : 'Import'}
+                  </button>
                 </div>
                 
                 <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
