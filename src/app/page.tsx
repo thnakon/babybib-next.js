@@ -5,9 +5,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
       {/* Navigation */}
-      <nav className="fixed top-0 z-50 flex w-full items-center justify-between px-6 py-4 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-          <div className="relative h-8 w-8 overflow-hidden rounded-lg">
+      <nav className="fixed top-0 left-0 right-0 z-50 mx-auto flex w-full max-w-7xl items-center justify-between px-6 sm:px-12 py-4 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="relative h-14 w-14 overflow-hidden rounded-lg">
             <Image
               src="/logo.png"
               alt="Babybib Logo"
@@ -15,13 +15,10 @@ export default function Home() {
               className="object-contain"
             />
           </div>
-          <span className="text-xl font-bold tracking-tight">Babybib</span>
+          <span className="text-2xl font-bold tracking-tight">Babybib</span>
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-1 rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-sm font-medium text-zinc-500 transition-colors">
-             <span className="text-zinc-900 dark:text-zinc-100">3418</span> ★
-          </div>
           <LanguageDropdown />
           <ThemeToggle />
         </div>
