@@ -425,8 +425,8 @@ export default function GeneratePage() {
               </div>
 
               {/* Paper Content */}
-              <div className="px-12 py-8 max-w-4xl mx-auto w-full">
-                <h2 className="text-2xl font-serif text-center mb-10 text-zinc-900 dark:text-zinc-100">References</h2>
+              <div className="px-24 py-16 max-w-5xl mx-auto w-full">
+                <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">References</h2>
                 
                 {bibliographyData.length > 0 ? (
                   <div className="flex flex-col gap-6">
