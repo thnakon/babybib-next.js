@@ -206,7 +206,7 @@ export default function GeneratePage() {
               </ul>
             </div>
 
-            <div className="flex items-center gap-2 pt-2 text-[11px] font-semibold text-zinc-500">
+            <div className="flex items-center justify-center gap-2 pt-2 text-[11px] font-semibold text-zinc-500 w-full">
               <div className="flex items-center bg-zinc-50 dark:bg-zinc-900/50 rounded-full p-1 border border-zinc-100 dark:border-zinc-800 shadow-xs">
                 {/* Archive Button */}
                 <div className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/archived w-8 hover:w-28">
