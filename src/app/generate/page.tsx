@@ -409,7 +409,8 @@ export default function GeneratePage() {
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
                 <button className="flex h-7 px-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors uppercase tracking-tight">
-                  <RotateCw className="h-3 w-3" /> Refresh
+                  <Search className="h-3 w-3" />
+                  {language === 'TH' ? 'ค้นหา รายการบรรณานุกรม' : 'Search references'}
                 </button>
                 
                 <div className="relative">
