@@ -147,16 +147,16 @@ export default function GeneratePage() {
   
   // Bibliography Data State
   const [citations, setCitations] = React.useState([
-    { id: 1, inText: "(Kahneman, 2011)", content: <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</> },
-    { id: 2, inText: "(Harari, 2014)", content: <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</> },
-    { id: 3, inText: "(Chomsky, 1957)", content: <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</> },
-    { id: 4, inText: "(Dawkins, 1976)", content: <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</> },
-    { id: 5, inText: "(Hawking, 1988)", content: <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</> },
-    { id: 6, inText: "(Taleb, 2007)", content: <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</> },
-    { id: 7, inText: "(Gladwell, 2008)", content: <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</> },
-    { id: 8, inText: "(Diamond, 1997)", content: <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</> },
-    { id: 9, inText: "(Pinker, 2011)", content: <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</> },
-    { id: 10, inText: "(Harari, 2018)", content: <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</> },
+    { id: 1, authorText: 'Kahneman, D.', titleText: 'Thinking, fast and slow', year: 2011, dateAdded: 1610000000, inText: "(Kahneman, 2011)", content: <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</> },
+    { id: 2, authorText: 'Harari, Y. N.', titleText: 'Sapiens: A brief history of humankind', year: 2014, dateAdded: 1620000000, inText: "(Harari, 2014)", content: <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</> },
+    { id: 3, authorText: 'Chomsky, N.', titleText: 'Syntactic structures', year: 1957, dateAdded: 1630000000, inText: "(Chomsky, 1957)", content: <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</> },
+    { id: 4, authorText: 'Dawkins, R.', titleText: 'The selfish gene', year: 1976, dateAdded: 1640000000, inText: "(Dawkins, 1976)", content: <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</> },
+    { id: 5, authorText: 'Hawking, S.', titleText: 'A brief history of time', year: 1988, dateAdded: 1650000000, inText: "(Hawking, 1988)", content: <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</> },
+    { id: 6, authorText: 'Taleb, N. N.', titleText: 'The black swan', year: 2007, dateAdded: 1660000000, inText: "(Taleb, 2007)", content: <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</> },
+    { id: 7, authorText: 'Gladwell, M.', titleText: 'Outliers', year: 2008, dateAdded: 1670000000, inText: "(Gladwell, 2008)", content: <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</> },
+    { id: 8, authorText: 'Diamond, J. M.', titleText: 'Guns, germs, and steel', year: 1997, dateAdded: 1680000000, inText: "(Diamond, 1997)", content: <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</> },
+    { id: 9, authorText: 'Pinker, S.', titleText: 'The better angels of our nature', year: 2011, dateAdded: 1690000000, inText: "(Pinker, 2011)", content: <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</> },
+    { id: 10, authorText: 'Sapiens, Y. N.', titleText: '21 Lessons for the 21st Century', year: 2018, dateAdded: 1700000000, inText: "(Harari, 2018)", content: <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</> },
   ]);
 
   // Drag and Drop State
@@ -202,17 +202,85 @@ export default function GeneratePage() {
     { name: "RIS (.ris)", icon: <FileJson className="h-3 w-3" /> },
   ];
 
+  const FONT_OPTIONS = ['Times New Roman', 'Arial', 'Helvetica', 'Sarabun'];
+  const TEXT_SIZE_OPTIONS = ['10pt', '11pt', '12pt', '14pt'];
+  const SORT_OPTIONS = [
+    'Citation style',
+    'Author (A-Z)',
+    'Author (Z-A)',
+    'Title (A-Z)',
+    'Title (Z-A)',
+    'Publication date (newest-oldest)',
+    'Publication date (oldest-newest)',
+    'Date added (newest-oldest)',
+    'Date added (oldest-newest)'
+  ];
+
   // Bibliography Settings
   const [settings, setSettings] = React.useState({
     hangingIndent: true,
     doubleSpaced: false,
     font: "Times New Roman",
     textSize: "12pt",
-    sortBy: "Author",
+    sortBy: "Citation style",
   });
 
+  const [settingsDropdown, setSettingsDropdown] = React.useState<string | null>(null);
+
+  const cleanForSort = (str: string) => {
+    return str.replace(/^(A|An|The)\s+/i, '').trim();
+  };
+
+  const comparePhonetic = (a: string, b: string) => {
+    const isThaiA = /[\u0E00-\u0E7F]/.test(a);
+    const isThaiB = /[\u0E00-\u0E7F]/.test(b);
+    if (isThaiA && !isThaiB) return -1;
+    if (!isThaiA && isThaiB) return 1;
+    return a.localeCompare(b, 'th-TH');
+  };
+
+  const applySort = (sortBy: string) => {
+    let sorted = [...citations];
+    if (sortBy === 'Author (A-Z)') {
+      sorted.sort((a, b) => comparePhonetic(cleanForSort(a.authorText), cleanForSort(b.authorText)));
+    } else if (sortBy === 'Author (Z-A)') {
+      sorted.sort((a, b) => comparePhonetic(cleanForSort(b.authorText), cleanForSort(a.authorText)));
+    } else if (sortBy === 'Title (A-Z)') {
+      sorted.sort((a, b) => comparePhonetic(cleanForSort(a.titleText), cleanForSort(b.titleText)));
+    } else if (sortBy === 'Title (Z-A)') {
+      sorted.sort((a, b) => comparePhonetic(cleanForSort(b.titleText), cleanForSort(a.titleText)));
+    } else if (sortBy === 'Publication date (newest-oldest)') {
+      sorted.sort((a, b) => b.year - a.year);
+    } else if (sortBy === 'Publication date (oldest-newest)') {
+      sorted.sort((a, b) => a.year - b.year);
+    } else if (sortBy === 'Date added (newest-oldest)') {
+      sorted.sort((a, b) => b.dateAdded - a.dateAdded);
+    } else if (sortBy === 'Date added (oldest-newest)') {
+      sorted.sort((a, b) => a.dateAdded - b.dateAdded);
+    } else if (sortBy === 'Citation style') {
+      sorted.sort((a, b) => a.id - b.id);
+    }
+    setCitations(sorted);
+  };
+
+  const handleSortSettings = (sortBy: string) => {
+    setSettings(prev => ({ ...prev, sortBy }));
+    applySort(sortBy);
+    setSettingsDropdown(null);
+  };
+
+  const handleFontChange = (font: string) => {
+    setSettings(prev => ({ ...prev, font }));
+    setSettingsDropdown(null);
+  };
+
+  const handleTextSizeChange = (textSize: string) => {
+    setSettings(prev => ({ ...prev, textSize }));
+    setSettingsDropdown(null);
+  };
+
   const toggleSetting = (key: keyof typeof settings) => {
-    setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+    setSettings(prev => ({ ...prev, [key]: !prev[key as keyof typeof settings] }));
   };
 
   const projects = [
@@ -718,22 +786,46 @@ export default function GeneratePage() {
                           <div className="h-[1px] bg-zinc-100 dark:bg-zinc-800 my-1 mx-2" />
                           
                           {[
-                            { label: 'Font', value: settings.font },
-                            { label: 'Text size', value: settings.textSize },
-                            { label: 'Sort by', value: settings.sortBy },
+                            { label: 'Font', value: settings.font, options: FONT_OPTIONS, handler: handleFontChange },
+                            { label: 'Text size', value: settings.textSize, options: TEXT_SIZE_OPTIONS, handler: handleTextSizeChange },
+                            { label: 'Sort by', value: settings.sortBy, options: SORT_OPTIONS, handler: handleSortSettings },
                           ].map((option) => (
-                            <button
-                              key={option.label}
-                              className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors group text-left"
-                            >
-                              <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
-                                {option.label}
-                              </span>
-                              <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100">
-                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">{option.value}</span>
-                                <ChevronRight className="h-3 w-3 text-zinc-400 group-hover:text-[#407bc4]" />
-                              </div>
-                            </button>
+                            <div key={option.label} className="relative">
+                              <button
+                                onClick={() => setSettingsDropdown(settingsDropdown === option.label ? null : option.label)}
+                                className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors group text-left"
+                              >
+                                <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
+                                  {option.label}
+                                </span>
+                                <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100">
+                                  <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">{option.value}</span>
+                                  <ChevronRight className={`h-3 w-3 text-zinc-400 group-hover:text-[#407bc4] transition-transform ${settingsDropdown === option.label ? 'rotate-90' : ''}`} />
+                                </div>
+                              </button>
+                              
+                              <AnimatePresence>
+                                {settingsDropdown === option.label && (
+                                  <motion.div 
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -5 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="absolute top-10 right-0 w-48 p-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl z-[60] flex flex-col max-h-[160px] overflow-y-auto custom-scrollbar"
+                                  >
+                                    {option.options.map(opt => (
+                                      <button
+                                        key={opt}
+                                        onClick={() => option.handler(opt)}
+                                        className={`text-left px-3 py-2 rounded-md text-[10px] transition-colors ${option.value === opt ? 'bg-zinc-100 dark:bg-zinc-800 text-[#407bc4] font-bold' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`}
+                                      >
+                                        {opt}
+                                      </button>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
                           ))}
                         </div>
 
@@ -752,7 +844,13 @@ export default function GeneratePage() {
               </div>
 
               {/* Paper Content */}
-              <div className="px-24 py-16 max-w-5xl mx-auto w-full">
+              <div 
+                className="px-24 py-16 max-w-5xl mx-auto w-full transition-all duration-300"
+                style={{ 
+                  fontFamily: settings.font === 'Sarabun' ? "'Sarabun', sans-serif" : settings.font,
+                  fontSize: settings.textSize 
+                }}
+              >
                 <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">References</h2>
                 
                 {citations.length > 0 ? (
