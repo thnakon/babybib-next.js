@@ -11,7 +11,8 @@ import {
   BookOpen, Triangle, Pencil, Copy, ChevronDown, Check,
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
-  Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet
+  Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
+  List, LayoutList
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -20,6 +21,7 @@ export default function GeneratePage() {
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
   const [isExportOpen, setIsExportOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
+  const [viewMode, setViewMode] = React.useState("Bibliography");
 
   const handleCopy = () => {
     setCopied(true);
@@ -27,6 +29,13 @@ export default function GeneratePage() {
   };
 
   const styles = ["APA - 7th Edition", "MLA - 9th Edition", "Harvard", "Chicago", "AMA", "CSE"];
+  
+  const views = [
+    { id: "Plain list", icon: <List className="h-4 w-4" />, label: "Plain list" },
+    { id: "Bibliography", icon: <FileText className="h-4 w-4" />, label: "Bibliography" },
+    { id: "Bibliography and in-text citations", icon: <LayoutList className="h-4 w-4" />, label: "Bibliography and in-text citations" },
+  ];
+
   const exportFormats = [
     { name: "Word (.docx)", icon: <FileText className="h-3 w-3" /> },
     { name: "PDF (.pdf)", icon: <FileSpreadsheet className="h-3 w-3" /> },
@@ -250,6 +259,32 @@ export default function GeneratePage() {
                     </div>
                   </>
                 )}
+              </div>
+
+              {/* View Mode Selector - Centered */}
+              <div className="flex-1 flex justify-center">
+                <div className="flex items-center bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800">
+                  {views.map((view) => (
+                    <div key={view.id} className="relative group">
+                      <button
+                        onClick={() => setViewMode(view.id)}
+                        className={`flex h-7 w-9 items-center justify-center rounded-md transition-all ${
+                          viewMode === view.id 
+                            ? "bg-white dark:bg-zinc-700 text-[#407bc4] shadow-sm" 
+                            : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                        }`}
+                      >
+                        {view.icon}
+                      </button>
+                      
+                      {/* Tooltip */}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                        {view.label}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900 dark:border-t-zinc-100" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="ml-auto flex items-center gap-2">
