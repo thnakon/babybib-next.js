@@ -12,7 +12,7 @@ import {
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
-  List, LayoutList
+  List, LayoutList, Settings2, Info
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -22,6 +22,19 @@ export default function GeneratePage() {
   const [isExportOpen, setIsExportOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
   const [viewMode, setViewMode] = React.useState("Bibliography");
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
+  
+  // Bibliography Settings
+  const [settings, setSettings] = React.useState({
+    alphabetical: true,
+    hangingIndent: true,
+    doubleSpaced: false,
+    showUrls: true,
+  });
+
+  const toggleSetting = (key: keyof typeof settings) => {
+    setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const handleCopy = () => {
     setCopied(true);
@@ -334,9 +347,68 @@ export default function GeneratePage() {
                 <button className="flex h-7 px-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors uppercase tracking-tight">
                   <RotateCw className="h-3 w-3" /> Refresh
                 </button>
-                <button className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm">
-                  <SlidersHorizontal className="h-3.5 w-3.5" />
-                </button>
+                
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                    className={`flex h-7 w-7 items-center justify-center rounded-full transition-all shadow-sm ${
+                      isSettingsOpen 
+                        ? "bg-[#407bc4] text-white" 
+                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    }`}
+                  >
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
+                  </button>
+
+                  {isSettingsOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsSettingsOpen(false)} />
+                      <div className="absolute top-full right-0 mt-2 w-64 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-50 overflow-hidden flex flex-col translate-y-0 opacity-100 transition-all">
+                        <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/30">
+                          <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                            <Settings2 className="h-3.5 w-3.5 text-[#407bc4]" /> Bibliography Settings
+                          </span>
+                        </div>
+                        
+                        <div className="p-2 flex flex-col gap-1">
+                          {[
+                            { id: 'alphabetical', label: 'Sort Alphabetically', desc: 'Order by author last name' },
+                            { id: 'hangingIndent', label: 'Hanging Indent', desc: 'Second line indentation' },
+                            { id: 'doubleSpaced', label: 'Double Spacing', desc: 'Increase vertical spacing' },
+                            { id: 'showUrls', label: 'Show URLs / DOI', desc: 'Display electronic links' },
+                          ].map((item) => (
+                            <button
+                              key={item.id}
+                              onClick={() => toggleSetting(item.id as keyof typeof settings)}
+                              className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors group text-left"
+                            >
+                              <div className="flex flex-col">
+                                <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
+                                  {item.label}
+                                </span>
+                                <span className="text-[9px] text-zinc-400 dark:text-zinc-500">
+                                  {item.desc}
+                                </span>
+                              </div>
+                              <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-200 ease-in-out ${settings[item.id as keyof typeof settings] ? 'bg-[#407bc4]' : 'bg-zinc-200 dark:bg-zinc-700'}`}>
+                                <div className={`w-3.5 h-3.5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ease-in-out ${settings[item.id as keyof typeof settings] ? 'translate-x-3.5' : 'translate-x-0'}`} />
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="px-4 py-3 bg-zinc-50 dark:bg-zinc-800/20 border-t border-zinc-100 dark:border-zinc-800">
+                          <div className="flex items-start gap-2">
+                            <Info className="h-3 w-3 text-[#407bc4] mt-0.5 shrink-0" />
+                            <p className="text-[9px] text-zinc-500 leading-tight">
+                              These settings applied to the current bibliography view. Changes are saved automatically.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Paper Content */}
