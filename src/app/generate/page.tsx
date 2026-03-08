@@ -11,7 +11,7 @@ import {
   BookOpen, Triangle, Pencil, Copy, ChevronDown, 
   ArrowLeft, ArrowRight, RotateCw, SlidersHorizontal, AlignLeft, Plus,
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
-  Heart, ShieldCheck
+  Heart, ShieldCheck, Search
 } from "lucide-react";
 
 export default function GeneratePage() {
@@ -144,15 +144,19 @@ export default function GeneratePage() {
           <div className="mx-auto w-full min-w-0">
             
             {/* Header / Nav Buttons */}
-            <div className="flex items-start justify-between mb-2">
-              <h1 className="text-4xl font-bold tracking-tight">Preview Link Card</h1>
-              <div className="hidden sm:flex items-center gap-2">
-                <button className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                  <ArrowLeft className="h-4 w-4 text-zinc-500" />
-                </button>
-                <button className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                  <ArrowRight className="h-4 w-4 text-zinc-500" />
-                </button>
+            {/* Search Bar Section */}
+            <div className="relative flex items-center mb-8 max-w-md">
+              <div className="absolute left-3 flex h-4 w-4 items-center justify-center text-zinc-400">
+                <Search className="h-4 w-4" />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search components, guides, or bibliography..." 
+                className="h-10 w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#407bc4] focus:ring-2 focus:ring-[#407bc4]/10"
+              />
+              <div className="absolute right-3 hidden sm:flex items-center gap-1 text-[10px] font-medium text-zinc-400">
+                <kbd className="rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5">⌘</kbd>
+                <kbd className="rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5">K</kbd>
               </div>
             </div>
 
