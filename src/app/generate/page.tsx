@@ -57,6 +57,7 @@ export default function GeneratePage() {
   const [resourceSearch, setResourceSearch] = React.useState("");
   const [copiedBib, setCopiedBib] = React.useState(false);
   const [copiedInText, setCopiedInText] = React.useState(false);
+  const [isDeletedModalOpen, setIsDeletedModalOpen] = React.useState(false);
 
   // Smart Search State
   const [mainSearchQuery, setMainSearchQuery] = React.useState("");
@@ -531,7 +532,10 @@ export default function GeneratePage() {
                 <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800 mx-1" />
                 
                 {/* Delete Button */}
-                <div className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/deleted w-8 hover:w-24">
+                <div 
+                  onClick={() => setIsDeletedModalOpen(true)}
+                  className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/deleted w-8 hover:w-24"
+                >
                   <Trash2 className="h-3.5 w-3.5 shrink-0 group-hover/deleted:text-red-500" />
                   <span className="ml-2 opacity-0 group-hover/deleted:opacity-100 transition-opacity duration-200 whitespace-nowrap group-hover/deleted:text-red-500">Deleted</span>
                 </div>
@@ -1048,63 +1052,107 @@ export default function GeneratePage() {
                </p>
             </div>
 
-            <AnimatePresence>
-              {deletedCitations.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all overflow-hidden"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="p-1.5 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                      <Trash2 className="h-4 w-4" />
-                    </div>
-                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                      {language === 'TH' ? 'รายการที่ลบไป' : 'Deleted Items'}
-                    </h3>
-                    <span className="flex items-center justify-center h-5 w-5 rounded-full bg-red-100 dark:bg-red-900/30 text-[10px] font-bold text-red-600 dark:text-red-400 ml-auto transition-transform hover:scale-110">
-                      {deletedCitations.length}
-                    </span>
+          </div>
+        </aside>
+
+      </div>
+
+      <AnimatePresence>
+        {isDeletedModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDeletedModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[85vh]"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-red-50/50 dark:bg-red-900/10">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
                   </div>
-                  <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
+                  {language === 'TH' ? 'รายการที่เตรียมลบถาวร (Deleted Items)' : 'Deleted Items'}
+                  <span className="ml-1 text-[11px] font-bold text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full">{deletedCitations.length}</span>
+                </h3>
+                <button 
+                  onClick={() => setIsDeletedModalOpen(false)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4 text-zinc-400" />
+                </button>
+              </div>
+
+              <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+                {deletedCitations.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center text-center py-12">
+                    <Trash2 className="h-10 w-10 text-zinc-200 dark:text-zinc-800 mb-4" />
+                    <p className="text-sm font-medium text-zinc-400">
+                      {language === 'TH' ? 'ไม่มีรายการบรรณานุกรมในถังขยะ' : 'No deleted citations found'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
                     <AnimatePresence>
                       {deletedCitations.map(citation => (
                         <motion.div 
                           key={citation.id}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 relative group flex items-start justify-between gap-2 shadow-sm hover:border-red-200 dark:hover:border-red-900/50 transition-colors"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9, height: 0 }}
+                          className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700/50 relative group flex items-start justify-between gap-4 shadow-sm hover:border-red-200 dark:hover:border-red-900/50 transition-colors"
                         >
-                          <div className="text-[10px] text-zinc-500 line-clamp-2 leading-relaxed flex-1 pt-0.5">
+                          <div className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed flex-1">
                             {citation.authorText ? `${citation.authorText} (${citation.year}). ${citation.titleText}` : citation.content}
                           </div>
-                          <div className="flex flex-col gap-1 items-center shrink-0">
+                          <div className="flex flex-col sm:flex-row gap-1.5 items-center shrink-0 mt-0.5">
                             <button 
                               onClick={() => restoreCitation(citation.id)}
-                              className="h-6 w-6 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-emerald-600 rounded-md transition-colors" title={language === 'TH' ? 'กู้คืน' : 'Restore'}
+                              className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 hover:text-emerald-600 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'กู้คืนกลับไปยังตาราง' : 'Restore'}
                             >
-                              <RotateCw className="h-3 w-3" />
+                              <RotateCw className="h-3.5 w-3.5" />
                             </button>
                             <button 
                               onClick={() => permanentlyDeleteCitation(citation.id)}
-                              className="h-6 w-6 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 rounded-md transition-colors" title={language === 'TH' ? 'ลบถาวร' : 'Delete Permanently'}
+                              className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'ลบทิ้งถาวร 1 รายการ' : 'Delete Permanently'}
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </motion.div>
                       ))}
                     </AnimatePresence>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                )}
+              </div>
+              
+              <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/30 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
+                <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
+                  {language === 'TH' ? 'ระบบกู้คืนไฟล์' : 'Trash System'}
+                </span>
+                {deletedCitations.length > 0 && (
+                  <button 
+                    onClick={() => {
+                      setDeletedCitations([]);
+                      showToast(language === 'TH' ? 'เคลียร์ถังขยะเรียบร้อย' : 'Trash emptied');
+                    }}
+                    className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-600 dark:text-red-400 font-bold transition-colors bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg active:scale-95"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    {language === 'TH' ? 'ล้างถังขยะทั้งหมด' : 'Empty Trash'}
+                  </button>
+                )}
+              </div>
+            </motion.div>
           </div>
-        </aside>
-
-      </div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isCreateModalOpen && (
