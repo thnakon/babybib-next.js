@@ -37,12 +37,9 @@ export default function Home() {
               <motion.div layoutId="logo-container" className="relative h-24 w-24 overflow-hidden rounded-2xl">
                 <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
               </motion.div>
-              <motion.div layoutId="brand-text" className="relative text-6xl font-bold tracking-tight">
-                <span className="text-[#407bc4]">Baby</span>
-                <span className="text-[#f58e58]">bib</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 dark:via-white/80 to-transparent bg-[length:200%_100%] bg-clip-text text-transparent animate-[shiny-text_3s_linear_infinite] pointer-events-none select-none">
-                  Babybib
-                </div>
+              <motion.div layoutId="brand-text" className="text-6xl font-bold tracking-tight">
+                <span className="text-transparent bg-clip-text animate-[shine_3s_linear_infinite] bg-[linear-gradient(110deg,#407bc4,45%,#a0c4f2,55%,#407bc4)] bg-[length:200%_100%]">Baby</span>
+                <span className="text-transparent bg-clip-text animate-[shine_3s_linear_infinite] bg-[linear-gradient(110deg,#f58e58,45%,#fad1bc,55%,#f58e58)] bg-[length:200%_100%]">bib</span>
               </motion.div>
             </div>
           </motion.div>
@@ -57,12 +54,9 @@ export default function Home() {
               <motion.div layoutId="logo-container" className="relative h-14 w-14 overflow-hidden rounded-lg">
                 <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
               </motion.div>
-              <motion.div layoutId="brand-text" className="relative text-2xl font-bold tracking-tight pr-8">
-                <span className="text-[#407bc4]">Baby</span>
-                <span className="text-[#f58e58]">bib</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 dark:via-white/80 to-transparent bg-[length:200%_100%] bg-clip-text text-transparent animate-[shiny-text_3s_linear_infinite] pointer-events-none select-none">
-                  Babybib
-                </div>
+              <motion.div layoutId="brand-text" className="text-2xl font-bold tracking-tight pr-8">
+                <span className="text-transparent bg-clip-text animate-[shine_3s_linear_infinite] bg-[linear-gradient(110deg,#407bc4,45%,#a0c4f2,55%,#407bc4)] bg-[length:200%_100%]">Baby</span>
+                <span className="text-transparent bg-clip-text animate-[shine_3s_linear_infinite] bg-[linear-gradient(110deg,#f58e58,45%,#fad1bc,55%,#f58e58)] bg-[length:200%_100%]">bib</span>
               </motion.div>
             </>
           ) : (
