@@ -9,6 +9,7 @@ export const translations = {
       contact: "Contact",
       terms: "Terms of Service",
       privacy: "Privacy Policy",
+      signIn: "Sign in",
     },
     home: {
       badge: "Smart ISBN Search",
@@ -35,6 +36,7 @@ export const translations = {
       contact: "ติดต่อเรา",
       terms: "ข้อตกลงการใช้งาน",
       privacy: "นโยบายความเป็นส่วนตัว",
+      signIn: "เข้าสู่ระบบ",
     },
     home: {
       badge: "ค้นหา ISBN อัจฉริยะ",
@@ -61,6 +63,7 @@ export const translations = {
       contact: "联系我们",
       terms: "服务条款",
       privacy: "隐私政策",
+      signIn: "登录",
     },
     home: {
       badge: "智能 ISBN 搜索",
