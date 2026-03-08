@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight, Facebook, Instagram, Twitter, MessageCircle 
 
 export function NavLinks() {
   return (
-    <div className="hidden md:flex items-center gap-6 text-sm font-light text-zinc-600 dark:text-zinc-400">
+    <div className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-400">
       <Link href="/help" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
         Help
       </Link>
@@ -30,20 +30,20 @@ export function NavLinks() {
                 <ChevronRight className="h-4 w-4 opacity-50 group-hover/share:opacity-100 transition-opacity" />
               </button>
               
-              {/* Added a left-100% positioned dropdown extending to the right */}
-              <div className="absolute top-0 right-full pr-2 hidden group-hover/share:block">
+              {/* Added a left-full (pushing from left edge to end) and left padding to extend popup to the right */}
+              <div className="absolute top-0 left-full pl-2 hidden group-hover/share:block">
                  <div className="flex flex-col w-40 rounded-xl bg-white dark:bg-zinc-900 shadow-xl border border-zinc-100 dark:border-zinc-800 p-2">
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <Facebook className="h-4 w-4" /> Facebook
+                      <Facebook className="h-4 w-4 text-[#1877F2]" /> Facebook
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <Instagram className="h-4 w-4" /> Instagram
+                      <Instagram className="h-4 w-4 text-[#E4405F]" /> Instagram
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <Twitter className="h-4 w-4" /> X
+                      <Twitter className="h-4 w-4 text-black dark:text-white" /> X
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <MessageCircle className="h-4 w-4" /> Line
+                      <MessageCircle className="h-4 w-4 text-[#06C755]" /> Line
                     </button>
                  </div>
               </div>
