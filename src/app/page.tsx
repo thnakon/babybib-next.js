@@ -84,12 +84,14 @@ export default function Home() {
         className="flex flex-col items-center pt-32 pb-20"
       >
         {/* Badge */}
-        <div className="group mb-12 relative overflow-hidden flex items-center gap-2 rounded-full border border-[#407bc4]/20 dark:border-[#407bc4]/30 bg-[#407bc4]/5 dark:bg-[#407bc4]/10 px-3 py-1 text-sm font-medium cursor-pointer transition-colors hover:border-[#407bc4]/40 dark:hover:border-[#407bc4]/50">
-          <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent" />
-          <span className="relative z-10 flex items-center gap-1 rounded-full bg-[#f58e58] px-2 py-0.5 text-[10px] text-white">
-            <Sparkles className="h-3 w-3" /> {t.new}
+        <div className="group relative mb-12 inline-flex overflow-hidden rounded-full p-[2px] cursor-pointer">
+          <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#407bc4_50%,#f58e58_100%)]" />
+          <span className="inline-flex h-full w-full items-center gap-2 rounded-full bg-white/95 dark:bg-[#0a0a0a]/95 px-3 py-1 text-sm font-medium transition-colors group-hover:bg-white dark:group-hover:bg-[#0a0a0a] backdrop-blur-xl">
+            <span className="flex items-center gap-1 rounded-full bg-[#f58e58] px-2 py-0.5 text-[10px] text-white">
+              <Sparkles className="h-3 w-3" /> {t.new}
+            </span>
+            <span className="text-[#407bc4] dark:text-[#6ba1e6]">{t.badge}</span>
           </span>
-          <span className="relative z-10 text-[#407bc4] dark:text-[#6ba1e6]">{t.badge}</span>
         </div>
 
         {/* Hero Section */}
