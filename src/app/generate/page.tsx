@@ -101,7 +101,7 @@ export default function GeneratePage() {
         - Increased size
       */}
       <nav className="sticky top-0 z-50 flex w-full h-16 items-center justify-between px-6 sm:px-8 lg:px-12 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-md">
               <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
@@ -111,6 +111,14 @@ export default function GeneratePage() {
               <span className="text-[#f58e58]">bib</span>
             </span>
           </Link>
+
+          {/* Nav Links */}
+          <div className="hidden lg:flex items-center gap-6 ml-4">
+            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Features</Link>
+            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Pricing</Link>
+            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Docs</Link>
+            <Link href="#" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] transition-colors">Blog</Link>
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
