@@ -353,6 +353,21 @@ export default function GeneratePage() {
     }
   };
 
+  const getResourceBadgeStyle = (type: string) => {
+    switch (type) {
+      case 'book': return "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-blue-100 dark:border-blue-800/30";
+      case 'article': case 'journal': case 'db-article': return "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30";
+      case 'website': return "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 border-purple-100 dark:border-purple-800/30";
+      case 'video': case 'film': case 'broadcast': return "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border-red-100 dark:border-red-800/30";
+      case 'news': case 'news-article': case 'magazine': return "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 border-orange-100 dark:border-orange-800/30";
+      case 'report': case 'thesis': return "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700/50";
+      case 'artwork': case 'image': case 'palette': return "bg-pink-50 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400 border-pink-100 dark:border-pink-800/30";
+      case 'legal-bill': case 'legal-case': case 'legislation': return "bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400 border-sky-100 dark:border-sky-800/30";
+      case 'map': return "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400 border-amber-100 dark:border-amber-800/30";
+      default: return "bg-zinc-50 text-zinc-500 dark:bg-zinc-800/50 dark:text-zinc-400 border-zinc-100 dark:border-zinc-800";
+    }
+  };
+
   const handleSaveManualCitation = async () => {
     if (!activeProjectId) {
       toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
@@ -1203,11 +1218,14 @@ export default function GeneratePage() {
                                     <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{result.title}</span>
-                                    <div className="flex items-center gap-1.5">
-                                      <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{result.title}</span>
+                                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${getResourceBadgeStyle(result.type)}`}>
                                         {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
                                       </span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                      {/* Extra info can go here */}
                                     </div>
                                   </div>
                                 </div>
