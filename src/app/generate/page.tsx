@@ -748,7 +748,7 @@ export default function GeneratePage() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-md">
-              <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority />
+              <Image src="/logo.png" alt="Babybib Logo" fill className="object-contain" priority sizes="40px" />
             </div>
             <span className="text-xl font-bold tracking-tight">
               <span className="text-[#407bc4]">Baby</span>

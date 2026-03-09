@@ -1,5 +1,7 @@
 import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel } from "docx";
 import { saveAs } from "file-saver";
+import { toPng } from 'html-to-image';
+import { jsPDF } from 'jspdf';
 
 // Helper to clean HTML tags for plain text or specific formats
 const stripHtml = (html: string) => {
@@ -44,25 +46,29 @@ export const exportToWord = async (citations: any[], settings: any, language: st
   const paragraphs = [
     new Paragraph({
       text: title,
-      heading: HeadingLevel.HEADING_1,
       alignment: AlignmentType.CENTER,
       spacing: { after: 400 },
+      children: [
+        new TextRun({
+          text: title,
+          bold: true,
+          size: 32, // 16pt
+          font: settings.font,
+        })
+      ]
     }),
   ];
 
   citations.forEach((c) => {
-    // We need to parse the html string to handle italics
-    // For simplicity, we split by <i> and </i>
     const parts = c.html.split(/<\/?i>/);
     const children: TextRun[] = [];
     
     parts.forEach((part: string, index: number) => {
-      // Even indexes are normal, odd are italicized (if they were between <i> and </i>)
       const isItalic = index % 2 !== 0;
       children.push(new TextRun({
         text: part,
         italics: isItalic,
-        size: parseInt(settings.textSize) * 2, // docx uses half-points
+        size: parseInt(settings.textSize) * 2,
         font: settings.font,
       }));
     });
@@ -71,10 +77,10 @@ export const exportToWord = async (citations: any[], settings: any, language: st
       new Paragraph({
         children: children,
         spacing: { 
-          line: settings.doubleSpaced ? 480 : 240, // 240 is 1 line
+          line: settings.doubleSpaced ? 480 : 360, 
           after: 200 
         },
-        indent: settings.hangingIndent ? { hanging: 720 } : undefined, // 720 is 0.5 inch
+        indent: settings.hangingIndent ? { left: 720, hanging: 720 } : undefined,
         alignment: AlignmentType.LEFT,
       })
     );
@@ -101,18 +107,35 @@ export const exportToWord = async (citations: any[], settings: any, language: st
 };
 
 export const exportToPDF = async (elementId: string, filename: string) => {
-  // @ts-ignore
-  const html2pdf = (await import('html2pdf.js')).default;
   const element = document.getElementById(elementId);
   if (!element) return;
 
-  const opt = {
-    margin: 1,
-    filename: filename,
-    image: { type: 'jpeg' as const, quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
-  };
+  try {
+    // Hide actions temporarily if needed, but the paper ID should only contain the paper
+    const dataUrl = await toPng(element, { 
+      backgroundColor: '#ffffff',
+      cacheBust: true,
+      style: {
+        // Ensure no Lab/Oklch colors are parsed incorrectly by some capture engines
+        // effectively "flattening" the style
+      }
+    });
+    
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'in',
+      format: 'letter'
+    });
 
-  html2pdf().from(element).set(opt).save();
+    const imgProps = doc.getImageProperties(dataUrl);
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    doc.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    doc.save(filename);
+    return true;
+  } catch (error) {
+    console.error('PDF Export Error:', error);
+    throw error;
+  }
 };
