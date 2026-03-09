@@ -322,6 +322,37 @@ export default function GeneratePage() {
     paste: { TH: 'เขียน/วางบรรณานุกรม', EN: 'Write/paste citation' },
   };
 
+  const getResourceIcon = (type: string) => {
+    switch (type) {
+      case 'book': return <Book className="h-4 w-4" />;
+      case 'article': case 'journal': case 'db-article': return <FileText className="h-4 w-4" />;
+      case 'website': return <Globe className="h-4 w-4" />;
+      case 'report': return <ClipboardList className="h-4 w-4" />;
+      case 'news': case 'news-article': case 'magazine': return <Newspaper className="h-4 w-4" />;
+      case 'artwork': case 'image': return <Palette className="h-4 w-4" />;
+      case 'blog': return <MessageSquare className="h-4 w-4" />;
+      case 'chapter': return <BookOpen className="h-4 w-4" />;
+      case 'review': return <Star className="h-4 w-4" />;
+      case 'conference': return <Mic2 className="h-4 w-4" />;
+      case 'dictionary': case 'encyclopedia': return <Languages className="h-4 w-4" />;
+      case 'ebook': return <Smartphone className="h-4 w-4" />;
+      case 'film': return <Film className="h-4 w-4" />;
+      case 'interview': case 'speech': return <Mic2 className="h-4 w-4" />;
+      case 'legal-bill': case 'legal-case': return <Gavel className="h-4 w-4" />;
+      case 'legislation': return <Scale className="h-4 w-4" />;
+      case 'map': return <MapIcon className="h-4 w-4" />;
+      case 'patent': return <Award className="h-4 w-4" />;
+      case 'personal': return <Mail className="h-4 w-4" />;
+      case 'regulation': return <ShieldCheck className="h-4 w-4" />;
+      case 'song': return <Music className="h-4 w-4" />;
+      case 'standard': return <Check className="h-4 w-4" />;
+      case 'thesis': return <Library className="h-4 w-4" />;
+      case 'broadcast': return <Tv className="h-4 w-4" />;
+      case 'video': return <Video className="h-4 w-4" />;
+      default: return <FileText className="h-4 w-4" />;
+    }
+  };
+
   const handleSaveManualCitation = async () => {
     if (!activeProjectId) {
       toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
@@ -1168,10 +1199,17 @@ export default function GeneratePage() {
                             <div key={result.id} className="flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 transition-colors group">
                               <div className="flex flex-col gap-1 pr-4">
                                 <div className="flex items-center gap-2">
-                                  <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{result.title}</span>
-                                  <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
-                                    {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
-                                  </span>
+                                  <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
+                                    <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{result.title}</span>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                                        {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
+                                      </span>
+                                    </div>
+                                  </div>
                                 </div>
                                 <span className="text-xs text-zinc-500 line-clamp-1">
                                   {result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ')} ({result.year}) - {result.source}
