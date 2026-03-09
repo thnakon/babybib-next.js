@@ -18,6 +18,13 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useSWR from 'swr';
+import { toast } from "sonner";
+import { 
+  exportToBibTeX, 
+  exportToRIS, 
+  exportToWord, 
+  exportToPDF 
+} from "@/lib/export-utils";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -49,9 +56,8 @@ export default function GeneratePage() {
     backup: null as string | null
   });
   const [isAddCitationModalOpen, setIsAddCitationModalOpen] = React.useState(false);
-  const [newCitationData, setNewCitationData] = React.useState({
-    authors: [{ firstName: "", middleName: "", lastName: "" }],
-    authorCondition: "general",
+  const [newCitationData, setNewCitationData] = React.useState<any>({
+    authors: [{ firstName: "", middleName: "", lastName: "", prefix: "", condition: "general" }],
     year: "",
     title: "",
     source: "",
@@ -63,6 +69,9 @@ export default function GeneratePage() {
   const [copiedBib, setCopiedBib] = React.useState(false);
   const [copiedInText, setCopiedInText] = React.useState(false);
   const [isDeletedModalOpen, setIsDeletedModalOpen] = React.useState(false);
+  const [isArchivedProjectsModalOpen, setIsArchivedProjectsModalOpen] = React.useState(false);
+  const [editingProject, setEditingProject] = React.useState<any>(null);
+  const [isEditProjectModalOpen, setIsEditProjectModalOpen] = React.useState(false);
 
   const [searchReferencesQuery, setSearchReferencesQuery] = React.useState("");
   
@@ -76,12 +85,14 @@ export default function GeneratePage() {
     showAnnotations: false
   });
   const [highlightedId, setHighlightedId] = React.useState<number | null>(null);
+  const [editingCitationId, setEditingCitationId] = React.useState<number | null>(null);
 
   // Smart Search State
   const [mainSearchQuery, setMainSearchQuery] = React.useState("");
   const [isMainSearchDropdownOpen, setIsMainSearchDropdownOpen] = React.useState(false);
   const [isMainSearching, setIsMainSearching] = React.useState(false);
   const [mainSearchResults, setMainSearchResults] = React.useState<any[]>([]);
+  const paperRef = React.useRef<HTMLDivElement>(null);
 
   const mockSearchResults = [
     { id: '1', title: 'The Design of Everyday Things', authors: [{ firstName: 'Donald', middleName: 'A.', lastName: 'Norman' }], year: '2013', source: 'Basic Books', type: 'book' },
@@ -113,7 +124,7 @@ export default function GeneratePage() {
 
   const handleSelectSearchResult = async (item: any) => {
     if (!activeProjectId) {
-      showToast(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
       return;
     }
     
@@ -139,13 +150,13 @@ export default function GeneratePage() {
         mutateCitations();
         setHighlightedId(newCitation.id);
         setTimeout(() => setHighlightedId(null), 3000);
-        showToast(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
+        toast.success(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
       } else {
         throw new Error("Failed to save citation");
       }
     } catch (error) {
       console.error(error);
-      showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
+      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
     }
     
     setIsMainSearchDropdownOpen(false);
@@ -191,19 +202,22 @@ export default function GeneratePage() {
 
   const handleSaveManualCitation = async () => {
     if (!activeProjectId) {
-      showToast(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
       return;
     }
     
     // basic validation
     if (!newCitationData.title || newCitationData.authors.every((a: any) => !a.lastName && !a.firstName)) {
-      showToast(language === 'TH' ? 'กรุณากรอกข้อมูลที่จำเป็น' : 'Please fill in required fields');
+      toast.error(language === 'TH' ? 'กรุณากรอกข้อมูลที่จำเป็น' : 'Please fill in required fields');
       return;
     }
 
     try {
-      const res = await fetch('/api/citations', {
-        method: 'POST',
+      const url = editingCitationId ? `/api/citations/${editingCitationId}` : '/api/citations';
+      const method = editingCitationId ? 'PATCH' : 'POST';
+      
+      const res = await fetch(url, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -219,17 +233,21 @@ export default function GeneratePage() {
       });
 
       if (res.ok) {
-        const newCitation = await res.json();
+        const savedCitation = await res.json();
         mutateCitations();
-        setHighlightedId(newCitation.id);
+        setHighlightedId(savedCitation.id);
         setTimeout(() => setHighlightedId(null), 3000);
         setIsAddCitationModalOpen(false);
-        showToast(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
+        setEditingCitationId(null);
+        toast.success(editingCitationId 
+          ? (language === 'TH' ? 'แก้ไขรายการสำเร็จ' : 'Citation updated successfully') 
+          : (language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully')
+        );
       } else {
         throw new Error();
       }
     } catch (e) {
-      showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
+      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
     }
   };
   
@@ -237,39 +255,61 @@ export default function GeneratePage() {
   const { data: deletedCitations = [], mutate: mutateDeletedCitations } = useSWR(activeProjectId ? `/api/citations?projectId=${activeProjectId}&isDeleted=true` : null, fetcher);
 
   const getFormattedCitation = (c: any, style: string) => {
-    // Basic formatting mock logic for different styles
     let content;
+    let html;
+    let plainText;
     let inText;
     
-    // Parse Authors
-    const authorLast = c.authors?.[0]?.lastName || 'Unknown';
-    const numAuthors = c.authors?.length || 0;
-    
+    const formatAuthor = (a: any, isAPA: boolean) => {
+      if (a.condition === 'none') return '';
+      if (a.condition === 'org') return a.firstName;
+      
+      const prefix = a.prefix ? a.prefix + ' ' : '';
+      if (isAPA) {
+        if (!a.lastName) return `${prefix}${a.firstName}`;
+        return `${prefix}${a.lastName}, ${a.firstName?.charAt(0) || ''}.`;
+      } else {
+        if (!a.lastName) return `${prefix}${a.firstName}`;
+        return `${prefix}${a.lastName}, ${a.firstName}`;
+      }
+    };
+
+    const authorsList = c.authors?.map((a: any) => formatAuthor(a, style.includes('APA'))).filter(Boolean) || [];
+    const numAuthors = authorsList.length;
+    const authorLast = c.authors?.[0]?.condition === 'org' ? c.authors[0].firstName : (c.authors?.[0]?.lastName || 'Unknown');
+
     if (style.includes('APA')) {
-      const authorsStr = c.authors?.map((a: any) => `${a.lastName}, ${a.firstName?.charAt(0) || ''}.`).join(' & ') || 'Unknown';
+      const authorsStr = authorsList.join(' & ') || 'Unknown';
       const dateStr = c.year ? `(${c.year}).` : '(n.d.).';
-      const titleStr = c.title ? ` ${c.title}.` : '';
+      const titleStr = c.title ? `${c.title}.` : '';
       const sourceStr = c.source ? ` ${c.source}.` : '';
-      content = <>{authorsStr} {dateStr}<i>{titleStr}</i>{sourceStr}</>;
+      content = <>{authorsStr} {dateStr} <i>{titleStr}</i>{sourceStr}</>;
+      html = `${authorsStr} ${dateStr} <i>${titleStr}</i>${sourceStr}`;
+      plainText = `${authorsStr} ${dateStr} ${titleStr}${sourceStr}`;
       inText = `(${authorLast}${numAuthors > 1 ? ' et al.' : ''}, ${c.year || 'n.d.'})`;
     } else if (style.includes('MLA')) {
-      const authorsStr = c.authors?.map((a: any, i: number) => i === 0 ? `${a.lastName}, ${a.firstName}` : `${a.firstName} ${a.lastName}`).join(', and ') || 'Unknown';
+      const authorsStr = authorsList.map((a: string, i: number) => i === 0 ? a : a.split(', ').reverse().join(' ')).join(', and ') || 'Unknown';
       const titleStr = c.title ? ` <i>${c.title}</i>.` : '';
       const sourceStr = c.source ? ` ${c.source},` : '';
       const dateStr = c.year ? ` ${c.year}.` : '';
       content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}</>;
+      html = `${authorsStr}.${titleStr}${sourceStr}${dateStr}`;
+      plainText = `${authorsStr}. ${c.title || ''}.${sourceStr}${dateStr}`;
       inText = `(${authorLast})`;
     } else if (style.includes('Chicago')) {
-      const authorsStr = c.authors?.map((a: any, i: number) => i === 0 ? `${a.lastName}, ${a.firstName}` : `${a.firstName} ${a.lastName}`).join(', and ') || 'Unknown';
+      const authorsStr = authorsList.map((a: string, i: number) => i === 0 ? a : a.split(', ').reverse().join(' ')).join(', and ') || 'Unknown';
       const titleStr = c.title ? ` <i>${c.title}</i>.` : '';
       const sourceStr = c.source ? ` ${c.source},` : '';
       const dateStr = c.year ? ` ${c.year}.` : '';
       content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}</>;
+      html = `${authorsStr}.${titleStr}${sourceStr}${dateStr}`;
+      plainText = `${authorsStr}. ${c.title || ''}.${sourceStr}${dateStr}`;
       inText = `(${authorLast} ${c.year || 'n.d.'})`;
     } else {
-      // Fallback (Generic)
-      const authorsStr = c.authors?.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ') || 'Unknown';
+      const authorsStr = authorsList.map((a: string) => a.split(', ').reverse().join(' ')).join(', ') || 'Unknown';
       content = <>{authorsStr}. "{c.title}". <i>{c.source}</i> ({c.year}).</>;
+      html = `${authorsStr}. "${c.title}". <i>${c.source}</i> (${c.year}).`;
+      plainText = `${authorsStr}. "${c.title}". ${c.source} (${c.year}).`;
       inText = `[${c.id}]`;
     }
 
@@ -279,7 +319,9 @@ export default function GeneratePage() {
       year: c.year ? parseInt(c.year) : 0,
       dateAdded: new Date(c.createdAt).getTime(),
       inText,
-      content
+      content,
+      html,
+      plainText
     };
   };
 
@@ -345,12 +387,8 @@ export default function GeneratePage() {
     // Disabled sort dragging for now, as order needs to sync with backend optionally
   };
 
-  const [toastMessage, setToastMessage] = React.useState<string | null>(null);
+  // Toast handling removed in favor of sonner
 
-  const showToast = (message: string) => {
-    setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
 
   const deleteCitation = async (id: number) => {
     try {
@@ -362,7 +400,7 @@ export default function GeneratePage() {
       if (res.ok) {
         mutateCitations();
         mutateDeletedCitations();
-        showToast(language === 'TH' ? 'ลบรายการบรรณานุกรมสำเร็จ' : 'Citation deleted successfully');
+        toast.success(language === 'TH' ? 'ย้ายไปที่ถังขยะเรียบร้อย' : 'Citation moved to trash');
       }
     } catch (e) { console.error(e) }
   };
@@ -377,7 +415,7 @@ export default function GeneratePage() {
       if (res.ok) {
         mutateCitations();
         mutateDeletedCitations();
-        showToast(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
+        toast.success(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
       }
     } catch (e) { console.error(e) }
   };
@@ -387,7 +425,7 @@ export default function GeneratePage() {
       const res = await fetch(`/api/citations/${id}`, { method: 'DELETE' });
       if (res.ok) {
         mutateDeletedCitations();
-        showToast(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
+        toast.warning(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
       }
     } catch (e) { console.error(e) }
   };
@@ -395,34 +433,92 @@ export default function GeneratePage() {
   const [inTextCopiedId, setInTextCopiedId] = React.useState<number | null>(null);
 
   const handleEditCitation = (citation: any) => {
+    // citation here is the processed one, but we need the raw fields for the form
+    const raw = citation.original;
     setNewCitationData({
-      authors: [{ firstName: '', middleName: '', lastName: citation.authorText || 'Author' }],
-      authorCondition: 'general',
-      year: citation.year?.toString() || '2024',
-      title: citation.titleText || 'Title',
-      source: '',
-      url: ''
+      authors: raw.authors?.map((a: any) => ({
+        firstName: a.firstName || '',
+        middleName: a.middleName || '',
+        lastName: a.lastName || '',
+        prefix: a.prefix || '',
+        condition: a.condition || 'general'
+      })) || [{ firstName: '', middleName: '', lastName: '', prefix: '', condition: 'general' }],
+      year: raw.year || '',
+      title: raw.title || '',
+      source: raw.source || '',
+      url: raw.url || ''
     });
-    setSelectedType(citation.type || 'book'); 
+    setSelectedType(raw.type || 'book'); 
+    setEditingCitationId(raw.id);
     setCitationStep(1);
     setIsAddCitationModalOpen(true);
   };
 
-  const handleCopyInTextCitation = (id: number, inText: string) => {
-    navigator.clipboard.writeText(inText);
-    setInTextCopiedId(id);
-    showToast(language === 'TH' ? 'คัดลอก In-text citation สำเร็จ' : 'In-text citation copied successfully');
-    setTimeout(() => setInTextCopiedId(null), 2000);
+
+  const copyRichText = async (html: string, plainText: string) => {
+    try {
+      const typeHtml = "text/html";
+      const typePlain = "text/plain";
+      // Wrap in a div to ensure formatting is preserved better by some apps
+      const wrappedHtml = `<div style="font-family: serif;">${html}</div>`;
+      const blobHtml = new Blob([wrappedHtml], { type: typeHtml });
+      const blobPlain = new Blob([plainText], { type: typePlain });
+      const data = [new ClipboardItem({ [typeHtml]: blobHtml, [typePlain]: blobPlain })];
+      await navigator.clipboard.write(data);
+      return true;
+    } catch (err) {
+      console.error('Clipboard error:', err);
+      try {
+        await navigator.clipboard.writeText(plainText);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
   };
 
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    if (processedCitations.length === 0) return;
+    
+    // Header for "References"
+    const headerPlain = language === 'TH' ? 'รายการอ้างอิง' : 'References';
+    const headerHtml = `<h2 style="font-family: serif; font-size: 1.5em; text-align: center; margin-bottom: 1em;">${headerPlain}</h2>`;
+    
+    // Combine all citations
+    const allCitationsHtml = processedCitations.map((c: any) => 
+      `<div style="margin-bottom: 0.8em; ${settings.hangingIndent ? 'padding-left: 2em; text-indent: -2em;' : ''} line-height: ${settings.doubleSpaced ? '2.0' : '1.5'}; font-family: serif;">${c.html}</div>`
+    ).join('');
+    
+    const allCitationsPlain = headerPlain + '\n\n' + processedCitations.map((c: any) => c.plainText).join('\n');
+    
+    const success = await copyRichText(headerHtml + allCitationsHtml, allCitationsPlain);
+    if (success) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      toast.success(language === 'TH' ? 'คัดลอกบรรณานุกรมทั้งหมดแล้ว (พร้อมรูปแบบ)' : 'Copied all bibliographies (with formatting)');
+    }
   };
 
-  const handleItemCopy = (id: number) => {
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+  const handleItemCopy = async (id: number) => {
+    const citation = processedCitations.find((c: any) => c.id === id);
+    if (!citation) return;
+    
+    const success = await copyRichText(citation.html, citation.plainText);
+    if (success) {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+      toast.success(language === 'TH' ? 'คัดลอกบรรณานุกรมแล้ว (พร้อมรูปแบบ)' : 'Copied bibliography (with formatting)');
+    }
+  };
+
+  const handleCopyInTextCitation = async (id: number, text: string) => {
+    // In-text citations are usually not italicized in most styles, but we can wrap them in rich text anyway
+    const success = await copyRichText(`<span>${text}</span>`, text);
+    if (success) {
+      setInTextCopiedId(id);
+      setTimeout(() => setInTextCopiedId(null), 2000);
+      toast.success(language === 'TH' ? 'คัดลอก In-text citation แล้ว' : 'Copied in-text citation');
+    }
   };
 
   const styles = ["APA - 7th Edition", "MLA - 9th Edition", "Harvard", "Chicago", "AMA", "CSE"];
@@ -433,11 +529,34 @@ export default function GeneratePage() {
     { id: "Bibliography and in-text citations", icon: <LayoutList className="h-4 w-4" />, label: "Bibliography and in-text citations" },
   ];
 
+  const handleExport = async (format: string) => {
+    if (processedCitations.length === 0) {
+      toast.error(language === 'TH' ? 'ไม่มีรายการให้ออก' : 'No citations to export');
+      return;
+    }
+
+    try {
+      if (format.includes('Word')) {
+        await exportToWord(processedCitations, settings, language);
+      } else if (format.includes('PDF')) {
+        await exportToPDF('citation-paper', 'bibliography.pdf');
+      } else if (format.includes('BibTeX')) {
+        exportToBibTeX(processedCitations);
+      } else if (format.includes('RIS')) {
+        exportToRIS(processedCitations);
+      }
+      toast.success(language === 'TH' ? `ออกไฟล์ ${format} สำเร็จ` : `Exported ${format} successfully`);
+    } catch (err) {
+      console.error(err);
+      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการออกไฟล์' : 'Error exporting file');
+    }
+  };
+
   const exportFormats = [
-    { name: "Word (.docx)", icon: <FileText className="h-3 w-3" /> },
-    { name: "PDF (.pdf)", icon: <FileSpreadsheet className="h-3 w-3" /> },
-    { name: "BibTeX (.bib)", icon: <FileCode className="h-3 w-3" /> },
-    { name: "RIS (.ris)", icon: <FileJson className="h-3 w-3" /> },
+    { id: 'word', name: "Word (.docx)", icon: <FileText className="h-3 w-3" /> },
+    { id: 'pdf', name: "PDF (.pdf)", icon: <FileSpreadsheet className="h-3 w-3" /> },
+    { id: 'bibtex', name: "BibTeX (.bib)", icon: <FileCode className="h-3 w-3" /> },
+    { id: 'ris', name: "RIS (.ris)", icon: <FileJson className="h-3 w-3" /> },
   ];
 
   const FONT_OPTIONS = ['Times New Roman', 'Arial', 'Helvetica', 'Sarabun'];
@@ -480,7 +599,8 @@ export default function GeneratePage() {
     setSettings(prev => ({ ...prev, [key]: !prev[key as keyof typeof settings] }));
   };
 
-  const { data: fetchedProjects = [], mutate: mutateProjects } = useSWR('/api/projects', fetcher);
+  const { data: fetchedProjects = [], mutate: mutateProjects } = useSWR('/api/projects?isArchived=false', fetcher);
+  const { data: archivedProjects = [], mutate: mutateArchivedProjects } = useSWR('/api/projects?isArchived=true', fetcher);
   
   const iconComponents: Record<string, React.ReactNode> = {
     BookOpen: <BookOpen />,
@@ -534,14 +654,75 @@ export default function GeneratePage() {
         mutateProjects();
         setIsCreateModalOpen(false);
         setNewProject({ name: "", description: "", color: "#407bc4", icon: "BookOpen" });
-        showToast(language === 'TH' ? 'สร้างโปรเจกต์สำเร็จ' : 'Project created successfully');
+        toast.success(language === 'TH' ? 'สร้างโปรเจกต์สำเร็จ' : 'Project created successfully');
       }
     } catch (e) {
       console.error(e);
-      showToast(language === 'TH' ? 'เกิดข้อผิดพลาด' : 'An error occurred');
+      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาด' : 'An error occurred');
     } finally {
       setIsCreatingProject(false);
     }
+  };
+
+  const handleArchiveProject = async (id: number, isArchived: boolean = true) => {
+    try {
+      const res = await fetch(`/api/projects/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isArchived })
+      });
+      if (res.ok) {
+        if (isArchived && activeProjectId === id) {
+          setActiveProjectId(null);
+        }
+        mutateProjects();
+        mutateArchivedProjects();
+        toast.success(isArchived 
+          ? (language === 'TH' ? 'เก็บโปรเจกต์ลงคลังแล้ว' : 'Project archived')
+          : (language === 'TH' ? 'กู้คืนโปรเจกต์สำเร็จ' : 'Project restored')
+        );
+      }
+    } catch (e) { console.error(e) }
+  };
+
+  const handleDuplicateProject = async (id: number) => {
+    try {
+      const res = await fetch(`/api/projects/${id}/duplicate`, { method: 'POST' });
+      if (res.ok) {
+        mutateProjects();
+        toast.success(language === 'TH' ? 'ทำสำเนาโปรเจกต์สำเร็จ' : 'Project duplicated');
+      }
+    } catch (e) { console.error(e) }
+  };
+
+  const handleEditProjectClick = (p: any) => {
+    const raw = fetchedProjects.find((pf: any) => pf.id === p.id) || archivedProjects.find((pf: any) => pf.id === p.id);
+    setEditingProject(raw);
+    setNewProject({
+      name: raw.name,
+      description: raw.description || "",
+      color: raw.color || "#407bc4",
+      icon: raw.icon || "BookOpen"
+    });
+    setIsEditProjectModalOpen(true);
+  };
+
+  const handleUpdateProject = async () => {
+    if (!editingProject) return;
+    try {
+      const res = await fetch(`/api/projects/${editingProject.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProject)
+      });
+      if (res.ok) {
+        mutateProjects();
+        mutateArchivedProjects();
+        setIsEditProjectModalOpen(false);
+        setEditingProject(null);
+        toast.success(language === 'TH' ? 'แก้ไขโปรเจกต์สำเร็จ' : 'Project updated');
+      }
+    } catch (e) { console.error(e) }
   };
 
   const handleDeleteProject = async (id: number) => {
@@ -549,7 +730,8 @@ export default function GeneratePage() {
       const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
       if (res.ok) {
         mutateProjects();
-        showToast(language === 'TH' ? 'ลบโปรเจกต์สำเร็จ' : 'Project deleted');
+        mutateArchivedProjects();
+        toast.success(language === 'TH' ? 'ลบโปรเจกต์สำเร็จ' : 'Project deleted');
       }
     } catch (e) {
       console.error(e);
@@ -664,26 +846,34 @@ export default function GeneratePage() {
                               initial={{ opacity: 0, scale: 0.95, y: -10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              className="absolute right-0 mt-1 w-36 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-50 py-1.5 overflow-hidden"
+                              className="absolute right-0 mt-1 w-44 rounded-2xl border border-zinc-200/50 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl z-50 py-2 px-1.5 overflow-hidden"
                             >
                               {[
-                                { id: 'edit', label: language === 'TH' ? 'แก้ไข' : 'Edit', icon: <Pencil className="h-3 w-3" /> },
-                                { id: 'duplicate', label: language === 'TH' ? 'ทำสำเนา' : 'Duplicate', icon: <Copy className="h-3 w-3" /> },
-                                { id: 'archive', label: language === 'TH' ? 'ย้ายไปคลัง' : 'Archive', icon: <Archive className="h-3 w-3" /> },
-                                { id: 'delete', label: language === 'TH' ? 'ลบ' : 'Delete', icon: <Trash2 className="h-3 w-3" />, color: 'text-red-500' },
+                                { id: 'edit', label: language === 'TH' ? 'Edit' : 'Edit', icon: <Pencil className="h-4 w-4" /> },
+                                { id: 'duplicate', label: language === 'TH' ? 'Duplicate' : 'Duplicate', icon: <Copy className="h-4 w-4" /> },
+                                { id: 'archive', label: language === 'TH' ? 'Archive' : 'Archive', icon: <Archive className="h-4 w-4" /> },
+                                { id: 'delete', label: language === 'TH' ? 'Delete' : 'Delete', icon: <Trash2 className="h-4 w-4" />, color: 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20' },
                               ].map((option) => (
                                 <button
                                   key={option.id}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setProjectMenuIdx(null);
-                                    if (option.id === 'delete') {
+                                    if (option.id === 'archive') {
+                                      handleArchiveProject(project.id);
+                                    } else if (option.id === 'delete') {
                                       handleDeleteProject(project.id);
+                                    } else if (option.id === 'duplicate') {
+                                      handleDuplicateProject(project.id);
+                                    } else if (option.id === 'edit') {
+                                      handleEditProjectClick(project);
                                     }
                                   }}
-                                  className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${option.color || 'text-zinc-600 dark:text-zinc-400'}`}
+                                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-[13px] font-bold rounded-xl transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${option.color || 'text-zinc-700 dark:text-zinc-300'}`}
                                 >
-                                  {option.icon}
+                                  <span className={`${option.color ? 'text-red-500' : 'text-zinc-500'} shrink-0`}>
+                                    {option.icon}
+                                  </span>
                                   {option.label}
                                 </button>
                               ))}
@@ -727,10 +917,14 @@ export default function GeneratePage() {
 
             <div className="flex items-center justify-center gap-2 pt-2 text-[11px] font-semibold text-zinc-500 w-full">
               <div className="flex items-center bg-zinc-50 dark:bg-zinc-900/50 rounded-full p-1 border border-zinc-100 dark:border-zinc-800 shadow-xs">
-                {/* Archive Button */}
-                <div className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/archived w-8 hover:w-28">
+                <div 
+                  onClick={() => setIsArchivedProjectsModalOpen(true)}
+                  className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/archived w-8 hover:w-28"
+                >
                   <Archive className="h-3.5 w-3.5 shrink-0" />
-                  <span className="ml-2 opacity-0 group-hover/archived:opacity-100 transition-opacity duration-200 whitespace-nowrap">Archived</span>
+                  <span className="ml-2 opacity-0 group-hover/archived:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                    {language === 'TH' ? 'คลังโปรเจกต์' : 'Archived'}
+                  </span>
                 </div>
                 
                 <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800 mx-1" />
@@ -772,6 +966,14 @@ export default function GeneratePage() {
                 <div className="flex items-center gap-3">
                   <button 
                       onClick={() => {
+                        setEditingCitationId(null);
+                        setNewCitationData({
+                          authors: [{ firstName: "", middleName: "", lastName: "", prefix: "", condition: "general" }],
+                          year: "",
+                          title: "",
+                          source: "",
+                          url: ""
+                        });
                         setCitationStep(0);
                         setIsAddCitationModalOpen(true);
                       }}
@@ -972,8 +1174,11 @@ export default function GeneratePage() {
                       <div className="absolute top-full right-0 mt-1 w-40 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 py-1 overflow-hidden">
                         {exportFormats.map((format) => (
                           <button
-                            key={format.name}
-                            onClick={() => setIsExportOpen(false)}
+                            key={format.id}
+                            onClick={() => {
+                              handleExport(format.name);
+                              setIsExportOpen(false);
+                            }}
                             className="w-full flex items-center gap-2 text-left px-3 py-2 text-xs text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                           >
                             <span className="text-zinc-400">{format.icon}</span>
@@ -1124,7 +1329,9 @@ export default function GeneratePage() {
 
               {/* Paper Content */}
               <div 
-                className="px-24 py-16 max-w-5xl mx-auto w-full transition-all duration-300"
+                id="citation-paper"
+                ref={paperRef}
+                className="px-24 py-16 max-w-5xl mx-auto w-full transition-all duration-300 bg-white"
                 style={{ 
                   fontFamily: settings.font === 'Sarabun' ? "'Sarabun', sans-serif" : settings.font,
                   fontSize: settings.textSize 
@@ -1341,7 +1548,7 @@ export default function GeneratePage() {
                           className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700/50 relative group flex items-start justify-between gap-4 shadow-sm hover:border-red-200 dark:hover:border-red-900/50 transition-colors"
                         >
                           <div className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed flex-1">
-                            {citation.authorText ? `${citation.authorText} (${citation.year}). ${citation.titleText}` : citation.content}
+                            {citation.authors?.[0]?.lastName ? `${citation.authors[0].lastName}${citation.authors.length > 1 ? ' et al.' : ''} (${citation.year || 'n.d.'}). ${citation.title}` : citation.title}
                           </div>
                           <div className="flex flex-col sm:flex-row gap-1.5 items-center shrink-0 mt-0.5">
                             <button 
@@ -1376,9 +1583,10 @@ export default function GeneratePage() {
                           fetch(`/api/citations/${c.id}`, { method: 'DELETE' })
                         ));
                         mutateDeletedCitations();
-                        showToast(language === 'TH' ? 'เคลียร์ถังขยะเรียบร้อย' : 'Trash emptied');
+                        toast.success(language === 'TH' ? 'เคลียร์ถังขยะเรียบร้อย' : 'Trash emptied');
                       } catch (e) {
                          console.error("Failed to empty trash", e);
+                         toast.error("Failed to empty trash");
                       }
                     }}
                     className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-600 dark:text-red-400 font-bold transition-colors bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg active:scale-95"
@@ -1391,6 +1599,226 @@ export default function GeneratePage() {
             </motion.div>
           </div>
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isArchivedProjectsModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsArchivedProjectsModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[80vh]"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/50">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                    <Archive className="h-4 w-4 text-zinc-500" />
+                  </div>
+                  {language === 'TH' ? 'คลังโปรเจกต์ (Archived Projects)' : 'Archived Projects'}
+                  <span className="ml-1 text-[11px] font-bold text-zinc-500 bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded-full">{archivedProjects?.length || 0}</span>
+                </h3>
+                <button 
+                  onClick={() => setIsArchivedProjectsModalOpen(false)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4 text-zinc-400" />
+                </button>
+              </div>
+
+              <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+                {(!archivedProjects || archivedProjects.length === 0) ? (
+                  <div className="flex flex-col items-center justify-center text-center py-12">
+                    <Archive className="h-10 w-10 text-zinc-200 dark:text-zinc-800 mb-4" />
+                    <p className="text-sm font-medium text-zinc-400">
+                      {language === 'TH' ? 'ไม่มีโปรเจกต์ในคลัง' : 'No archived projects found'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {archivedProjects.map((project: any) => (
+                      <div 
+                        key={project.id}
+                        className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-between gap-4 group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: `${project.color}15` }}>
+                            {React.cloneElement(iconComponents[project.icon] as React.ReactElement<any>, { className: "h-5 w-5", style: { color: project.color } })}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{project.name}</span>
+                            <span className="text-[10px] text-zinc-500">{project.description || (language === 'TH' ? 'ไม่มีรายละเอียด' : 'No description')}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => handleArchiveProject(project.id, false)}
+                            className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 hover:text-emerald-600 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'กู้คืน' : 'Restore'}
+                          >
+                            <RotateCw className="h-3.5 w-3.5" />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteProject(project.id)}
+                            className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'ลบถาวร' : 'Delete Permanently'}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isEditProjectModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsEditProjectModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <Pencil className="h-4 w-4 text-blue-500" />
+                  </div>
+                  {language === 'TH' ? 'แก้ไขโปรเจกต์' : 'Edit Project'}
+                </h3>
+                <button 
+                  onClick={() => setIsEditProjectModalOpen(false)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4 text-zinc-400" />
+                </button>
+              </div>
+
+              <div className="p-6 flex flex-col gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                    {language === 'TH' ? 'ชื่อโปรเจกต์' : 'Project Name'}
+                  </label>
+                  <input 
+                    type="text" 
+                    value={newProject.name}
+                    onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+                    placeholder={language === 'TH' ? 'ระบุชื่อโปรเจกต์...' : 'Enter project name...'}
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                    {language === 'TH' ? 'รายละเอียด' : 'Description'}
+                  </label>
+                  <textarea 
+                    rows={3}
+                    value={newProject.description}
+                    onChange={(e) => setNewProject({...newProject, description: e.target.value})}
+                    placeholder={language === 'TH' ? 'ระบุรายละเอียดคร่าวๆ...' : 'Optional description...'}
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all resize-none"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
+                      {language === 'TH' ? 'ธีมสี' : 'Theme Color'}
+                    </label>
+                    <div className="flex flex-wrap gap-2.5">
+                      {['#407bc4', '#f58e58', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#facc15', '#71717a'].map((color) => (
+                        <button 
+                          key={color}
+                          onClick={() => setNewProject({...newProject, color})}
+                          className={`h-7 w-7 rounded-full border-2 transition-transform active:scale-90 flex items-center justify-center ${newProject.color === color ? 'border-zinc-400 scale-110' : 'border-transparent hover:scale-105'}`}
+                          style={{ backgroundColor: color }}
+                        >
+                          {newProject.color === color && <Check className="h-3 w-3 text-white" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1 flex justify-between">
+                      <span>{language === 'TH' ? 'ไอคอน' : 'Icon'}</span>
+                    </label>
+                    <div className="grid grid-cols-6 gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-700/50 max-h-32 overflow-y-auto custom-scrollbar">
+                      {[
+                        { id: 'BookOpen', icon: <BookOpen /> },
+                        { id: 'Globe', icon: <Globe /> },
+                        { id: 'FileText', icon: <FileText /> },
+                        { id: 'Library', icon: <Library /> },
+                        { id: 'Archive', icon: <Archive /> },
+                        { id: 'Book', icon: <Book /> },
+                        { id: 'Pencil', icon: <Pencil /> },
+                        { id: 'Quote', icon: <Quote /> },
+                        { id: 'Sparkles', icon: <Sparkles /> },
+                        { id: 'Bot', icon: <Bot /> },
+                        { id: 'Search', icon: <Search /> },
+                        { id: 'Settings2', icon: <Settings2 /> },
+                        { id: 'Briefcase', icon: <Briefcase /> },
+                        { id: 'LayoutDashboard', icon: <LayoutDashboard /> },
+                        { id: 'ShoppingCart', icon: <ShoppingCart /> },
+                        { id: 'Smartphone', icon: <Smartphone /> },
+                        { id: 'Heart', icon: <Heart /> },
+                        { id: 'ShieldCheck', icon: <ShieldCheck /> },
+                        { id: 'Info', icon: <Info /> },
+                        { id: 'HelpCircle', icon: <HelpCircle /> },
+                      ].map((item) => (
+                        <button 
+                          key={item.id}
+                          onClick={() => setNewProject({...newProject, icon: item.id})}
+                          className={`h-9 w-9 flex items-center justify-center rounded-xl border transition-all ${
+                            newProject.icon === item.id 
+                              ? 'bg-[#407bc4] text-white border-transparent scale-105 shadow-md ring-2 ring-[#407bc4]/20' 
+                              : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-600'
+                          }`}
+                        >
+                          {React.cloneElement(item.icon as React.ReactElement<any>, { className: "h-4 w-4" })}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-end gap-3">
+                <button 
+                  onClick={() => setIsEditProjectModalOpen(false)}
+                  className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-zinc-700 transition-colors"
+                >
+                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                </button>
+                <button 
+                  onClick={handleUpdateProject}
+                  className="px-6 py-2 rounded-xl bg-[#407bc4] text-white text-xs font-bold hover:bg-[#32629e] transition-all shadow-md active:scale-95"
+                >
+                  {language === 'TH' ? 'บันทึกการแก้ไข' : 'Save Changes'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        <div className="hidden">Archived Modals Spacer</div>
       </AnimatePresence>
 
       <AnimatePresence>
@@ -1848,34 +2276,70 @@ export default function GeneratePage() {
                       <div className="flex-1 p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
                         <div className="flex flex-col gap-6">
                           <div className="flex flex-col gap-4">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col gap-2">
                               <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                                {language === 'TH' ? 'เงื่อนไขผู้แต่ง' : 'Author Condition'}
+                                {language === 'TH' ? 'รายการผู้แต่ง' : 'Authors'}
                               </label>
-                              <select 
-                                value={newCitationData.authorCondition}
-                                onChange={(e) => setNewCitationData({...newCitationData, authorCondition: e.target.value})}
-                                className="text-[11px] font-bold text-[#407bc4] bg-[#407bc4]/5 px-2 py-1 rounded-md border-none focus:ring-0 cursor-pointer hover:bg-[#407bc4]/10 transition-colors"
-                              >
-                                <option value="general">{language === 'TH' ? 'ทั่วไป' : 'General'}</option>
-                                <option value="none">{language === 'TH' ? 'ไม่ปรากฏชื่อผู้แต่ง' : 'No author'}</option>
-                                <option value="pseudonym">{language === 'TH' ? 'ผู้แต่งใช้นามแฝง' : 'Pseudonym'}</option>
-                                <option value="royal">{language === 'TH' ? 'ผู้แต่งเป็นราชสกุล เช่น ม.ร.ว.' : 'Royal family'}</option>
-                                <option value="title">{language === 'TH' ? 'ผู้แต่งมีบรรดาศักดิ์ เช่น คุณหญิง' : 'Titled author'}</option>
-                                <option value="monk">{language === 'TH' ? 'ผู้แต่งเป็นพระสงฆ์' : 'Buddhist Monk'}</option>
-                                <option value="editor">{language === 'TH' ? 'ผู้แต่งเป็นบรรณาธิการ' : 'Editor'}</option>
-                                <option value="org">{language === 'TH' ? 'ชื่อหน่วยงาน หรือสถาบัน' : 'Organization'}</option>
-                              </select>
                             </div>
 
-                            {newCitationData.authorCondition !== 'none' && (
-                              <div className="space-y-4">
-                                {newCitationData.authors.map((author, index) => (
-                                  <div key={index} className="p-4 rounded-2xl bg-zinc-50/50 dark:bg-zinc-800/30 border border-zinc-100 dark:border-zinc-800 relative group/author">
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                      <div className="flex flex-col gap-1.5">
+                            <div className="space-y-6">
+                              {newCitationData.authors.map((author: any, index: number) => (
+                                <div key={index} className="p-5 rounded-3xl bg-zinc-50/50 dark:bg-zinc-800/30 border border-zinc-100 dark:border-zinc-800 relative group/author">
+                                  {/* Author Header with Condition */}
+                                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+                                    <span className="text-[10px] font-bold text-[#407bc4] uppercase tracking-widest">
+                                      {language === 'TH' ? `ผู้แต่งคนที่ ${index + 1}` : `Author ${index + 1}`}
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      <label className="text-[9px] font-bold text-zinc-400 uppercase">
+                                        {language === 'TH' ? 'เงื่อนไข' : 'Condition'}
+                                      </label>
+                                      <select 
+                                        value={author.condition || 'general'}
+                                        onChange={(e) => {
+                                          const updated = [...newCitationData.authors];
+                                          updated[index].condition = e.target.value;
+                                          setNewCitationData({...newCitationData, authors: updated});
+                                        }}
+                                        className="text-[10px] font-bold text-white bg-[#407bc4] px-2 py-1 rounded-lg border-none focus:ring-0 cursor-pointer hover:bg-[#32629e] transition-colors shadow-sm"
+                                      >
+                                        <option value="general">{language === 'TH' ? 'ทั่วไป' : 'General'}</option>
+                                        <option value="none">{language === 'TH' ? 'ไม่ปรากฏชื่อ' : 'No author'}</option>
+                                        <option value="pseudonym">{language === 'TH' ? 'นามแฝง' : 'Pseudonym'}</option>
+                                        <option value="royal">{language === 'TH' ? 'ราชสกุล / ฐานันดร' : 'Royal family'}</option>
+                                        <option value="title">{language === 'TH' ? 'บรรดาศักดิ์' : 'Titled author'}</option>
+                                        <option value="monk">{language === 'TH' ? 'พระสงฆ์' : 'Buddhist Monk'}</option>
+                                        <option value="editor">{language === 'TH' ? 'บรรณาธิการ' : 'Editor'}</option>
+                                        <option value="org">{language === 'TH' ? 'หน่วยงาน / สถาบัน' : 'Organization'}</option>
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  {author.condition !== 'none' && (
+                                    <div className={`grid grid-cols-1 ${author.condition === 'org' ? 'sm:grid-cols-1' : 'sm:grid-cols-12'} gap-4`}>
+                                      {/* Prefix for Royal, Title, Monk */}
+                                      {(author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk') && (
+                                        <div className="sm:col-span-3 flex flex-col gap-1.5">
+                                          <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
+                                            {author.condition === 'monk' ? (language === 'TH' ? 'สมณศักดิ์' : 'Ecclesiastical Title') : (language === 'TH' ? 'คำนำหน้า / ฐานันดร' : 'Prefix / Title')}
+                                          </label>
+                                          <input 
+                                            type="text" 
+                                            value={author.prefix || ''}
+                                            onChange={(e) => {
+                                              const updated = [...newCitationData.authors];
+                                              updated[index].prefix = e.target.value;
+                                              setNewCitationData({...newCitationData, authors: updated});
+                                            }}
+                                            placeholder={author.condition === 'royal' ? 'ม.ร.ว.' : (author.condition === 'monk' ? 'พระครู...' : 'คุณหญิง...')}
+                                            className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                                          />
+                                        </div>
+                                      )}
+
+                                      <div className={`${author.condition === 'org' ? '' : (author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk' ? 'sm:col-span-3' : 'sm:col-span-4')} flex flex-col gap-1.5`}>
                                         <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                          {language === 'TH' ? 'ชื่อระบุ' : 'First Name'}
+                                          {author.condition === 'org' ? (language === 'TH' ? 'ชื่อหน่วยงาน' : 'Organization Name') : (language === 'TH' ? 'ชื่อ' : 'First Name')}
                                         </label>
                                         <input 
                                           type="text" 
@@ -1889,69 +2353,82 @@ export default function GeneratePage() {
                                           className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
                                         />
                                       </div>
-                                      <div className="flex flex-col gap-1.5">
-                                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                          {language === 'TH' ? 'ชื่อกลาง' : 'Middle Name'}
-                                        </label>
-                                        <input 
-                                          type="text" 
-                                          value={author.middleName}
-                                          onChange={(e) => {
-                                            const updated = [...newCitationData.authors];
-                                            updated[index].middleName = e.target.value;
-                                            setNewCitationData({...newCitationData, authors: updated});
-                                          }}
-                                          placeholder="..."
-                                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                                        />
-                                      </div>
-                                      <div className="flex flex-col gap-1.5">
-                                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                          {language === 'TH' ? 'นามสกุล' : 'Last Name'}
-                                        </label>
-                                        <input 
-                                          type="text" 
-                                          value={author.lastName}
-                                          onChange={(e) => {
-                                            const updated = [...newCitationData.authors];
-                                            updated[index].lastName = e.target.value;
-                                            setNewCitationData({...newCitationData, authors: updated});
-                                          }}
-                                          placeholder="..."
-                                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
-                                        />
-                                      </div>
+
+                                      {author.condition !== 'org' && (
+                                        <>
+                                          <div className={`${author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk' ? 'sm:col-span-3' : 'sm:col-span-4'} flex flex-col gap-1.5`}>
+                                            <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
+                                              {language === 'TH' ? 'ชื่อกลาง' : 'Middle Name'}
+                                            </label>
+                                            <input 
+                                              type="text" 
+                                              value={author.middleName}
+                                              onChange={(e) => {
+                                                const updated = [...newCitationData.authors];
+                                                updated[index].middleName = e.target.value;
+                                                setNewCitationData({...newCitationData, authors: updated});
+                                              }}
+                                              placeholder="..."
+                                              className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                                            />
+                                          </div>
+                                          <div className={`${author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk' ? 'sm:col-span-3' : 'sm:col-span-4'} flex flex-col gap-1.5`}>
+                                            <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
+                                              {language === 'TH' ? 'นามสกุล' : 'Last Name'}
+                                            </label>
+                                            <input 
+                                              type="text" 
+                                              value={author.lastName}
+                                              onChange={(e) => {
+                                                const updated = [...newCitationData.authors];
+                                                updated[index].lastName = e.target.value;
+                                                setNewCitationData({...newCitationData, authors: updated});
+                                              }}
+                                              placeholder="..."
+                                              className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                                            />
+                                          </div>
+                                        </>
+                                      )}
                                     </div>
-                                    {newCitationData.authors.length > 1 && (
-                                      <button 
-                                        onClick={() => {
-                                          const updated = newCitationData.authors.filter((_, i) => i !== index);
-                                          setNewCitationData({...newCitationData, authors: updated});
-                                        }}
-                                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg opacity-0 group-hover/author:opacity-100 transition-opacity"
-                                      >
-                                        <X className="h-3 w-3" />
-                                      </button>
-                                    )}
-                                  </div>
-                                ))}
+                                  )}
+
+                                  {author.condition === 'none' && (
+                                    <div className="flex items-center justify-center py-4 bg-zinc-100 dark:bg-zinc-900/50 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800">
+                                      <p className="text-[10px] font-bold text-zinc-400 italic">
+                                        {language === 'TH' ? 'ระบุว่าไม่ทราบชื่อผู้แต่ง' : 'Marked as unknown author'}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {newCitationData.authors.length > 1 && (
+                                    <button 
+                                      onClick={() => {
+                                        const updated = newCitationData.authors.filter((_: any, i: number) => i !== index);
+                                        setNewCitationData({...newCitationData, authors: updated});
+                                      }}
+                                      className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-400 hover:text-red-500 hover:border-red-500 flex items-center justify-center shadow-md opacity-0 group-hover/author:opacity-100 transition-all z-10"
+                                    >
+                                      <X className="h-3.5 w-3.5" />
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
                                 <button 
                                   onClick={() => {
                                     setNewCitationData({
                                       ...newCitationData, 
-                                      authors: [...newCitationData.authors, { firstName: "", middleName: "", lastName: "" }]
+                                      authors: [...newCitationData.authors, { firstName: "", middleName: "", lastName: "", prefix: "", condition: "general" }]
                                     });
                                   }}
                                   className="w-full py-2.5 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-500 hover:text-[#407bc4] hover:border-[#407bc4] hover:bg-[#407bc4]/5 transition-all flex items-center justify-center gap-2"
                                 >
                                   <Plus className="h-3.5 w-3.5" />
-                                  {language === 'TH' ? 'เพิ่มผู้แต่ง' : 'Add Author'}
                                 </button>
                               </div>
-                            )}
-                          </div>
+                            </div>
 
-                          <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-2 gap-6">
                             <div className="flex flex-col gap-2">
                               <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
                                 {language === 'TH' ? 'ปีที่พิมพ์' : 'Year'}
@@ -2024,7 +2501,7 @@ export default function GeneratePage() {
                             {isStyleOpen && (
                               <div className="absolute top-full right-0 mt-1 w-48 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-[60] overflow-hidden flex flex-col">
                                 <div className="py-1 max-h-[200px] overflow-y-auto custom-scrollbar">
-                                  {styles.map((s) => (
+                                  {styles.map((s: string) => (
                                     <button
                                       key={s}
                                       onClick={() => {
@@ -2061,14 +2538,18 @@ export default function GeneratePage() {
                               <FileText className="h-3 w-3 text-zinc-300" />
                             </div>
                             <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed italic-preview">
-                              {newCitationData.authorCondition === 'none' 
+                              {newCitationData.authors.every((a: any) => a.condition === 'none') 
                                 ? "No author" 
-                                : newCitationData.authors.map((a, i) => {
+                                : newCitationData.authors.map((a: any, i: number) => {
+                                    if (a.condition === 'none') return '';
+                                    if (a.condition === 'org') return a.firstName + (i < newCitationData.authors.length - 1 ? ', & ' : '');
+                                    
+                                    const prefix = a.prefix ? a.prefix + ' ' : '';
                                     const first = a.firstName ? a.firstName.charAt(0) + '.' : '';
                                     const middle = a.middleName ? ' ' + a.middleName.charAt(0) + '.' : '';
                                     const last = a.lastName || '';
                                     if (!last && !first) return i === 0 ? "Author, A. A." : "";
-                                    const name = `${last}${first || middle ? ', ' : ''}${first}${middle}`;
+                                    const name = `${prefix}${last}${first || middle ? ', ' : ''}${first}${middle}`;
                                     return name + (i < newCitationData.authors.length - 1 ? ', & ' : '');
                                   }).join('')
                               }
@@ -2100,10 +2581,10 @@ export default function GeneratePage() {
                               <Quote className="h-3 w-3 text-zinc-300" />
                             </div>
                             <p className="text-sm font-medium text-[#407bc4] dark:text-[#6ba1e6]">
-                              ({newCitationData.authorCondition === 'none' 
-                                ? "Title" 
-                                : (newCitationData.authors[0].lastName || "Author")} 
-                               {newCitationData.authors.length > 1 ? " et al." : ""}, 
+                              ({newCitationData.authors.every((a: any) => a.condition === 'none') 
+                                ? (newCitationData.title?.split(' ').slice(0, 3).join(' ') || "Title") 
+                                : (newCitationData.authors[0].condition === 'org' ? newCitationData.authors[0].firstName : (newCitationData.authors[0].lastName || "Author"))} 
+                               {newCitationData.authors.filter((a: any) => a.condition !== 'none').length > 1 ? " et al." : ""}, 
                                {newCitationData.year || "Year"})
                             </p>
                           </div>
@@ -2147,21 +2628,7 @@ export default function GeneratePage() {
           </div>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {toastMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-4 py-3 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-xl shadow-black/10 border border-zinc-800 dark:border-zinc-200"
-          >
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500/20 text-green-400 dark:text-green-600">
-              <Check className="h-3 w-3" />
-            </div>
-            <span className="text-sm font-medium">{toastMessage}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
     </div>
   );
