@@ -1535,7 +1535,7 @@ export default function GeneratePage() {
               <div 
                 id="citation-paper"
                 ref={paperRef}
-                className="px-24 py-16 max-w-5xl mx-auto w-full transition-all duration-300 bg-white"
+                className="px-24 py-16 max-w-5xl mx-auto w-full transition-all duration-300 bg-white dark:bg-zinc-900/50"
                 style={{ 
                   fontFamily: settings.font === 'Sarabun' ? "'Sarabun', sans-serif" : settings.font,
                   fontSize: settings.textSize 
