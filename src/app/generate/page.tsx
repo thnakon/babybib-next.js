@@ -75,6 +75,7 @@ export default function GeneratePage() {
     showUrls: true,
     showAnnotations: false
   });
+  const [highlightedId, setHighlightedId] = React.useState<number | null>(null);
 
   // Smart Search State
   const [mainSearchQuery, setMainSearchQuery] = React.useState("");
@@ -134,7 +135,10 @@ export default function GeneratePage() {
       });
       
       if (res.ok) {
+        const newCitation = await res.json();
         mutateCitations();
+        setHighlightedId(newCitation.id);
+        setTimeout(() => setHighlightedId(null), 3000);
         showToast(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
       } else {
         throw new Error("Failed to save citation");
@@ -215,7 +219,10 @@ export default function GeneratePage() {
       });
 
       if (res.ok) {
+        const newCitation = await res.json();
         mutateCitations();
+        setHighlightedId(newCitation.id);
+        setTimeout(() => setHighlightedId(null), 3000);
         setIsAddCitationModalOpen(false);
         showToast(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
       } else {
@@ -1128,8 +1135,11 @@ export default function GeneratePage() {
                 {citations.length > 0 ? (
                   <div className="flex flex-col gap-1">
                     {processedCitations.map((citation: any, index: number) => (
-                      <div 
+                      <motion.div 
                         key={citation.id} 
+                        initial={highlightedId === citation.id ? { backgroundColor: "rgba(64, 123, 196, 0.15)", scale: 1.02 } : false}
+                        animate={highlightedId === citation.id ? { backgroundColor: "rgba(64, 123, 196, 0)", scale: 1 } : { backgroundColor: "rgba(0,0,0,0)", scale: 1 }}
+                        transition={{ duration: 2 }}
                         draggable
                         onDragStart={() => (dragItem.current = index)}
                         onDragEnter={() => (dragOverItem.current = index)}
@@ -1141,6 +1151,16 @@ export default function GeneratePage() {
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity mt-1 cursor-grab active:cursor-grabbing text-zinc-300 dark:text-zinc-700">
                           <GripVertical className="h-4 w-4" />
                         </div>
+
+                        {highlightedId === citation.id && (
+                          <motion.div 
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="absolute -left-8 top-1/2 -translate-y-1/2"
+                          >
+                            <Sparkles className="h-4 w-4 text-[#407bc4] animate-pulse" />
+                          </motion.div>
+                        )}
 
                         <div 
                           className={`flex-1 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 transition-all`}
@@ -1212,7 +1232,7 @@ export default function GeneratePage() {
                             <Trash2 className="h-3 w-3" />
                           </button>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
