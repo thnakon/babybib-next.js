@@ -1217,21 +1217,17 @@ export default function GeneratePage() {
                                   <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
                                     <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
                                   </div>
-                                  <div className="flex flex-col">
-                                    <div className="flex items-center gap-2 h-5">
-                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 leading-none">{result.title}</span>
-                                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border leading-none inline-flex items-center justify-center ${getResourceBadgeStyle(result.type)}`}>
+                                  <div className="flex flex-col flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate">{result.title}</span>
+                                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border shrink-0 ${getResourceBadgeStyle(result.type)}`}>
                                         {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
                                       </span>
                                     </div>
-                                    <div className="flex items-center gap-1.5">
-                                      {/* Extra info can go here */}
-                                    </div>
+                                    <span className="text-xs text-zinc-500 line-clamp-1">
+                                      {result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ')} ({result.year}) - {result.source}
+                                    </span>
                                   </div>
-                                </div>
-                                <span className="text-xs text-zinc-500 line-clamp-1">
-                                  {result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ')} ({result.year}) - {result.source}
-                                </span>
                               </div>
                               <button 
                                 onClick={(e) => {
