@@ -912,7 +912,12 @@ export default function GeneratePage() {
         Navbar 
         - Increased size
       */}
-      <nav className="sticky top-0 z-50 flex w-full h-16 items-center justify-between px-6 sm:px-8 lg:px-12 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
+      <motion.nav 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="sticky top-0 z-50 flex w-full h-16 items-center justify-between px-6 sm:px-8 lg:px-12 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-zinc-100/50 dark:border-zinc-800/50 shadow-sm"
+      >
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-md">
@@ -936,13 +941,21 @@ export default function GeneratePage() {
             {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
-      {/* Main Container - 3 Column Layout */}
-      <div className="mx-auto flex w-full max-w-screen-2xl items-start">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="mx-auto flex w-full max-w-screen-2xl items-start"
+      >
         
-        {/* Left Sidebar */}
-        <aside className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12">
+        <motion.aside 
+          initial={{ x: -30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="hidden top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r border-transparent py-6 pr-6 md:sticky md:block lg:py-8 md:w-[240px] lg:w-[280px] pl-6 sm:pl-8 lg:pl-12"
+        >
           <div className="flex flex-col gap-6">
 
             <div className="relative group mx-auto">
@@ -1122,10 +1135,15 @@ export default function GeneratePage() {
             </div>
 
           </div>
-        </aside>
+        </motion.aside>
 
         {/* Center Content Area */}
-        <main className="relative py-6 lg:py-8 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1">
+        <motion.main 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="relative py-6 lg:py-8 w-full min-w-0 px-6 md:px-8 xl:px-12 flex-1"
+        >
           <div className="mx-auto w-full min-w-0">
             
             {/* Search Input Section */}
@@ -1636,10 +1654,15 @@ export default function GeneratePage() {
             </div>
 
           </div>
-        </main>
+        </motion.main>
 
         {/* Right Sidebar (Registration CTA) */}
-        <aside className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12">
+        <motion.aside 
+          initial={{ x: 30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12"
+        >
           <div className="flex flex-col gap-4">
             <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md">
 
@@ -1665,9 +1688,9 @@ export default function GeneratePage() {
             </div>
 
           </div>
-        </aside>
+        </motion.aside>
 
-      </div>
+      </motion.div>
 
       <AnimatePresence>
         {isDeletedModalOpen && (
@@ -2814,7 +2837,6 @@ export default function GeneratePage() {
           </div>
         )}
       </AnimatePresence>
-
 
     </div>
   );
