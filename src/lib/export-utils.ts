@@ -45,7 +45,6 @@ export const exportToWord = async (citations: any[], settings: any, language: st
   
   const paragraphs = [
     new Paragraph({
-      text: title,
       alignment: AlignmentType.CENTER,
       spacing: { after: 400 },
       children: [
