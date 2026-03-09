@@ -1218,9 +1218,9 @@ export default function GeneratePage() {
                                     <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
                                   </div>
                                   <div className="flex flex-col">
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{result.title}</span>
-                                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${getResourceBadgeStyle(result.type)}`}>
+                                    <div className="flex items-center gap-2 h-5">
+                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 leading-none">{result.title}</span>
+                                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border leading-none inline-flex items-center justify-center ${getResourceBadgeStyle(result.type)}`}>
                                         {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
                                       </span>
                                     </div>
