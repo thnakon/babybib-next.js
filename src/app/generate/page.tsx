@@ -55,6 +55,11 @@ export default function GeneratePage() {
     bib: null as string | null,
     backup: null as string | null
   });
+  const [importRefFilesData, setImportRefFilesData] = React.useState({
+    ris: null as File | null,
+    bib: null as File | null,
+    backup: null as File | null
+  });
   const [isAddCitationModalOpen, setIsAddCitationModalOpen] = React.useState(false);
   const [newCitationData, setNewCitationData] = React.useState<any>({
     authors: [{ firstName: "", middleName: "", lastName: "", prefix: "", condition: "general" }],
@@ -161,6 +166,123 @@ export default function GeneratePage() {
     
     setIsMainSearchDropdownOpen(false);
     setMainSearchQuery("");
+  };
+
+  const parseRIS = (text: string) => {
+    const entries: any[] = [];
+    const chunks = text.split(/\n\s*\n|\r\n\s*\r\n/);
+    
+    chunks.forEach(chunk => {
+      if (!chunk.includes('TY  -')) return;
+      const entry: any = { authors: [], type: 'book' };
+      const lines = chunk.split(/\r?\n/);
+      
+      lines.forEach(line => {
+        const tag = line.substring(0, 2);
+        const val = line.substring(6).trim();
+        if (tag === 'TI') entry.title = val;
+        else if (tag === 'PY') entry.year = val;
+        else if (tag === 'PB') entry.source = val;
+        else if (tag === 'UR') entry.url = val;
+        else if (tag === 'AU') {
+          const parts = val.split(', ');
+          entry.authors.push({ 
+            lastName: parts[0] || '', 
+            firstName: parts[1] || '', 
+            condition: 'general' 
+          });
+        }
+      });
+      if (entry.title) entries.push(entry);
+    });
+    return entries;
+  };
+
+  const parseBibTeX = (text: string) => {
+    // Basic manual parser to avoid dependency issues if needed, or use the installed one
+    // Let's use a robust manual one for common BibTeX format
+    const entries: any[] = [];
+    const regex = /@\w+\s*\{[^,]+,\s*([^@]+)\}/g;
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+      const content = match[1];
+      const entry: any = { authors: [], type: 'book' };
+      
+      const fields = ['title', 'author', 'year', 'publisher', 'url'];
+      fields.forEach(field => {
+        const fRegex = new RegExp(`${field}\\s*=\\s*\{?([^,}\n]+)\}?`, 'i');
+        const fMatch = fRegex.exec(content);
+        if (fMatch) {
+          const val = fMatch[1].trim().replace(/^\{|\}$/g, '');
+          if (field === 'title') entry.title = val;
+          else if (field === 'year') entry.year = val;
+          else if (field === 'publisher') entry.source = val;
+          else if (field === 'url') entry.url = val;
+          else if (field === 'author') {
+            const authors = val.split(' and ');
+            authors.forEach(a => {
+              const parts = a.split(', ');
+              entry.authors.push({ 
+                lastName: parts[0] || '', 
+                firstName: parts[1] || '', 
+                condition: 'general' 
+              });
+            });
+          }
+        }
+      });
+      if (entry.title) entries.push(entry);
+    }
+    return entries;
+  };
+
+  const handleImport = async () => {
+    if (!activeProjectId) {
+      toast.error(language === 'TH' ? 'กรุณาเลือกโปรเจกต์ก่อน' : 'Please select a project first');
+      return;
+    }
+
+    const loaders = [];
+    if (importRefFilesData.ris) loaders.push({ file: importRefFilesData.ris, parser: parseRIS, type: 'RIS' });
+    if (importRefFilesData.bib) loaders.push({ file: importRefFilesData.bib, parser: parseBibTeX, type: 'BibTeX' });
+
+    if (loaders.length === 0) {
+      toast.error(language === 'TH' ? 'กรุณาเลือกไฟล์ที่ต้องการนำเข้า' : 'Please select a file to import');
+      return;
+    }
+
+    toast.loading(language === 'TH' ? 'กำลังนำเข้าข้อมูล...' : 'Importing data...');
+
+    try {
+      let totalImported = 0;
+      for (const loader of loaders) {
+        const text = await loader.file.text();
+        const entries = loader.parser(text);
+        
+        for (const entry of entries) {
+          await fetch('/api/citations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              projectId: activeProjectId,
+              ...entry
+            })
+          });
+          totalImported++;
+        }
+      }
+      
+      mutateCitations();
+      setIsImportModalOpen(false);
+      setImportRefFiles({ ris: null, bib: null, backup: null });
+      setImportRefFilesData({ ris: null, bib: null, backup: null });
+      toast.dismiss();
+      toast.success(language === 'TH' ? `นำเข้าสำเร็จ ${totalImported} รายการ` : `Imported ${totalImported} items successfully`);
+    } catch (err) {
+      toast.dismiss();
+      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการนำเข้า' : 'Error during import');
+    }
   };
 
   const resourceLabels: Record<string, { TH: string, EN: string }> = {
@@ -2009,10 +2131,16 @@ export default function GeneratePage() {
                      <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#407bc4] group-hover:text-white group-hover:border-transparent transition-all">
                        {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
                      </button>
-                     <input 
-                       type="file" accept=".ris" className="absolute inset-0 opacity-0 cursor-pointer" 
-                       onChange={(e) => setImportRefFiles({...importRefFiles, ris: e.target.files?.[0]?.name || null})} 
-                     />
+                      <input 
+                        type="file" accept=".ris" className="absolute inset-0 opacity-0 cursor-pointer" 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setImportRefFiles({...importRefFiles, ris: file.name});
+                            setImportRefFilesData({...importRefFilesData, ris: file});
+                          }
+                        }} 
+                      />
                    </div>
                 </div>
 
@@ -2028,10 +2156,16 @@ export default function GeneratePage() {
                      <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#407bc4] group-hover:text-white group-hover:border-transparent transition-all">
                        {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
                      </button>
-                     <input 
-                       type="file" accept=".bib,.bibtex" className="absolute inset-0 opacity-0 cursor-pointer" 
-                       onChange={(e) => setImportRefFiles({...importRefFiles, bib: e.target.files?.[0]?.name || null})} 
-                     />
+                      <input 
+                        type="file" accept=".bib,.bibtex" className="absolute inset-0 opacity-0 cursor-pointer" 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setImportRefFiles({...importRefFiles, bib: file.name});
+                            setImportRefFilesData({...importRefFilesData, bib: file});
+                          }
+                        }} 
+                      />
                    </div>
                 </div>
 
@@ -2062,11 +2196,12 @@ export default function GeneratePage() {
                 >
                   {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                 </button>
-                <button 
-                  className="px-8 py-2.5 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
-                >
-                  {language === 'TH' ? 'บันทึก' : 'Save'}
-                </button>
+                 <button 
+                   onClick={handleImport}
+                   className="px-8 py-2.5 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
+                 >
+                   {language === 'TH' ? 'นำเข้าข้อมูล' : 'Import'}
+                 </button>
               </div>
             </motion.div>
           </div>
