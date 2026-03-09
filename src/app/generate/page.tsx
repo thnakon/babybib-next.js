@@ -17,6 +17,9 @@ import {
   Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function GeneratePage() {
   const { language } = useLanguage();
@@ -36,6 +39,8 @@ export default function GeneratePage() {
     color: "#407bc4",
     icon: "BookOpen"
   });
+  const [isCreatingProject, setIsCreatingProject] = React.useState(false);
+  const [activeProjectId, setActiveProjectId] = React.useState<number | null>(null);
   const [projectMenuIdx, setProjectMenuIdx] = React.useState<number | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
   const [importRefFiles, setImportRefFiles] = React.useState({
@@ -58,6 +63,18 @@ export default function GeneratePage() {
   const [copiedBib, setCopiedBib] = React.useState(false);
   const [copiedInText, setCopiedInText] = React.useState(false);
   const [isDeletedModalOpen, setIsDeletedModalOpen] = React.useState(false);
+
+  const [searchReferencesQuery, setSearchReferencesQuery] = React.useState("");
+  
+  const [settings, setSettings] = React.useState({
+    hangingIndent: true,
+    doubleSpaced: false,
+    font: 'Times New Roman',
+    textSize: '12pt',
+    sortBy: 'Citation style' as string,
+    showUrls: true,
+    showAnnotations: false
+  });
 
   // Smart Search State
   const [mainSearchQuery, setMainSearchQuery] = React.useState("");
@@ -93,18 +110,40 @@ export default function GeneratePage() {
     }
   };
 
-  const handleSelectSearchResult = (item: any) => {
-    setNewCitationData({
-      authors: item.authors,
-      authorCondition: 'general',
-      year: item.year,
-      title: item.title,
-      source: item.source,
-      url: ''
-    });
-    setSelectedType(item.type);
-    setCitationStep(1);
-    setIsAddCitationModalOpen(true);
+  const handleSelectSearchResult = async (item: any) => {
+    if (!activeProjectId) {
+      showToast(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      return;
+    }
+    
+    try {
+      const res = await fetch('/api/citations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId: activeProjectId,
+          type: item.type,
+          authors: item.authors,
+          year: item.year?.toString() || "",
+          title: item.title,
+          source: item.source,
+          url: item.url || ""
+        })
+      });
+      
+      if (res.ok) {
+        mutateCitations();
+        showToast(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
+      } else {
+        throw new Error("Failed to save citation");
+      }
+    } catch (error) {
+      console.error(error);
+      showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
+    }
+    
     setIsMainSearchDropdownOpen(false);
     setMainSearchQuery("");
   };
@@ -145,36 +184,160 @@ export default function GeneratePage() {
     video: { TH: 'วิดีโอ', EN: 'Video' },
     paste: { TH: 'เขียน/วางบรรณานุกรม', EN: 'Write/paste citation' },
   };
+
+  const handleSaveManualCitation = async () => {
+    if (!activeProjectId) {
+      showToast(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      return;
+    }
+    
+    // basic validation
+    if (!newCitationData.title || newCitationData.authors.every((a: any) => !a.lastName && !a.firstName)) {
+      showToast(language === 'TH' ? 'กรุณากรอกข้อมูลที่จำเป็น' : 'Please fill in required fields');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/citations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId: activeProjectId,
+          type: selectedType || 'book',
+          authors: newCitationData.authors,
+          year: newCitationData.year,
+          title: newCitationData.title,
+          source: newCitationData.source,
+          url: newCitationData.url
+        })
+      });
+
+      if (res.ok) {
+        mutateCitations();
+        setIsAddCitationModalOpen(false);
+        showToast(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
+    }
+  };
   
-  // Bibliography Data State
-  const [citations, setCitations] = React.useState([
-    { id: 1, authorText: 'Kahneman, D.', titleText: 'Thinking, fast and slow', year: 2011, dateAdded: 1610000000, inText: "(Kahneman, 2011)", content: <>Kahneman, D. (2011). <i>Thinking, fast and slow: The psychology of human judgment and decision-making processes in uncertain environments.</i> Farrar, Straus and Giroux.</> },
-    { id: 2, authorText: 'Harari, Y. N.', titleText: 'Sapiens: A brief history of humankind', year: 2014, dateAdded: 1620000000, inText: "(Harari, 2014)", content: <>Harari, Y. N. (2014). <i>Sapiens: A brief history of humankind from the cognitive revolution to the modern age of biotechnology.</i> Vintage Books.</> },
-    { id: 3, authorText: 'Chomsky, N.', titleText: 'Syntactic structures', year: 1957, dateAdded: 1630000000, inText: "(Chomsky, 1957)", content: <>Chomsky, N. (1957). <i>Syntactic structures: A formal analysis of linguistic representation and the underlying structures of human language.</i> Mouton & Co.</> },
-    { id: 4, authorText: 'Dawkins, R.', titleText: 'The selfish gene', year: 1976, dateAdded: 1640000000, inText: "(Dawkins, 1976)", content: <>Dawkins, R. (1976). <i>The selfish gene: An exploration of the biological basis of altruism and the evolutionary pressure on genetic transmission.</i> Oxford University Press.</> },
-    { id: 5, authorText: 'Hawking, S.', titleText: 'A brief history of time', year: 1988, dateAdded: 1650000000, inText: "(Hawking, 1988)", content: <>Hawking, S. (1988). <i>A brief history of time: From the big bang to black holes and the fundamental nature of space-time physics.</i> Bantam Books.</> },
-    { id: 6, authorText: 'Taleb, N. N.', titleText: 'The black swan', year: 2007, dateAdded: 1660000000, inText: "(Taleb, 2007)", content: <>Taleb, N. N. (2007). <i>The black swan: The impact of the highly improbable events that shape human history and the fragility of our complex systems.</i> Random House.</> },
-    { id: 7, authorText: 'Gladwell, M.', titleText: 'Outliers', year: 2008, dateAdded: 1670000000, inText: "(Gladwell, 2008)", content: <>Gladwell, M. (2008). <i>Outliers: The story of success and the unique environmental factors that contribute to exceptional human achievement.</i> Little, Brown and Company.</> },
-    { id: 8, authorText: 'Diamond, J. M.', titleText: 'Guns, germs, and steel', year: 1997, dateAdded: 1680000000, inText: "(Diamond, 1997)", content: <>Diamond, J. M. (1997). <i>Guns, germs, and steel: The fates of human societies and the environmental factors that shaped world history.</i> W. W. Norton & Company.</> },
-    { id: 9, authorText: 'Pinker, S.', titleText: 'The better angels of our nature', year: 2011, dateAdded: 1690000000, inText: "(Pinker, 2011)", content: <>Pinker, S. (2011). <i>The better angels of our nature: Why violence has declined and the historical shift in human behavior towards cooperation.</i> Viking Penguin.</> },
-    { id: 10, authorText: 'Sapiens, Y. N.', titleText: '21 Lessons for the 21st Century', year: 2018, dateAdded: 1700000000, inText: "(Harari, 2018)", content: <>Sapiens, Y. N. (2018). <i>21 Lessons for the 21st Century: Navigating the challenges of technology, politics, and global crises in a changing world.</i> Jonathan Cape.</> },
-  ]);
+  const { data: citations = [], mutate: mutateCitations } = useSWR(activeProjectId ? `/api/citations?projectId=${activeProjectId}&isDeleted=false` : null, fetcher);
+  const { data: deletedCitations = [], mutate: mutateDeletedCitations } = useSWR(activeProjectId ? `/api/citations?projectId=${activeProjectId}&isDeleted=true` : null, fetcher);
+
+  const getFormattedCitation = (c: any, style: string) => {
+    // Basic formatting mock logic for different styles
+    let content;
+    let inText;
+    
+    // Parse Authors
+    const authorLast = c.authors?.[0]?.lastName || 'Unknown';
+    const numAuthors = c.authors?.length || 0;
+    
+    if (style.includes('APA')) {
+      const authorsStr = c.authors?.map((a: any) => `${a.lastName}, ${a.firstName?.charAt(0) || ''}.`).join(' & ') || 'Unknown';
+      const dateStr = c.year ? `(${c.year}).` : '(n.d.).';
+      const titleStr = c.title ? ` ${c.title}.` : '';
+      const sourceStr = c.source ? ` ${c.source}.` : '';
+      content = <>{authorsStr} {dateStr}<i>{titleStr}</i>{sourceStr}</>;
+      inText = `(${authorLast}${numAuthors > 1 ? ' et al.' : ''}, ${c.year || 'n.d.'})`;
+    } else if (style.includes('MLA')) {
+      const authorsStr = c.authors?.map((a: any, i: number) => i === 0 ? `${a.lastName}, ${a.firstName}` : `${a.firstName} ${a.lastName}`).join(', and ') || 'Unknown';
+      const titleStr = c.title ? ` <i>${c.title}</i>.` : '';
+      const sourceStr = c.source ? ` ${c.source},` : '';
+      const dateStr = c.year ? ` ${c.year}.` : '';
+      content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}</>;
+      inText = `(${authorLast})`;
+    } else if (style.includes('Chicago')) {
+      const authorsStr = c.authors?.map((a: any, i: number) => i === 0 ? `${a.lastName}, ${a.firstName}` : `${a.firstName} ${a.lastName}`).join(', and ') || 'Unknown';
+      const titleStr = c.title ? ` <i>${c.title}</i>.` : '';
+      const sourceStr = c.source ? ` ${c.source},` : '';
+      const dateStr = c.year ? ` ${c.year}.` : '';
+      content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}</>;
+      inText = `(${authorLast} ${c.year || 'n.d.'})`;
+    } else {
+      // Fallback (Generic)
+      const authorsStr = c.authors?.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ') || 'Unknown';
+      content = <>{authorsStr}. "{c.title}". <i>{c.source}</i> ({c.year}).</>;
+      inText = `[${c.id}]`;
+    }
+
+    return {
+      authorText: authorLast,
+      titleText: c.title || 'Untitled',
+      year: c.year ? parseInt(c.year) : 0,
+      dateAdded: new Date(c.createdAt).getTime(),
+      inText,
+      content
+    };
+  };
+
+  const cleanForSort = (str: string) => {
+    return str.replace(/^(A|An|The)\s+/i, '').trim();
+  };
+
+  const comparePhonetic = (a: string, b: string) => {
+    const isThaiA = /[\u0E00-\u0E7F]/.test(a);
+    const isThaiB = /[\u0E00-\u0E7F]/.test(b);
+    if (isThaiA && !isThaiB) return -1;
+    if (!isThaiA && isThaiB) return 1;
+    return a.localeCompare(b, 'th-TH');
+  };
+
+  const processedCitations = React.useMemo(() => {
+    let result = citations.map((c: any) => ({
+      id: c.id,
+      original: c,
+      ...getFormattedCitation(c, style)
+    }));
+    
+    // Filter by search query
+    if (searchReferencesQuery) {
+      const q = searchReferencesQuery.toLowerCase();
+      result = result.filter((c: any) => 
+        c.authorText.toLowerCase().includes(q) || 
+        c.titleText.toLowerCase().includes(q) || 
+        c.year.toString().includes(q)
+      );
+    }
+    
+    // Process Sorting
+    const sortBy = settings.sortBy;
+    if (sortBy === 'Author (A-Z)') {
+      result.sort((a: any, b: any) => comparePhonetic(cleanForSort(a.authorText), cleanForSort(b.authorText)));
+    } else if (sortBy === 'Author (Z-A)') {
+      result.sort((a: any, b: any) => comparePhonetic(cleanForSort(b.authorText), cleanForSort(a.authorText)));
+    } else if (sortBy === 'Title (A-Z)') {
+      result.sort((a: any, b: any) => comparePhonetic(cleanForSort(a.titleText), cleanForSort(b.titleText)));
+    } else if (sortBy === 'Title (Z-A)') {
+      result.sort((a: any, b: any) => comparePhonetic(cleanForSort(b.titleText), cleanForSort(a.titleText)));
+    } else if (sortBy === 'Publication date (newest-oldest)') {
+      result.sort((a: any, b: any) => b.year - a.year);
+    } else if (sortBy === 'Publication date (oldest-newest)') {
+      result.sort((a: any, b: any) => a.year - b.year);
+    } else if (sortBy === 'Date added (newest-oldest)') {
+      result.sort((a: any, b: any) => b.dateAdded - a.dateAdded);
+    } else if (sortBy === 'Date added (oldest-newest)') {
+      result.sort((a: any, b: any) => a.dateAdded - b.dateAdded);
+    } else if (sortBy === 'Citation style') {
+      result.sort((a: any, b: any) => a.id - b.id);
+    }
+  
+    return result;
+  }, [citations, style, searchReferencesQuery, settings.sortBy]);
 
   // Drag and Drop State
   const dragItem = React.useRef<number | null>(null);
   const dragOverItem = React.useRef<number | null>(null);
 
   const handleSort = () => {
-    if (dragItem.current === null || dragOverItem.current === null) return;
-    const _citations = [...citations];
-    const draggedItemContent = _citations.splice(dragItem.current, 1)[0];
-    _citations.splice(dragOverItem.current, 0, draggedItemContent);
-    dragItem.current = null;
-    dragOverItem.current = null;
-    setCitations(_citations);
+    // Disabled sort dragging for now, as order needs to sync with backend optionally
   };
 
-  const [deletedCitations, setDeletedCitations] = React.useState<any[]>([]);
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
 
   const showToast = (message: string) => {
@@ -182,27 +345,44 @@ export default function GeneratePage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const deleteCitation = (id: number) => {
-    const citationToDelete = citations.find(c => c.id === id);
-    if (citationToDelete) {
-      setDeletedCitations(prev => [citationToDelete, ...prev]);
-      setCitations(prev => prev.filter(c => c.id !== id));
-      showToast(language === 'TH' ? 'ลบรายการบรรณานุกรมสำเร็จ' : 'Citation deleted successfully');
-    }
+  const deleteCitation = async (id: number) => {
+    try {
+      const res = await fetch(`/api/citations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isDeleted: true })
+      });
+      if (res.ok) {
+        mutateCitations();
+        mutateDeletedCitations();
+        showToast(language === 'TH' ? 'ลบรายการบรรณานุกรมสำเร็จ' : 'Citation deleted successfully');
+      }
+    } catch (e) { console.error(e) }
   };
 
-  const restoreCitation = (id: number) => {
-    const citationToRestore = deletedCitations.find(c => c.id === id);
-    if (citationToRestore) {
-      setCitations(prev => [...prev, citationToRestore]);
-      setDeletedCitations(prev => prev.filter(c => c.id !== id));
-      showToast(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
-    }
+  const restoreCitation = async (id: number) => {
+    try {
+      const res = await fetch(`/api/citations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isDeleted: false })
+      });
+      if (res.ok) {
+        mutateCitations();
+        mutateDeletedCitations();
+        showToast(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
+      }
+    } catch (e) { console.error(e) }
   };
   
-  const permanentlyDeleteCitation = (id: number) => {
-    setDeletedCitations(prev => prev.filter(c => c.id !== id));
-    showToast(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
+  const permanentlyDeleteCitation = async (id: number) => {
+    try {
+      const res = await fetch(`/api/citations/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        mutateDeletedCitations();
+        showToast(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
+      }
+    } catch (e) { console.error(e) }
   };
 
   const [inTextCopiedId, setInTextCopiedId] = React.useState<number | null>(null);
@@ -269,56 +449,13 @@ export default function GeneratePage() {
 
   const RECOMMENDED_OPTIONS = ['Sarabun', '12pt', 'Author (A-Z)'];
 
-  // Bibliography Settings
-  const [settings, setSettings] = React.useState({
-    hangingIndent: true,
-    doubleSpaced: false,
-    font: "Times New Roman",
-    textSize: "12pt",
-    sortBy: "Citation style",
-  });
+
 
   const [settingsDropdown, setSettingsDropdown] = React.useState<string | null>(null);
 
-  const cleanForSort = (str: string) => {
-    return str.replace(/^(A|An|The)\s+/i, '').trim();
-  };
-
-  const comparePhonetic = (a: string, b: string) => {
-    const isThaiA = /[\u0E00-\u0E7F]/.test(a);
-    const isThaiB = /[\u0E00-\u0E7F]/.test(b);
-    if (isThaiA && !isThaiB) return -1;
-    if (!isThaiA && isThaiB) return 1;
-    return a.localeCompare(b, 'th-TH');
-  };
-
-  const applySort = (sortBy: string) => {
-    let sorted = [...citations];
-    if (sortBy === 'Author (A-Z)') {
-      sorted.sort((a, b) => comparePhonetic(cleanForSort(a.authorText), cleanForSort(b.authorText)));
-    } else if (sortBy === 'Author (Z-A)') {
-      sorted.sort((a, b) => comparePhonetic(cleanForSort(b.authorText), cleanForSort(a.authorText)));
-    } else if (sortBy === 'Title (A-Z)') {
-      sorted.sort((a, b) => comparePhonetic(cleanForSort(a.titleText), cleanForSort(b.titleText)));
-    } else if (sortBy === 'Title (Z-A)') {
-      sorted.sort((a, b) => comparePhonetic(cleanForSort(b.titleText), cleanForSort(a.titleText)));
-    } else if (sortBy === 'Publication date (newest-oldest)') {
-      sorted.sort((a, b) => b.year - a.year);
-    } else if (sortBy === 'Publication date (oldest-newest)') {
-      sorted.sort((a, b) => a.year - b.year);
-    } else if (sortBy === 'Date added (newest-oldest)') {
-      sorted.sort((a, b) => b.dateAdded - a.dateAdded);
-    } else if (sortBy === 'Date added (oldest-newest)') {
-      sorted.sort((a, b) => a.dateAdded - b.dateAdded);
-    } else if (sortBy === 'Citation style') {
-      sorted.sort((a, b) => a.id - b.id);
-    }
-    setCitations(sorted);
-  };
 
   const handleSortSettings = (sortBy: string) => {
     setSettings(prev => ({ ...prev, sortBy }));
-    applySort(sortBy);
     setSettingsDropdown(null);
   };
 
@@ -336,16 +473,81 @@ export default function GeneratePage() {
     setSettings(prev => ({ ...prev, [key]: !prev[key as keyof typeof settings] }));
   };
 
-  const projects = [
-    { name: "Babybib Next.js", icon: <Globe className="h-3 w-3 shrink-0" />, count: 12, active: false },
-    { name: "Preview Link Card", icon: <FileText className="h-3 w-3 shrink-0" />, count: 5, active: true },
-    { name: "Smart ISBN API", icon: <Library className="h-3 w-3 shrink-0" />, count: 8, active: false },
-    { name: "Chat UI System", icon: <Smartphone className="h-3 w-3 shrink-0" />, count: 3, active: false },
-    { name: "Attitudes AI Tool", icon: <Bot className="h-3 w-3 shrink-0" />, count: 15, active: false },
-    { name: "E-commerce API", icon: <ShoppingCart className="h-3 w-3 shrink-0" />, count: 7, active: false },
-    { name: "Admin Dashboard", icon: <LayoutDashboard className="h-3 w-3 shrink-0" />, count: 10, active: false },
-    { name: "Portfolio Templates", icon: <Briefcase className="h-3 w-3 shrink-0" />, count: 4, active: false },
-  ];
+  const { data: fetchedProjects = [], mutate: mutateProjects } = useSWR('/api/projects', fetcher);
+  
+  const iconComponents: Record<string, React.ReactNode> = {
+    BookOpen: <BookOpen />,
+    Globe: <Globe />,
+    FileText: <FileText />,
+    Library: <Library />,
+    Archive: <Archive />,
+    Book: <Book />,
+    Pencil: <Pencil />,
+    Quote: <Quote />,
+    Sparkles: <Sparkles />,
+    Bot: <Bot />,
+    Search: <Search />,
+    Settings2: <Settings2 />,
+    Briefcase: <Briefcase />,
+    LayoutDashboard: <LayoutDashboard />,
+    ShoppingCart: <ShoppingCart />,
+    Smartphone: <Smartphone />,
+    Heart: <Heart />,
+    ShieldCheck: <ShieldCheck />,
+    Info: <Info />,
+    HelpCircle: <HelpCircle />,
+  };
+
+  const projects = fetchedProjects.map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    icon: iconComponents[p.icon] ? React.cloneElement(iconComponents[p.icon] as React.ReactElement<any>, { className: "h-3 w-3 shrink-0" }) : <BookOpen className="h-3 w-3 shrink-0" />,
+    color: p.color,
+    active: activeProjectId === p.id || (activeProjectId === null && fetchedProjects.length > 0 && fetchedProjects[0].id === p.id),
+  }));
+
+  React.useEffect(() => {
+    if (activeProjectId === null && fetchedProjects.length > 0) {
+      setActiveProjectId(fetchedProjects[0].id);
+    }
+  }, [fetchedProjects, activeProjectId]);
+
+  const handleCreateProject = async () => {
+    if (!newProject.name.trim()) return;
+    setIsCreatingProject(true);
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProject)
+      });
+      if (res.ok) {
+        const createdProject = await res.json();
+        setActiveProjectId(createdProject.id);
+        mutateProjects();
+        setIsCreateModalOpen(false);
+        setNewProject({ name: "", description: "", color: "#407bc4", icon: "BookOpen" });
+        showToast(language === 'TH' ? 'สร้างโปรเจกต์สำเร็จ' : 'Project created successfully');
+      }
+    } catch (e) {
+      console.error(e);
+      showToast(language === 'TH' ? 'เกิดข้อผิดพลาด' : 'An error occurred');
+    } finally {
+      setIsCreatingProject(false);
+    }
+  };
+
+  const handleDeleteProject = async (id: number) => {
+    try {
+      const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        mutateProjects();
+        showToast(language === 'TH' ? 'ลบโปรเจกต์สำเร็จ' : 'Project deleted');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-black dark:text-white transition-colors duration-300">
@@ -419,14 +621,16 @@ export default function GeneratePage() {
                 <span className="text-sm font-semibold">Project</span>
               </div>
               <ul className="flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-1">
-                {(isProjectsExpanded ? projects : projects.slice(0, 5)).map((project, idx) => (
+                {(isProjectsExpanded ? projects : projects.slice(0, 5)).map((project: any, idx: number) => (
                   <li 
-                    key={idx}
+                    key={project.id}
+                    onClick={() => setActiveProjectId(project.id)}
                     className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg text-sm transition-all cursor-pointer group/item ${
                       project.active 
-                        ? "bg-[#407bc4]/5 text-[#407bc4] font-semibold dark:bg-[#407bc4]/10 dark:text-[#6ba1e6]" 
+                        ? "bg-[#407bc4]/5 font-semibold dark:bg-[#407bc4]/10" 
                         : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:text-[#407bc4] dark:hover:text-[#6ba1e6]"
                     }`}
+                    style={project.active ? { color: project.color } : {}}
                   >
                     <div className="flex items-center gap-2 truncate">
                       {project.icon}
@@ -466,6 +670,9 @@ export default function GeneratePage() {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setProjectMenuIdx(null);
+                                    if (option.id === 'delete') {
+                                      handleDeleteProject(project.id);
+                                    }
                                   }}
                                   className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${option.color || 'text-zinc-600 dark:text-zinc-400'}`}
                                 >
@@ -503,21 +710,11 @@ export default function GeneratePage() {
                 <span className="text-sm font-semibold text-zinc-500">Latest bibliography</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
-                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <span className="truncate">Kahneman, D. (2011). Thinking, fast and slow...</span>
-                </li>
-                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <span className="truncate">Harari, Y. N. (2014). Sapiens: A brief history...</span>
-                </li>
-                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <span className="truncate">Chomsky, N. (1957). Syntactic structures...</span>
-                </li>
-                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <span className="truncate">Dawkins, R. (1976). The selfish gene...</span>
-                </li>
-                <li className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
-                  <span className="truncate">Hawking, S. (1988). A brief history of time...</span>
-                </li>
+                {processedCitations.slice(0, 5).map((citation: any) => (
+                  <li key={citation.id} className="flex items-start text-sm text-zinc-600 dark:text-zinc-400 hover:text-[#407bc4] dark:hover:text-[#6ba1e6] cursor-pointer transition-colors truncate">
+                    <span className="truncate">{citation.authorText} ({citation.year}). {citation.titleText}...</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -788,10 +985,26 @@ export default function GeneratePage() {
               
               {/* Box Toolbar */}
               <div className="absolute top-4 right-4 flex items-center gap-2">
-                <button className="flex h-7 px-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors uppercase tracking-tight">
-                  <Search className="h-3 w-3" />
-                  {language === 'TH' ? 'ค้นหา รายการบรรณานุกรม' : 'Search references'}
-                </button>
+                <div className="relative group/local-search">
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/local-search:text-[#407bc4] transition-colors">
+                    <Search className="h-3 w-3" />
+                  </div>
+                  <input
+                    type="text"
+                    value={searchReferencesQuery}
+                    onChange={(e) => setSearchReferencesQuery(e.target.value)}
+                    placeholder={language === 'TH' ? 'ค้นหา รายการบรรณานุกรม' : 'Search references'}
+                    className="flex h-7 w-48 pl-8 pr-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-700 dark:text-zinc-300 transition-colors uppercase tracking-tight focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4]"
+                  />
+                  {searchReferencesQuery && (
+                    <button 
+                      onClick={() => setSearchReferencesQuery('')}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
                 
                 <div className="relative">
                   <button 
@@ -914,7 +1127,7 @@ export default function GeneratePage() {
                 
                 {citations.length > 0 ? (
                   <div className="flex flex-col gap-1">
-                    {citations.map((citation, index) => (
+                    {processedCitations.map((citation: any, index: number) => (
                       <div 
                         key={citation.id} 
                         draggable
@@ -930,19 +1143,16 @@ export default function GeneratePage() {
                         </div>
 
                         <div 
-                          className={`flex-1 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 transition-all ${
-                            viewMode === "Bibliography" || viewMode === "Bibliography and in-text citations"
-                              ? (settings.hangingIndent ? 'pl-8 -indent-8' : '')
-                              : ''
-                          }`}
-                          style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}
+                          className={`flex-1 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 transition-all`}
                         >
                           {viewMode === "Bibliography" && (
-                            <div>{citation.content}</div>
+                            <div className={`transition-all ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`} style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}>
+                              {citation.content}
+                            </div>
                           )}
                           
                           {viewMode === "Plain list" && (
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3" style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}>
                               <span className="h-1.5 w-1.5 rounded-full bg-[#407bc4] shrink-0" />
                               {citation.content}
                             </div>
@@ -950,7 +1160,9 @@ export default function GeneratePage() {
 
                           {viewMode === "Bibliography and in-text citations" && (
                             <div className="flex flex-col gap-3">
-                              <div>{citation.content}</div>
+                              <div className={`transition-all ${settings.hangingIndent ? 'pl-8 -indent-8' : ''}`} style={{ lineHeight: settings.doubleSpaced ? '2.5' : '1.8' }}>
+                                {citation.content}
+                              </div>
                               <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-50/80 dark:bg-[#407bc4]/10 border border-blue-200/60 dark:border-[#407bc4]/30 rounded-full w-fit group cursor-help transition-all hover:bg-white dark:hover:bg-[#407bc4]/20 shadow-sm border-dashed">
                                 <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white dark:bg-blue-900/50 flex items-center justify-center border border-blue-100 dark:border-[#407bc4]/20 shadow-xs">
                                   <Quote className="h-2.5 w-2.5 text-[#407bc4] fill-[#407bc4]/10" />
@@ -1079,7 +1291,7 @@ export default function GeneratePage() {
                     <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
                   </div>
                   {language === 'TH' ? 'รายการที่เตรียมลบถาวร (Deleted Items)' : 'Deleted Items'}
-                  <span className="ml-1 text-[11px] font-bold text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full">{deletedCitations.length}</span>
+                  <span className="ml-1 text-[11px] font-bold text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full">{deletedCitations?.length || 0}</span>
                 </h3>
                 <button 
                   onClick={() => setIsDeletedModalOpen(false)}
@@ -1090,7 +1302,7 @@ export default function GeneratePage() {
               </div>
 
               <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
-                {deletedCitations.length === 0 ? (
+                {(!deletedCitations || deletedCitations.length === 0) ? (
                   <div className="flex flex-col items-center justify-center text-center py-12">
                     <Trash2 className="h-10 w-10 text-zinc-200 dark:text-zinc-800 mb-4" />
                     <p className="text-sm font-medium text-zinc-400">
@@ -1100,7 +1312,7 @@ export default function GeneratePage() {
                 ) : (
                   <div className="flex flex-col gap-3">
                     <AnimatePresence>
-                      {deletedCitations.map(citation => (
+                      {deletedCitations?.map((citation: any) => (
                         <motion.div 
                           key={citation.id}
                           initial={{ opacity: 0, y: 10 }}
@@ -1136,11 +1348,18 @@ export default function GeneratePage() {
                 <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
                   {language === 'TH' ? 'ระบบกู้คืนไฟล์' : 'Trash System'}
                 </span>
-                {deletedCitations.length > 0 && (
+                {deletedCitations?.length > 0 && (
                   <button 
-                    onClick={() => {
-                      setDeletedCitations([]);
-                      showToast(language === 'TH' ? 'เคลียร์ถังขยะเรียบร้อย' : 'Trash emptied');
+                    onClick={async () => {
+                      try {
+                        await Promise.all(deletedCitations.map((c: any) => 
+                          fetch(`/api/citations/${c.id}`, { method: 'DELETE' })
+                        ));
+                        mutateDeletedCitations();
+                        showToast(language === 'TH' ? 'เคลียร์ถังขยะเรียบร้อย' : 'Trash emptied');
+                      } catch (e) {
+                         console.error("Failed to empty trash", e);
+                      }
                     }}
                     className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-600 dark:text-red-400 font-bold transition-colors bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg active:scale-95"
                   >
@@ -1193,6 +1412,8 @@ export default function GeneratePage() {
                   </label>
                   <input 
                     type="text" 
+                    value={newProject.name}
+                    onChange={(e) => setNewProject({...newProject, name: e.target.value})}
                     placeholder={language === 'TH' ? 'ระบุชื่อโปรเจกต์...' : 'Enter project name...'}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
                   />
@@ -1205,6 +1426,8 @@ export default function GeneratePage() {
                   </label>
                   <textarea 
                     rows={3}
+                    value={newProject.description}
+                    onChange={(e) => setNewProject({...newProject, description: e.target.value})}
                     placeholder={language === 'TH' ? 'ระบุรายละเอียดคร่าวๆ...' : 'Optional description...'}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all resize-none"
                   />
@@ -1284,9 +1507,11 @@ export default function GeneratePage() {
                   {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
                 </button>
                 <button 
-                  className="px-6 py-2 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
+                  onClick={handleCreateProject}
+                  disabled={isCreatingProject || !newProject.name.trim()}
+                  className="px-6 py-2 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] disabled:opacity-50 transition-all shadow-md active:scale-95 flex items-center gap-2"
                 >
-                  {language === 'TH' ? 'สร้างโปรเจกต์' : 'Create Project'}
+                  {isCreatingProject ? (language === 'TH' ? 'กำลังสร้าง...' : 'Creating...') : (language === 'TH' ? 'สร้างโปรเจกต์' : 'Create Project')}
                 </button>
               </div>
             </motion.div>
@@ -1891,7 +2116,7 @@ export default function GeneratePage() {
                 
                 {citationStep === 1 && (
                   <button 
-                    onClick={() => setIsAddCitationModalOpen(false)}
+                    onClick={handleSaveManualCitation}
                     className="px-8 py-2.5 rounded-xl bg-[#407bc4] text-white text-sm font-bold hover:bg-[#32629e] transition-all shadow-lg active:scale-95"
                   >
                     {language === 'TH' ? 'บันทึกรายการ' : 'Save Citation'}
