@@ -1212,9 +1212,8 @@ export default function GeneratePage() {
                         <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                           {mainSearchResults.map((result) => (
                             <div key={result.id} className="flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 transition-colors group">
-                              <div className="flex flex-col gap-1 pr-4">
-                                <div className="flex items-center gap-2">
-                                  <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
+                               <div className="flex items-start gap-3 flex-1 min-w-0 pr-4">
+                                  <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 mt-0.5">
                                     <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
                                   </div>
                                   <div className="flex flex-col flex-1 min-w-0">
@@ -1228,16 +1227,16 @@ export default function GeneratePage() {
                                       {result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ')} ({result.year}) - {result.source}
                                     </span>
                                   </div>
-                              </div>
-                              <button 
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleSelectSearchResult(result);
-                                }}
-                                className="h-8 w-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#407bc4]/10 text-[#407bc4] hover:bg-[#407bc4] hover:text-white transition-colors"
-                              >
-                                <Plus className="h-4 w-4" />
-                              </button>
+                               </div>
+                               <button 
+                                 onClick={(e) => {
+                                   e.preventDefault();
+                                   handleSelectSearchResult(result);
+                                 }}
+                                 className="h-8 w-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#407bc4]/10 text-[#407bc4] hover:bg-[#407bc4] hover:text-white transition-colors"
+                               >
+                                 <Plus className="h-4 w-4" />
+                               </button>
                             </div>
                           ))}
                         </div>
