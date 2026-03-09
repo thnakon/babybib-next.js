@@ -107,20 +107,23 @@ export default function GeneratePage() {
     { id: '5', title: 'Historical Analysis of Design Patterns', authors: [{ firstName: 'Jane', middleName: '', lastName: 'Doe' }], year: '2020', source: 'Journal of Software Engineering', type: 'article' },
   ];
 
-  const handleMainSearch = (query: string) => {
+  const handleMainSearch = async (query: string) => {
     setMainSearchQuery(query);
     if (query.trim().length > 2) {
       setIsMainSearching(true);
       setIsMainSearchDropdownOpen(true);
-      // Simulate API call
-      setTimeout(() => {
-        const results = mockSearchResults.filter(item => 
-          item.title.toLowerCase().includes(query.toLowerCase()) || 
-          item.authors.some(a => a.lastName.toLowerCase().includes(query.toLowerCase()))
-        );
-        setMainSearchResults(results);
+      
+      try {
+        const res = await fetch(`/api/smart-search?q=${encodeURIComponent(query)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setMainSearchResults(data.results || []);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+      } finally {
         setIsMainSearching(false);
-      }, 600);
+      }
     } else {
       setMainSearchResults([]);
       setIsMainSearchDropdownOpen(false);
@@ -1235,14 +1238,24 @@ export default function GeneratePage() {
                                     <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
                                   </div>
                                   <div className="flex flex-col flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate">{result.title}</span>
-                                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border shrink-0 ${getResourceBadgeStyle(result.type)}`}>
-                                        {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
-                                      </span>
+                                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate max-w-[200px]">{result.title}</span>
+                                      <div className="flex items-center gap-1">
+                                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border shrink-0 ${getResourceBadgeStyle(result.type)}`}>
+                                          {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
+                                        </span>
+                                        {result.sourceApi && (
+                                          <span className="text-[8px] font-bold uppercase tracking-tighter px-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+                                            {result.sourceApi}
+                                          </span>
+                                        )}
+                                      </div>
                                     </div>
                                     <span className="text-xs text-zinc-500 line-clamp-1">
-                                      {result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ')} ({result.year}) - {result.source}
+                                      {result.authors?.length > 0 
+                                        ? result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ') 
+                                        : (language === 'TH' ? 'ไม่ระบุผู้แต่ง' : 'Unknown Author')} 
+                                      {result.year ? ` (${result.year})` : ''} - {result.source}
                                     </span>
                                   </div>
                                </div>

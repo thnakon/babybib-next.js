@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     
     return NextResponse.json(citations);
   } catch (error) {
-    console.error(error);
+    console.error('GET /api/citations failed:', error); // Improved logging
     return NextResponse.json({ error: 'Failed to fetch citations' }, { status: 500 });
   }
 }
@@ -36,12 +36,19 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     if (!body.projectId || !body.title) {
+      console.error('POST /api/citations: Missing required fields (projectId or title)', body); // Added logging
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const parsedProjectId = typeof body.projectId === 'string' ? parseInt(body.projectId) : body.projectId;
+    if (isNaN(parsedProjectId)) {
+      console.error(`POST /api/citations: Invalid Project ID format in body: ${body.projectId}`); // Added logging
+      return NextResponse.json({ error: 'Invalid Project ID format' }, { status: 400 });
     }
 
     const citation = await prisma.citation.create({
       data: {
-        projectId: body.projectId,
+        projectId: parsedProjectId,
         type: body.type || 'book',
         authors: body.authors || [],
         authorCondition: body.authorCondition || 'general',
@@ -54,7 +61,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(citation, { status: 201 });
   } catch (error) {
-    console.error(error);
+    console.error('POST /api/citations failed:', error); // Improved logging
     return NextResponse.json({ error: 'Failed to create citation' }, { status: 500 });
   }
 }
