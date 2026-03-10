@@ -1,29 +1,29 @@
 export const PROVINCES = [
-  "กรุงเทพมหานคร", "กระบี่", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร",
-  "ขอนแก่น", "จันทบุรี", "ฉะเชิงเทรา", "ชลบุรี", "ชัยนาท",
-  "ชัยภูมิ", "ชุมพร", "เชียงราย", "เชียงใหม่", "ตรัง",
-  "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม",
-  "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส",
-  "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์",
-  "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา", "พะเยา", "พังงา",
-  "พัทลุง", "พิจิตร", "พิษณุโลก", "เพชรบุรี", "เพชรบูรณ์",
-  "แพร่", "ภูเก็ต", "มหาสารคาม", "มุกดาหาร", "แม่ฮ่องสอน",
-  "ยโสธร", "ยะลา", "ร้อยเอ็ด", "ระนอง", "ระยอง",
-  "ราชบุรี", "ลพบุรี", "ลำปาง", "ลำพูน", "เลย",
-  "ศรีสะเกษ", "สกลนคร", "สงขลา", "สตูล", "สมุทรปราการ",
-  "สมุทรสงคราม", "สมุทรสาคร", "สระแก้ว", "สระบุรี", "สิงห์บุรี",
-  "สุโขทัย", "สุพรรณบุรี", "สุราษฎร์ธานี", "สุรินทร์", "หนองคาย",
-  "หนองบัวลำภู", "อ่างทอง", "อำนาจเจริญ", "อุดรธานี", "อุตรดิตถ์",
-  "อุทัยธานี", "อุบลราชธานี"
+  "Bangkok", "Krabi", "Kanchanaburi", "Kalasin", "Kamphaeng Phet",
+  "Khon Kaen", "Chanthaburi", "Chachoengsao", "Chonburi", "Chainat",
+  "Chaiyaphum", "Chumphon", "Chiang Rai", "Chiang Mai", "Trang",
+  "Trat", "Tak", "Nakhon Nayok", "Nakhon Pathom", "Nakhon Phanom",
+  "Nakhon Ratchasima", "Nakhon Si Thammarat", "Nakhon Sawan", "Nonthaburi", "Narathiwat",
+  "Nan", "Bueng Kan", "Buriram", "Pathum Thani", "Prachuap Khiri Khan",
+  "Prachinburi", "Pattani", "Phra Nakhon Si Ayutthaya", "Phayao", "Phang Nga",
+  "Phatthalung", "Phichit", "Phitsanulok", "Phetchaburi", "Phetchabun",
+  "Phrae", "Phuket", "Maha Sarakham", "Mukdahan", "Mae Hong Son",
+  "Yasothon", "Yala", "Roi Et", "Ranong", "Rayong",
+  "Ratchaburi", "Lopburi", "Lampang", "Lamphun", "Loei",
+  "Si Sa Ket", "Sakon Nakhon", "Songkhla", "Satun", "Samut Prakan",
+  "Samut Songkhram", "Samut Sakhon", "Sa Kaeo", "Saraburi", "Sing Buri",
+  "Sukhothai", "Suphan Buri", "Surat Thani", "Surin", "Nong Khai",
+  "Nong Bua Lam Phu", "Ang Thong", "Amnat Charoen", "Udon Thani", "Uttaradit",
+  "Uthai Thani", "Ubon Ratchatathani"
 ];
 
 export const ORG_TYPES = [
-  "มหาวิทยาลัย",
-  "โรงเรียนมัธยม",
-  "โรงเรียนขยายโอกาส",
-  "โรงเรียนประถม",
-  "หน่วยงานรัฐ",
-  "บริษัทเอกชน",
-  "ส่วนบุคคล",
-  "อื่นๆ"
+  "University",
+  "High School",
+  "Expanded Opportunity School",
+  "Primary School",
+  "Government Agency",
+  "Private Company",
+  "Individual",
+  "Other"
 ];

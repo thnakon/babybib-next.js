@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -21,7 +19,7 @@ export async function POST(req: Request) {
       studentId 
     } = body;
 
-    if (!username || !email || !password || !firstName || !lastName || !orgType || !province) {
+    if (!username || !email || !password || !firstName || !lastName) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 

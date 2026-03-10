@@ -82,7 +82,7 @@ export function LoginForm({
                 </div>
               )}
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">Email <span className="text-destructive">*</span></FieldLabel>
                 <Input
                   id="email"
                   type="email"
@@ -95,7 +95,7 @@ export function LoginForm({
               </Field>
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <FieldLabel htmlFor="password">Password <span className="text-destructive">*</span></FieldLabel>
                   <a
                     href="#"
                     className="ml-auto text-sm text-[#407bc4] underline-offset-2 hover:underline"

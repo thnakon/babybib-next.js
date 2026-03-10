@@ -33,15 +33,15 @@ const signupSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   password: z.string().min(8, "Password must be at least 8 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
-  orgType: z.string().min(1, "Organization type is required"),
+  orgType: z.string().optional(),
   otherOrgType: z.string().optional(),
-  province: z.string().min(1, "Province is required"),
+  province: z.string().optional(),
   orgName: z.string().optional(),
-  isLisStudent: z.boolean().default(false),
+  isLisStudent: z.boolean(),
   studentId: z.string().optional(),
   terms: z.boolean().refine(v => v === true, "You must agree to the terms"),
 }).refine((data) => {
-  if (data.orgType === "อื่นๆ" && !data.otherOrgType) return false;
+  if (data.orgType === "Other" && !data.otherOrgType) return false;
   return true;
 }, {
   message: "Please specify your organization type",
@@ -123,32 +123,66 @@ export function SignupForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <Field>
-                  <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                  <FieldLabel htmlFor="firstName">First Name <span className="text-destructive">*</span></FieldLabel>
                   <Input id="firstName" {...register("firstName")} placeholder="John" />
                   {errors.firstName && <span className="text-xs text-destructive mt-1">{errors.firstName.message}</span>}
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                  <FieldLabel htmlFor="lastName">Last Name <span className="text-destructive">*</span></FieldLabel>
                   <Input id="lastName" {...register("lastName")} placeholder="Doe" />
                   {errors.lastName && <span className="text-xs text-destructive mt-1">{errors.lastName.message}</span>}
                 </Field>
               </div>
               
               <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <FieldLabel htmlFor="username">Username <span className="text-destructive">*</span></FieldLabel>
                 <Input id="username" {...register("username")} placeholder="johndoe" />
                 {errors.username && <span className="text-xs text-destructive mt-1">{errors.username.message}</span>}
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">Email <span className="text-destructive">*</span></FieldLabel>
                 <Input id="email" {...register("email")} type="email" placeholder="m@example.com" />
                 {errors.email && <span className="text-xs text-destructive mt-1">{errors.email.message}</span>}
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <FieldLabel htmlFor="password">Password <span className="text-destructive">*</span></FieldLabel>
                 <Input id="password" {...register("password")} type="password" />
+                <div className="mt-2 space-y-2">
+                  <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-muted/50">
+                    <div 
+                      className={cn(
+                        "h-full transition-all duration-300",
+                        watch("password")?.length >= 8 ? "bg-emerald-500" : "bg-muted",
+                        watch("password")?.length > 0 && "w-1/2"
+                      )} 
+                    />
+                    <div 
+                      className={cn(
+                        "h-full transition-all duration-300",
+                        /[A-Z]/.test(watch("password") || "") ? "bg-emerald-500" : "bg-muted",
+                        watch("password")?.length > 0 && "w-1/2"
+                      )} 
+                    />
+                  </div>
+                  <ul className="text-[11px] space-y-1">
+                    <li className={cn(
+                      "flex items-center gap-1.5 transition-colors",
+                      watch("password")?.length >= 8 ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+                    )}>
+                      <div className={cn("size-1 rounded-full", watch("password")?.length >= 8 ? "bg-emerald-500" : "bg-muted-foreground/30")} />
+                      At least 8 characters
+                    </li>
+                    <li className={cn(
+                      "flex items-center gap-1.5 transition-colors",
+                      /[A-Z]/.test(watch("password") || "") ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+                    )}>
+                      <div className={cn("size-1 rounded-full", /[A-Z]/.test(watch("password") || "") ? "bg-emerald-500" : "bg-muted-foreground/30")} />
+                      At least 1 uppercase letter (A-Z)
+                    </li>
+                  </ul>
+                </div>
                 {errors.password && <span className="text-xs text-destructive mt-1">{errors.password.message}</span>}
               </Field>
               
@@ -184,9 +218,9 @@ export function SignupForm({
                 </Field>
               </div>
 
-              {orgType === "อื่นๆ" && (
+              {orgType === "Other" && (
                 <Field className="animate-in fade-in slide-in-from-top-1">
-                  <FieldLabel htmlFor="otherOrgType">Please specify</FieldLabel>
+                  <FieldLabel htmlFor="otherOrgType">Please specify <span className="text-destructive">*</span></FieldLabel>
                   <Input id="otherOrgType" {...register("otherOrgType")} />
                   {errors.otherOrgType && <span className="text-xs text-destructive mt-1">{errors.otherOrgType.message}</span>}
                 </Field>
@@ -211,7 +245,7 @@ export function SignupForm({
 
                 {isLisStudent && (
                   <Field className="animate-in fade-in slide-in-from-top-1 ml-6">
-                    <FieldLabel htmlFor="studentId">Student ID</FieldLabel>
+                    <FieldLabel htmlFor="studentId">Student ID <span className="text-destructive">*</span></FieldLabel>
                     <Input id="studentId" {...register("studentId")} className="h-9" />
                     {errors.studentId && <span className="text-xs text-destructive mt-1">{errors.studentId.message}</span>}
                   </Field>
@@ -223,7 +257,7 @@ export function SignupForm({
                     onCheckedChange={(checked) => setValue("terms", checked as boolean)}
                   />
                   <FieldLabel htmlFor="terms" className="text-sm font-normal leading-none cursor-pointer">
-                    I agree to the <a href="#" className="underline">Terms</a>
+                    I agree to the <a href="#" className="underline">Terms</a> <span className="text-destructive">*</span>
                   </FieldLabel>
                 </div>
                 {errors.terms && <span className="text-xs text-destructive mt-1">{errors.terms.message}</span>}

@@ -20,9 +20,9 @@ model User {
   password      String
   firstName     String
   lastName      String
-  orgType       String
+  orgType       String?
   otherOrgType  String?
-  province      String
+  province      String?
   orgName       String?
   isLisStudent  Boolean  @default(false)
   studentId     String?
