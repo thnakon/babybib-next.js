@@ -71,6 +71,13 @@ export function SignupForm({
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      username: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      orgType: "",
+      province: "",
       isLisStudent: false,
       terms: false,
     }
@@ -104,7 +111,7 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create an account</CardTitle>
+          <CardTitle className="text-2xl font-bold tracking-tight">Join Babybib</CardTitle>
           <CardDescription>
             Enter your information below to create your account
           </CardDescription>
@@ -142,7 +149,7 @@ export function SignupForm({
               
               <div className="grid gap-2">
                 <Label>Organization Type</Label>
-                <Select onValueChange={(value) => setValue("orgType", value)}>
+                <Select onValueChange={(value) => setValue("orgType", value as any)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -165,7 +172,7 @@ export function SignupForm({
 
               <div className="grid gap-2">
                 <Label>Province</Label>
-                <Select onValueChange={(value) => setValue("province", value)}>
+                <Select onValueChange={(value) => setValue("province", value as any)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select province" />
                   </SelectTrigger>
@@ -213,13 +220,13 @@ export function SignupForm({
               </div>
               {errors.terms && <span className="text-xs text-destructive">{errors.terms.message}</span>}
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full bg-[#407bc4] hover:bg-[#32629e] transition-all" disabled={loading}>
                 {loading ? "Creating account..." : "Sign Up"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link href="/login" className="underline underline-offset-4">
+              <Link href="/login" className="text-[#407bc4] hover:underline underline-offset-4">
                 Login
               </Link>
             </div>
