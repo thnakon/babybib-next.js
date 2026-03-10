@@ -24,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", outfit.variable)}>
       <body
-        className={`${outfit.variable} font-sans antialiased bg-white dark:bg-[#0a0a0a]`}
+        className={cn("font-sans antialiased bg-background text-foreground")}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LanguageProvider>

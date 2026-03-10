@@ -109,14 +109,14 @@ export function SignupForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0 border-none shadow-xl">
+      <Card className="overflow-hidden p-0 border-none shadow-2xl bg-card text-card-foreground">
         <CardContent className="grid p-0 md:grid-cols-[1.2fr_0.8fr]">
           <form className="p-6 md:p-10" onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <div className="flex flex-col items-start gap-2 text-left mb-4">
                 <Logo />
-                <h1 className="text-2xl font-bold mt-4">Join Babybib</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-2xl font-bold mt-4 tracking-tight">Join Babybib</h1>
+                <p className="text-sm text-muted-foreground font-medium">
                   Create your account to start managing citations
                 </p>
               </div>
@@ -169,14 +169,14 @@ export function SignupForm({
                   <ul className="text-[11px] space-y-1">
                     <li className={cn(
                       "flex items-center gap-1.5 transition-colors",
-                      watch("password")?.length >= 8 ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+                      watch("password")?.length >= 8 ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-muted-foreground"
                     )}>
                       <div className={cn("size-1 rounded-full", watch("password")?.length >= 8 ? "bg-emerald-500" : "bg-muted-foreground/30")} />
                       At least 8 characters
                     </li>
                     <li className={cn(
                       "flex items-center gap-1.5 transition-colors",
-                      /[A-Z]/.test(watch("password") || "") ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+                      /[A-Z]/.test(watch("password") || "") ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-muted-foreground"
                     )}>
                       <div className={cn("size-1 rounded-full", /[A-Z]/.test(watch("password") || "") ? "bg-emerald-500" : "bg-muted-foreground/30")} />
                       At least 1 uppercase letter (A-Z)
@@ -190,31 +190,29 @@ export function SignupForm({
                 <Field>
                   <FieldLabel>Org Type</FieldLabel>
                   <Select onValueChange={(value) => setValue("orgType", value as any)}>
-                    <SelectTrigger className="w-full h-10 bg-background">
+                    <SelectTrigger className="w-full h-10 bg-background border-input hover:bg-muted/30 transition-colors">
                       <SelectValue placeholder="Type" />
                     </SelectTrigger>
-                    <SelectContent className="z-[100] bg-white dark:bg-zinc-950 border shadow-xl">
+                    <SelectContent className="z-[100] bg-popover text-popover-foreground border shadow-xl">
                       {ORG_TYPES.map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.orgType && <span className="text-xs text-destructive mt-1">{errors.orgType.message}</span>}
                 </Field>
 
                 <Field>
                   <FieldLabel>Province</FieldLabel>
                   <Select onValueChange={(value) => setValue("province", value as any)}>
-                    <SelectTrigger className="w-full h-10 bg-background">
+                    <SelectTrigger className="w-full h-10 bg-background border-input hover:bg-muted/30 transition-colors">
                       <SelectValue placeholder="Province" />
                     </SelectTrigger>
-                    <SelectContent className="z-[100] bg-white dark:bg-zinc-950 border shadow-xl max-h-[300px]">
+                    <SelectContent className="z-[100] bg-popover text-popover-foreground border shadow-xl max-h-[300px]">
                       {PROVINCES.map(p => (
                         <SelectItem key={p} value={p}>{p}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.province && <span className="text-xs text-destructive mt-1">{errors.province.message}</span>}
                 </Field>
               </div>
 
@@ -238,7 +236,7 @@ export function SignupForm({
                     checked={isLisStudent}
                     onCheckedChange={(checked) => setValue("isLisStudent", checked as boolean)}
                   />
-                  <FieldLabel htmlFor="isLisStudent" className="text-sm font-normal leading-none cursor-pointer">
+                  <FieldLabel htmlFor="isLisStudent" className="text-sm font-medium leading-none cursor-pointer">
                     LIS student at Faculty of Humanities, CMU
                   </FieldLabel>
                 </div>
@@ -256,42 +254,45 @@ export function SignupForm({
                     id="terms" 
                     onCheckedChange={(checked) => setValue("terms", checked as boolean)}
                   />
-                  <FieldLabel htmlFor="terms" className="text-sm font-normal leading-none cursor-pointer">
-                    I agree to the <a href="#" className="underline">Terms</a> <span className="text-destructive">*</span>
+                  <FieldLabel htmlFor="terms" className="text-sm font-medium leading-none cursor-pointer">
+                    I agree to the <a href="#" className="underline font-bold">Terms</a> <span className="text-destructive">*</span>
                   </FieldLabel>
                 </div>
                 {errors.terms && <span className="text-xs text-destructive mt-1">{errors.terms.message}</span>}
               </div>
 
               <Field>
-                <Button type="submit" className="w-full bg-[#407bc4] hover:bg-[#32629e] transition-all h-11 text-base font-medium" disabled={loading}>
+                <Button type="submit" className="w-full bg-[#407bc4] hover:bg-[#32629e] transition-all h-11 text-base font-bold shadow-md border-none" disabled={loading}>
                   {loading ? "Creating account..." : "Sign Up"}
                 </Button>
                 <FieldDescription className="text-center pt-2">
                   Already have an account?{" "}
-                  <Link href="/login" className="text-[#407bc4] hover:underline underline-offset-4 font-medium">
+                  <Link href="/login" className="text-[#407bc4] hover:underline underline-offset-4 font-bold">
                     Login
                   </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
           </form>
-          <div className="relative hidden bg-muted md:block">
+          <div className="relative hidden bg-card md:block">
             <img
               src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000"
               alt="Signup Background"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.4]"
             />
-            <div className="absolute inset-0 bg-[#407bc4]/10" />
-            <div className="absolute bottom-10 left-10 p-6 backdrop-blur-md bg-white/10 rounded-xl border border-white/20 max-w-[80%] hidden lg:block">
+            <div className="absolute inset-0 bg-[#407bc4]/10 dark:bg-black/40" />
+            <div className="absolute bottom-10 left-10 p-6 backdrop-blur-md bg-white/10 dark:bg-black/20 rounded-xl border border-white/20 dark:border-white/10 max-w-[80%] hidden lg:block">
               <p className="text-white text-lg font-medium italic">
-                "Babybib helps me organize my academic citations in seconds. It's truly a game changer for researchers."
+                "Babybib helps me organize my academic citations in seconds."
               </p>
-              <footer className="text-white/80 text-sm mt-2">— Happy Researcher</footer>
+              <footer className="text-white/80 text-sm mt-2">— Verified User</footer>
             </div>
           </div>
         </CardContent>
       </Card>
+      <FieldDescription className="px-6 text-center text-[11px] text-muted-foreground">
+        By continuing, you agree to our <a href="#" className="underline">Terms</a> and <a href="#" className="underline">Privacy</a>.
+      </FieldDescription>
     </div>
   )
 }
