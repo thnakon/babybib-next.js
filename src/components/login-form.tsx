@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
+import { Eye, EyeOff } from "lucide-react"
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -32,6 +33,7 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -54,7 +56,7 @@ export function LoginForm({
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        window.location.href = "/";
+        window.location.href = "/generate";
       }
     } catch (err) {
       setError("An unexpected error occurred");
@@ -96,14 +98,32 @@ export function LoginForm({
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password <span className="text-destructive">*</span></FieldLabel>
-                  <a
-                    href="#"
+                  <Link
+                    href="/forgot-password"
                     className="ml-auto text-sm text-[#407bc4] underline-offset-2 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
-                <Input id="password" type="password" {...register("password")} />
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    {...register("password")} 
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <span className="text-xs text-destructive mt-1">{errors.password.message}</span>
                 )}

@@ -25,6 +25,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { PROVINCES, ORG_TYPES } from "@/lib/constants/auth"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
+import { Eye, EyeOff } from "lucide-react"
 
 const signupSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -61,6 +62,7 @@ export function SignupForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const {
     register,
@@ -95,7 +97,7 @@ export function SignupForm({
         headers: { "Content-Type": "application/json" },
       });
       if (res.ok) {
-        window.location.href = "/login";
+        window.location.href = "/generate";
       } else {
         const error = await res.json();
         alert(error.message || "Something went wrong");
@@ -148,7 +150,25 @@ export function SignupForm({
 
               <Field>
                 <FieldLabel htmlFor="password">Password <span className="text-destructive">*</span></FieldLabel>
-                <Input id="password" {...register("password")} type="password" />
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    {...register("password")} 
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                </div>
                 <div className="mt-2 space-y-2">
                   <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div 
