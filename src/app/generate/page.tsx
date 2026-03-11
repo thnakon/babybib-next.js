@@ -6,6 +6,7 @@ import { LanguageDropdown } from "@/components/language-dropdown";
 import Image from "next/image";
 import Link from "next/link";
 import { NavLinks } from "@/components/nav-links";
+import { UserNav } from "@/components/user-nav";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
@@ -940,9 +941,7 @@ export default function GeneratePage() {
         <div className="flex items-center gap-4">
           <LanguageDropdown />
           <ThemeToggle />
-          <button className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-sm font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm">
-            {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
-          </button>
+          <UserNav />
         </div>
       </motion.nav>
 

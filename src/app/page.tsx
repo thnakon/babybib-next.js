@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NavLinks } from "@/components/nav-links";
+import { UserNav } from "@/components/user-nav";
 import { Sparkles, Book, Library, PenTool, Bookmark } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
@@ -72,9 +73,7 @@ export default function Home() {
         <motion.div className="flex items-center gap-4" animate={{ opacity: showIntro ? 0 : 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
           <LanguageDropdown />
           <ThemeToggle />
-          <Link href="/login" className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-sm font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm">
-            {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
-          </Link>
+          <UserNav />
         </motion.div>
       </nav>
 

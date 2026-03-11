@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Geist } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-context";
+import { AuthProvider } from "@/components/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -29,9 +30,11 @@ export default function RootLayout({
         className={cn("font-sans antialiased bg-background text-foreground")}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
+          </AuthProvider>
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>
