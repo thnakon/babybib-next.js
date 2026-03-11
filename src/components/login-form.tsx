@@ -148,9 +148,9 @@ export function LoginForm({
             <img
               src="https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&q=80&w=1000"
               alt="Babybib Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.4]"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-[#407bc4]/10 dark:bg-black/40" />
+            <div className="absolute inset-0 bg-[#407bc4]/10" />
             <div className="absolute bottom-6 left-6 p-4 backdrop-blur-md bg-white/10 dark:bg-black/20 rounded-lg border border-white/20 dark:border-white/10 max-w-[85%] hidden lg:block">
               <p className="text-white text-sm font-medium italic">
                 "Efficient citation management and ISBN lookup in one place."

@@ -278,9 +278,9 @@ export function SignupForm({
             <img
               src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000"
               alt="Signup Background"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.4]"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-[#407bc4]/10 dark:bg-black/40" />
+            <div className="absolute inset-0 bg-[#407bc4]/10" />
             <div className="absolute bottom-10 left-10 p-6 backdrop-blur-md bg-white/10 dark:bg-black/20 rounded-xl border border-white/20 dark:border-white/10 max-w-[80%] hidden lg:block">
               <p className="text-white text-lg font-medium italic">
                 "Babybib helps me organize my academic citations in seconds."
