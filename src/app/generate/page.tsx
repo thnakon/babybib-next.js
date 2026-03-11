@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { NavLinks } from "@/components/nav-links";
 import { UserNav } from "@/components/user-nav";
+import { UsageLimit } from "@/components/usage-limit";
+import { AccessModal } from "@/components/access-modal";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
@@ -18,6 +20,7 @@ import {
   Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
 import useSWR from 'swr';
 import { toast } from "sonner";
 import { 
@@ -26,14 +29,18 @@ import {
   exportToWord, 
   exportToPDF 
 } from "@/lib/export-utils";
+import { checkRateLimit } from "@/lib/rate-limiter";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function GeneratePage() {
   const { language } = useLanguage();
+  const { data: session } = useSession();
   const [style, setStyle] = React.useState("APA - 7th Edition");
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
   const [isExportOpen, setIsExportOpen] = React.useState(false);
+  const [isAccessModalOpen, setIsAccessModalOpen] = React.useState(false);
+  const [lockedFeatureName, setLockedFeatureName] = React.useState("");
   const [copied, setCopied] = React.useState(false);
   const [viewMode, setViewMode] = React.useState("Bibliography");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
@@ -98,6 +105,27 @@ export default function GeneratePage() {
   const [isMainSearchDropdownOpen, setIsMainSearchDropdownOpen] = React.useState(false);
   const [isMainSearching, setIsMainSearching] = React.useState(false);
   const [mainSearchResults, setMainSearchResults] = React.useState<any[]>([]);
+  const [localCitations, setLocalCitations] = React.useState<any[]>([]);
+  const [localProjects, setLocalProjects] = React.useState<any[]>([
+    { id: 1, name: "General Project", icon: "BookOpen", color: "#407bc4" } // Default guest project
+  ]);
+
+  // Load guest data on mount
+  React.useEffect(() => {
+    if (!session) {
+      const storedCitations = localStorage.getItem("babybib_citations");
+      const storedProjects = localStorage.getItem("babybib_projects");
+      if (storedCitations) setLocalCitations(JSON.parse(storedCitations));
+      if (storedProjects) setLocalProjects(JSON.parse(storedProjects));
+    }
+  }, [session]);
+
+  // Helper to save guest data
+  const saveGuestData = (citations: any[], projects: any[]) => {
+    localStorage.setItem("babybib_citations", JSON.stringify(citations));
+    localStorage.setItem("babybib_projects", JSON.stringify(projects));
+  };
+
   const paperRef = React.useRef<HTMLDivElement>(null);
 
   const mockSearchResults = [
@@ -111,6 +139,10 @@ export default function GeneratePage() {
   const handleMainSearch = async (query: string) => {
     setMainSearchQuery(query);
     if (query.trim().length > 2) {
+      if (!checkRateLimit()) {
+        toast.error(language === 'TH' ? 'คุณทำรายการเร็วเกินไป กรุณาลองใหม่อีกครั้งใน 1 นาที' : 'Rate limit exceeded. Please wait a minute.');
+        return;
+      }
       setIsMainSearching(true);
       setIsMainSearchDropdownOpen(true);
       
@@ -134,6 +166,39 @@ export default function GeneratePage() {
   const handleSelectSearchResult = async (item: any) => {
     if (!activeProjectId) {
       toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      return;
+    }
+
+    if (!session) {
+      // Enforce guest limit (Global)
+      if (localCitations.length >= 5) {
+        toast.error(language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ) กรุณาเข้าสู่ระบบเพื่อสร้างเพิ่ม' : 'Guest limit reached (5 citations). Please sign in to create more.');
+        setIsAccessModalOpen(true);
+        setLockedFeatureName(language === 'TH' ? "เพิ่มบรรณานุกรม" : "Add Citation");
+        return;
+      }
+
+      const newLocalCitation = {
+        id: Date.now(), // Use timestamp as local ID
+        projectId: activeProjectId,
+        type: item.type,
+        authors: item.authors,
+        year: item.year?.toString() || "",
+        title: item.title,
+        source: item.source,
+        url: item.url || "",
+        createdAt: new Date().toISOString()
+      };
+
+      const updatedCitations = [...localCitations, newLocalCitation];
+      setLocalCitations(updatedCitations);
+      saveGuestData(updatedCitations, localProjects);
+      
+      setHighlightedId(newLocalCitation.id);
+      setTimeout(() => setHighlightedId(null), 3000);
+      toast.success(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ (บันทึกในเครื่อง)' : 'Citation added successfully (Stored locally)');
+      setIsMainSearchDropdownOpen(false);
+      setMainSearchQuery("");
       return;
     }
     
@@ -242,6 +307,11 @@ export default function GeneratePage() {
   };
 
   const handleImport = async () => {
+    if (!session) {
+      setIsAccessModalOpen(true);
+      return;
+    }
+
     if (!activeProjectId) {
       toast.error(language === 'TH' ? 'กรุณาเลือกโปรเจกต์ก่อน' : 'Please select a project first');
       return;
@@ -384,6 +454,59 @@ export default function GeneratePage() {
       return;
     }
 
+    if (!session) {
+      if (!editingCitationId && localCitations.length >= 5) {
+        toast.error(language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ) กรุณาเข้าสู่ระบบเพื่อสร้างเพิ่ม' : 'Guest limit reached (5 citations). Please sign in to create more.');
+        setIsAccessModalOpen(true);
+        setLockedFeatureName(language === 'TH' ? "เพิ่มบรรณานุกรม" : "Add Citation");
+        return;
+      }
+
+      let updatedCitations;
+      let targetId = editingCitationId;
+
+      if (editingCitationId) {
+        updatedCitations = localCitations.map(c => 
+          c.id === editingCitationId ? {
+            ...c,
+            type: selectedType || 'book',
+            authors: newCitationData.authors,
+            year: newCitationData.year,
+            title: newCitationData.title,
+            source: newCitationData.source,
+            url: newCitationData.url
+          } : c
+        );
+      } else {
+        targetId = Date.now();
+        const newLocalCitation = {
+          id: targetId,
+          projectId: activeProjectId,
+          type: selectedType || 'book',
+          authors: newCitationData.authors,
+          year: newCitationData.year,
+          title: newCitationData.title,
+          source: newCitationData.source,
+          url: newCitationData.url,
+          createdAt: new Date().toISOString()
+        };
+        updatedCitations = [...localCitations, newLocalCitation];
+      }
+
+      setLocalCitations(updatedCitations);
+      saveGuestData(updatedCitations, localProjects);
+      
+      setHighlightedId(targetId);
+      setTimeout(() => setHighlightedId(null), 3000);
+      setIsAddCitationModalOpen(false);
+      setEditingCitationId(null);
+      toast.success(editingCitationId 
+        ? (language === 'TH' ? 'แก้ไขรายการสำเร็จ' : 'Citation updated successfully') 
+        : (language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully')
+      );
+      return;
+    }
+
     try {
       const url = editingCitationId ? `/api/citations/${editingCitationId}` : '/api/citations';
       const method = editingCitationId ? 'PATCH' : 'POST';
@@ -423,6 +546,27 @@ export default function GeneratePage() {
     }
   };
   
+  // Guest Data Expiration Logic (1 Day)
+  React.useEffect(() => {
+    if (!session) {
+      const guestStartedAt = localStorage.getItem("babybib_guest_started_at");
+      const now = Date.now();
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+
+      if (!guestStartedAt) {
+        localStorage.setItem("babybib_guest_started_at", now.toString());
+      } else if (now - parseInt(guestStartedAt) > ONE_DAY) {
+        // Clear guest data
+        localStorage.removeItem("babybib_citations");
+        localStorage.removeItem("babybib_projects");
+        setLocalCitations([]);
+        setLocalProjects([{ id: 1, name: "General Project", icon: "BookOpen", color: "#407bc4" }]);
+        localStorage.setItem("babybib_guest_started_at", now.toString());
+        toast.info(language === 'TH' ? 'ยกระดับความปลอดภัย: ข้อมูลการใช้งานแบบ Guest ของคุณถูกรีเซ็ตหลังจากครบ 24 ชม.' : 'Security: Your guest session has expired after 24h.');
+      }
+    }
+  }, [session, language]);
+
   const { data: citations = [], mutate: mutateCitations } = useSWR(activeProjectId ? `/api/citations?projectId=${activeProjectId}&isDeleted=false` : null, fetcher);
   const { data: deletedCitations = [], mutate: mutateDeletedCitations } = useSWR(activeProjectId ? `/api/citations?projectId=${activeProjectId}&isDeleted=true` : null, fetcher);
 
@@ -510,11 +654,25 @@ export default function GeneratePage() {
   };
 
   const processedCitations = React.useMemo(() => {
-    let result = citations.map((c: any) => ({
+    const rawCitations = session 
+      ? citations 
+      : localCitations.filter(c => c.projectId === activeProjectId);
+
+    let result = rawCitations.map((c: any) => ({
       id: c.id,
       original: c,
       ...getFormattedCitation(c, style)
     }));
+
+    // Data Expiration filtering (1 Year for members)
+    if (session) {
+      const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+      result = result.filter((c: any) => {
+        const addedDate = c.original.createdAt ? new Date(c.original.createdAt).getTime() : now;
+        return now - addedDate < ONE_YEAR;
+      });
+    }
     
     // Filter by search query
     if (searchReferencesQuery) {
@@ -563,6 +721,14 @@ export default function GeneratePage() {
 
 
   const deleteCitation = async (id: number) => {
+    if (!session) {
+      const updatedCitations = localCitations.filter(c => c.id !== id);
+      setLocalCitations(updatedCitations);
+      saveGuestData(updatedCitations, localProjects);
+      toast.success(language === 'TH' ? 'ลบรายการบรรณานุกรมสำเร็จ' : 'Citation deleted successfully');
+      return;
+    }
+
     try {
       const res = await fetch(`/api/citations/${id}`, {
         method: 'PATCH',
@@ -702,6 +868,12 @@ export default function GeneratePage() {
   ];
 
   const handleExport = async (format: string) => {
+    if (!session) {
+      setLockedFeatureName(language === 'TH' ? "ส่งออกข้อมูล" : "Export Bibliography");
+      setIsAccessModalOpen(true);
+      return;
+    }
+
     if (processedCitations.length === 0) {
       toast.error(language === 'TH' ? 'ไม่มีรายการให้ออก' : 'No citations to export');
       return;
@@ -797,22 +969,49 @@ export default function GeneratePage() {
     HelpCircle: <HelpCircle />,
   };
 
-  const projects = fetchedProjects.map((p: any) => ({
+  const displayProjects = session ? fetchedProjects : localProjects;
+
+  const projects = displayProjects.map((p: any) => ({
     id: p.id,
     name: p.name,
     icon: iconComponents[p.icon] ? React.cloneElement(iconComponents[p.icon] as React.ReactElement<any>, { className: "h-3 w-3 shrink-0" }) : <BookOpen className="h-3 w-3 shrink-0" />,
     color: p.color,
-    active: activeProjectId === p.id || (activeProjectId === null && fetchedProjects.length > 0 && fetchedProjects[0].id === p.id),
+    active: activeProjectId === p.id || (activeProjectId === null && displayProjects.length > 0 && displayProjects[0].id === p.id),
   }));
 
   React.useEffect(() => {
-    if (activeProjectId === null && fetchedProjects.length > 0) {
-      setActiveProjectId(fetchedProjects[0].id);
+    if (activeProjectId === null && displayProjects.length > 0) {
+      setActiveProjectId(displayProjects[0].id);
     }
-  }, [fetchedProjects, activeProjectId]);
+  }, [displayProjects, activeProjectId]);
 
   const handleCreateProject = async () => {
     if (!newProject.name.trim()) return;
+
+    if (!session) {
+      if (localProjects.length >= 1) {
+        toast.error(language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (1 โปรเจกต์) กรุณาเข้าสู่ระบบเพื่อสร้างเพิ่ม' : 'Guest limit reached (1 project). Please sign in to create more.');
+        setIsAccessModalOpen(true);
+        setLockedFeatureName(language === 'TH' ? "สร้างโปรเจกต์" : "Create Project");
+        return;
+      }
+
+      const newLocalProject = {
+        ...newProject,
+        id: Date.now(),
+        createdAt: new Date().toISOString()
+      };
+
+      const updatedProjects = [...localProjects, newLocalProject];
+      setLocalProjects(updatedProjects);
+      saveGuestData(localCitations, updatedProjects);
+      setActiveProjectId(newLocalProject.id);
+      setIsCreateModalOpen(false);
+      setNewProject({ name: "", description: "", color: "#407bc4", icon: "BookOpen" });
+      toast.success(language === 'TH' ? 'สร้างโปรเจกต์สำเร็จ (บันทึกในเครื่อง)' : 'Project created successfully (Stored locally)');
+      return;
+    }
+
     setIsCreatingProject(true);
     try {
       const res = await fetch('/api/projects', {
@@ -858,6 +1057,10 @@ export default function GeneratePage() {
   };
 
   const handleDuplicateProject = async (id: number) => {
+    if (!session) {
+      setIsAccessModalOpen(true);
+      return;
+    }
     try {
       const res = await fetch(`/api/projects/${id}/duplicate`, { method: 'POST' });
       if (res.ok) {
@@ -881,6 +1084,19 @@ export default function GeneratePage() {
 
   const handleUpdateProject = async () => {
     if (!editingProject) return;
+
+    if (!session) {
+      const updatedProjects = localProjects.map(p => 
+        p.id === editingProject.id ? { ...p, ...newProject } : p
+      );
+      setLocalProjects(updatedProjects);
+      saveGuestData(localCitations, updatedProjects);
+      setIsEditProjectModalOpen(false);
+      setEditingProject(null);
+      toast.success(language === 'TH' ? 'แก้ไขโปรเจกต์สำเร็จ' : 'Project updated');
+      return;
+    }
+
     try {
       const res = await fetch(`/api/projects/${editingProject.id}`, {
         method: 'PATCH',
@@ -898,6 +1114,17 @@ export default function GeneratePage() {
   };
 
   const handleDeleteProject = async (id: number) => {
+    if (!session) {
+      const updatedProjects = localProjects.filter(p => p.id !== id);
+      const updatedCitations = localCitations.filter(c => c.projectId !== id);
+      setLocalProjects(updatedProjects);
+      setLocalCitations(updatedCitations);
+      saveGuestData(updatedCitations, updatedProjects);
+      if (activeProjectId === id) setActiveProjectId(null);
+      toast.success(language === 'TH' ? 'ลบโปรเจกต์สำเร็จ' : 'Project deleted');
+      return;
+    }
+
     try {
       const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
       if (res.ok) {
@@ -1043,11 +1270,21 @@ export default function GeneratePage() {
                                     e.stopPropagation();
                                     setProjectMenuIdx(null);
                                     if (option.id === 'archive') {
-                                      handleArchiveProject(project.id);
+                                      if (!session) {
+                                        setLockedFeatureName(language === 'TH' ? "เก็บโปรเจกต์ลงคลัง" : "Archive Project");
+                                        setIsAccessModalOpen(true);
+                                      } else {
+                                        handleArchiveProject(project.id);
+                                      }
                                     } else if (option.id === 'delete') {
                                       handleDeleteProject(project.id);
                                     } else if (option.id === 'duplicate') {
-                                      handleDuplicateProject(project.id);
+                                      if (!session) {
+                                        setLockedFeatureName(language === 'TH' ? "ทำสำเนาโปรเจกต์" : "Duplicate Project");
+                                        setIsAccessModalOpen(true);
+                                      } else {
+                                        handleDuplicateProject(project.id);
+                                      }
                                     } else if (option.id === 'edit') {
                                       handleEditProjectClick(project);
                                     }
@@ -1101,7 +1338,14 @@ export default function GeneratePage() {
             <div className="flex items-center justify-center gap-2 pt-2 text-[11px] font-semibold text-zinc-500 w-full">
               <div className="flex items-center bg-zinc-50 dark:bg-zinc-900/50 rounded-full p-1 border border-zinc-100 dark:border-zinc-800 shadow-xs">
                 <div 
-                  onClick={() => setIsArchivedProjectsModalOpen(true)}
+                  onClick={() => {
+                    if (!session) {
+                      setLockedFeatureName(language === 'TH' ? "คลังโปรเจกต์" : "Archived Projects");
+                      setIsAccessModalOpen(true);
+                    } else {
+                      setIsArchivedProjectsModalOpen(true);
+                    }
+                  }}
                   className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/archived w-8 hover:w-28"
                 >
                   <Archive className="h-3.5 w-3.5 shrink-0" />
@@ -1114,7 +1358,14 @@ export default function GeneratePage() {
                 
                 {/* Delete Button */}
                 <div 
-                  onClick={() => setIsDeletedModalOpen(true)}
+                  onClick={() => {
+                    if (!session) {
+                      setLockedFeatureName(language === 'TH' ? "ถังขยะ" : "Deleted Items");
+                      setIsAccessModalOpen(true);
+                    } else {
+                      setIsDeletedModalOpen(true);
+                    }
+                  }}
                   className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/deleted w-8 hover:w-24"
                 >
                   <Trash2 className="h-3.5 w-3.5 shrink-0 group-hover/deleted:text-red-500" />
@@ -1122,6 +1373,8 @@ export default function GeneratePage() {
                 </div>
               </div>
             </div>
+
+
 
             <div className="flex flex-col items-center gap-1.5 pt-4 mt-auto mx-auto pb-4">
               <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
@@ -1172,7 +1425,14 @@ export default function GeneratePage() {
                     </button>
                   
                   <button 
-                      onClick={() => setIsImportModalOpen(true)}
+                      onClick={() => {
+                        if (!session) {
+                          setLockedFeatureName(language === 'TH' ? "นำเข้าข้อมูล" : "Import Bibliography");
+                          setIsAccessModalOpen(true);
+                        } else {
+                          setIsImportModalOpen(true);
+                        }
+                      }}
                       className="flex h-9 items-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all active:scale-95"
                     >
                       <FileUp className="h-4 w-4" />
@@ -1365,7 +1625,14 @@ export default function GeneratePage() {
                 
                 <div className="relative">
                   <button 
-                    onClick={() => setIsExportOpen(!isExportOpen)}
+                    onClick={() => {
+                      if (!session) {
+                        setLockedFeatureName(language === 'TH' ? "ส่งออกข้อมูล" : "Export Bibliography");
+                        setIsAccessModalOpen(true);
+                      } else {
+                        setIsExportOpen(!isExportOpen);
+                      }
+                    }}
                     className="flex h-8 items-center gap-1 rounded-md bg-[#407bc4] pl-3 pr-2 text-xs font-medium text-white hover:bg-[#32629e] transition-colors shadow-sm"
                   >
                     <Download className="h-3 w-3 mr-1" /> Export <ChevronDown className={`h-3 w-3 ml-1 transition-transform ${isExportOpen ? 'rotate-180' : ''}`} />
@@ -1676,33 +1943,25 @@ export default function GeneratePage() {
           className="hidden xl:sticky top-16 z-30 h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto py-6 xl:block xl:w-[240px] 2xl:w-[280px] pr-6 sm:pr-8 lg:pr-12"
         >
           <div className="flex flex-col gap-4">
-            <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md">
-
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-                {language === 'TH' ? 'สมัครสมาชิกฟรี' : 'Join for Free'}
-              </h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mb-5 leading-relaxed">
-                {language === 'TH' 
-                  ? 'สร้างบรรณานุกรมของคุณให้ปลอดภัย และเข้าถึงได้จากทุกที่ทุกเวลา' 
-                  : 'Save your bibliographies securely and access them from anywhere, anytime.'}
-              </p>
-              <button className="w-full py-2.5 px-4 bg-[#f58e58] text-white text-[11px] font-bold rounded-full hover:bg-[#e67e43] transition-all shadow-sm active:scale-95 mb-5 group">
-                {language === 'TH' ? 'รับสิทธิพิเศษตอนนี้' : 'Get exclusive access'} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
-              </button>
-              
-
-            </div>
-            
-            <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 opacity-60">
-               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 text-center italic leading-relaxed">
-                 {language === 'TH' ? '"เครื่องมือที่ช่วยให้งานวิจัยของคุณง่ายขึ้น"' : '"The tool that makes your research easier"'}
-               </p>
-            </div>
+            <UsageLimit 
+              citationCount={session ? citations.length : localCitations.length}
+              projectCount={projects.length}
+            />
 
           </div>
         </motion.aside>
 
-      </motion.div>
+       </motion.div>
+ 
+      <AccessModal 
+        isOpen={isAccessModalOpen}
+        onClose={() => setIsAccessModalOpen(false)}
+        featureName={lockedFeatureName}
+        title={language === 'TH' ? "ปลดล็อคการเข้าถึงเต็มรูปแบบ" : "Unlock Full Access"}
+        description={language === 'TH' 
+          ? "กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้ และเก็บรักษาข้อมูลของคุณอย่างถาวร" 
+          : "Please sign in to enable this feature and save your bibliographies permanently."}
+      />
 
       <AnimatePresence>
         {isDeletedModalOpen && (
