@@ -55,7 +55,6 @@ export default function GeneratePage() {
     icon: "BookOpen"
   });
   const [isCreatingProject, setIsCreatingProject] = React.useState(false);
-  const [activeProjectId, setActiveProjectId] = React.useState<number | null>(null);
   const [projectMenuIdx, setProjectMenuIdx] = React.useState<number | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
   const [importRefFiles, setImportRefFiles] = React.useState({
@@ -111,18 +110,45 @@ export default function GeneratePage() {
   const [mainSearchResults, setMainSearchResults] = React.useState<any[]>([]);
   const [localCitations, setLocalCitations] = React.useState<any[]>([]);
   const [localProjects, setLocalProjects] = React.useState<any[]>([
-    { id: 1, name: "General Project", icon: "BookOpen", color: "#407bc4" } // Default guest project
+    { id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" }
   ]);
+  const [activeProjectId, setActiveProjectId] = React.useState<number | null>(null);
 
-  // Load guest data on mount
+  // Load guest data on mount or session change
   React.useEffect(() => {
     if (!session) {
       const storedCitations = localStorage.getItem("babybib_citations");
       const storedProjects = localStorage.getItem("babybib_projects");
-      if (storedCitations) setLocalCitations(JSON.parse(storedCitations));
-      if (storedProjects) setLocalProjects(JSON.parse(storedProjects));
+      
+      if (storedCitations) {
+        setLocalCitations(JSON.parse(storedCitations));
+      }
+      
+      if (storedProjects) {
+        try {
+          const parsed = JSON.parse(storedProjects);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setLocalProjects(parsed);
+          } else {
+            const defaultProject = { id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" };
+            setLocalProjects([defaultProject]);
+            localStorage.setItem("babybib_projects", JSON.stringify([defaultProject]));
+          }
+        } catch (e) {
+          console.error("Error parsing stored projects", e);
+        }
+      } else {
+        const defaultProject = { id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" };
+        setLocalProjects([defaultProject]);
+        localStorage.setItem("babybib_projects", JSON.stringify([defaultProject]));
+      }
     }
   }, [session]);
+
+  // Reset active project when auth state changes
+  React.useEffect(() => {
+    setActiveProjectId(null);
+  }, [session?.user?.email]);
 
   // Helper to save guest data
   const saveGuestData = (citations: any[], projects: any[]) => {
@@ -571,7 +597,7 @@ export default function GeneratePage() {
         localStorage.removeItem("babybib_citations");
         localStorage.removeItem("babybib_projects");
         setLocalCitations([]);
-        setLocalProjects([{ id: 1, name: "General Project", icon: "BookOpen", color: "#407bc4" }]);
+        setLocalProjects([{ id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" }]);
         localStorage.setItem("babybib_guest_started_at", now.toString());
         toast.info(language === 'TH' ? 'ยกระดับความปลอดภัย: ข้อมูลการใช้งานแบบ Guest ของคุณถูกรีเซ็ตหลังจากครบ 24 ชม.' : 'Security: Your guest session has expired after 24h.');
       }
@@ -957,7 +983,7 @@ export default function GeneratePage() {
     setSettings(prev => ({ ...prev, [key]: !prev[key as keyof typeof settings] }));
   };
 
-  const { data: fetchedProjects = [], mutate: mutateProjects } = useSWR('/api/projects?isArchived=false', fetcher);
+  const { data: fetchedProjects, mutate: mutateProjects } = useSWR<any[]>('/api/projects?isArchived=false', fetcher);
   const { data: archivedProjects = [], mutate: mutateArchivedProjects } = useSWR('/api/projects?isArchived=true', fetcher);
   
   const iconComponents: Record<string, React.ReactNode> = {
@@ -983,7 +1009,12 @@ export default function GeneratePage() {
     HelpCircle: <HelpCircle />,
   };
 
-  const displayProjects = session ? fetchedProjects : localProjects;
+  const displayProjects = React.useMemo(() => {
+    if (session) {
+      return fetchedProjects || [];
+    }
+    return localProjects || [];
+  }, [session, fetchedProjects, localProjects]);
 
   const projects = displayProjects.map((p: any) => ({
     id: p.id,
@@ -994,10 +1025,44 @@ export default function GeneratePage() {
   }));
 
   React.useEffect(() => {
-    if (activeProjectId === null && displayProjects.length > 0) {
+    const projectIds = displayProjects.map((p: any) => p.id);
+    if ((activeProjectId === null || !projectIds.includes(activeProjectId)) && displayProjects.length > 0) {
       setActiveProjectId(displayProjects[0].id);
     }
   }, [displayProjects, activeProjectId]);
+
+  // Auto-create default project for users if none exist on first load
+  const [hasCheckedDefaultProject, setHasCheckedDefaultProject] = React.useState(false);
+
+  React.useEffect(() => {
+    if (session && fetchedProjects && fetchedProjects.length === 0 && !isCreatingProject && !hasCheckedDefaultProject) {
+      setHasCheckedDefaultProject(true);
+      const createDefault = async () => {
+        setIsCreatingProject(true);
+        try {
+          await fetch('/api/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: "My project",
+              description: language === 'TH' ? 'โปรเจกต์บรรณานุกรมของฉัน' : 'My personal bibliography project',
+              color: "#407bc4",
+              icon: "BookOpen"
+            })
+          });
+          mutateProjects();
+        } catch (e) {
+          console.error(e);
+          toast.error(language === 'TH' ? 'ผิดพลาดในการเตรียมโปรเจกต์เริ่มต้น' : 'Failed to initialize default project');
+        } finally {
+          setIsCreatingProject(false);
+        }
+      };
+      createDefault();
+    } else if (fetchedProjects && fetchedProjects.length > 0) {
+      setHasCheckedDefaultProject(true);
+    }
+  }, [session, fetchedProjects, language, isCreatingProject, mutateProjects, hasCheckedDefaultProject]);
 
   const handleCreateProject = async () => {
     if (!newProject.name.trim()) return;
@@ -1085,7 +1150,7 @@ export default function GeneratePage() {
   };
 
   const handleEditProjectClick = (p: any) => {
-    const raw = fetchedProjects.find((pf: any) => pf.id === p.id) || archivedProjects.find((pf: any) => pf.id === p.id);
+    const raw = (fetchedProjects || []).find((pf: any) => pf.id === p.id) || archivedProjects.find((pf: any) => pf.id === p.id);
     setEditingProject(raw);
     setNewProject({
       name: raw.name,
