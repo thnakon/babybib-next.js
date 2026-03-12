@@ -17,7 +17,7 @@ import {
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
   List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
-  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star
+  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star, AlertTriangle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -99,6 +99,10 @@ export default function GeneratePage() {
   });
   const [highlightedId, setHighlightedId] = React.useState<number | null>(null);
   const [editingCitationId, setEditingCitationId] = React.useState<number | null>(null);
+
+  const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] = React.useState(false);
+  const [projectToDelete, setProjectToDelete] = React.useState<any>(null);
+  const [deleteConfirmName, setDeleteConfirmName] = React.useState("");
 
   // Smart Search State
   const [mainSearchQuery, setMainSearchQuery] = React.useState("");
@@ -221,7 +225,8 @@ export default function GeneratePage() {
       
       if (res.ok) {
         const newCitation = await res.json();
-        mutateCitations();
+        // Optimistic update
+        mutateCitations([...citations, newCitation], false);
         setHighlightedId(newCitation.id);
         setTimeout(() => setHighlightedId(null), 3000);
         toast.success(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
@@ -529,7 +534,13 @@ export default function GeneratePage() {
 
       if (res.ok) {
         const savedCitation = await res.json();
-        mutateCitations();
+        // Optimistic update
+        if (editingCitationId) {
+          mutateCitations(citations.map((c: any) => c.id === editingCitationId ? savedCitation : c), false);
+        } else {
+          mutateCitations([...citations, savedCitation], false);
+        }
+        
         setHighlightedId(savedCitation.id);
         setTimeout(() => setHighlightedId(null), 3000);
         setIsAddCitationModalOpen(false);
@@ -707,7 +718,7 @@ export default function GeneratePage() {
     }
   
     return result;
-  }, [citations, style, searchReferencesQuery, settings.sortBy]);
+  }, [citations, localCitations, session, activeProjectId, style, searchReferencesQuery, settings.sortBy]);
 
   // Drag and Drop State
   const dragItem = React.useRef<number | null>(null);
@@ -736,7 +747,8 @@ export default function GeneratePage() {
         body: JSON.stringify({ isDeleted: true })
       });
       if (res.ok) {
-        mutateCitations();
+        // Optimistic update: remove from citations, add to deletedCitations if available
+        mutateCitations(citations.filter((c: any) => c.id !== id), false);
         mutateDeletedCitations();
         toast.success(language === 'TH' ? 'ย้ายไปที่ถังขยะเรียบร้อย' : 'Citation moved to trash');
       }
@@ -751,8 +763,10 @@ export default function GeneratePage() {
         body: JSON.stringify({ isDeleted: false })
       });
       if (res.ok) {
-        mutateCitations();
-        mutateDeletedCitations();
+        const restoredCitation = await res.json();
+        // Optimistic update
+        mutateCitations([...citations, restoredCitation], false);
+        mutateDeletedCitations(deletedCitations.filter((c: any) => c.id !== id), false);
         toast.success(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
       }
     } catch (e) { console.error(e) }
@@ -1221,12 +1235,12 @@ export default function GeneratePage() {
               </div>
               <ul className="flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-1">
                 {(isProjectsExpanded ? projects : projects.slice(0, 5)).map((project: any, idx: number) => (
-                  <li 
+                  <li
                     key={project.id}
                     onClick={() => setActiveProjectId(project.id)}
                     className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg text-sm transition-all cursor-pointer group/item ${
-                      project.active 
-                        ? "bg-[#407bc4]/5 font-semibold dark:bg-[#407bc4]/10" 
+                      project.active
+                        ? "bg-[#407bc4]/5 font-semibold dark:bg-[#407bc4]/10"
                         : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:text-[#407bc4] dark:hover:text-[#6ba1e6]"
                     }`}
                     style={project.active ? { color: project.color } : {}}
@@ -1236,7 +1250,7 @@ export default function GeneratePage() {
                       <span className="truncate">{project.name}</span>
                     </div>
                     <div className="relative">
-                      <button 
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setProjectMenuIdx(projectMenuIdx === idx ? null : idx);
@@ -1277,7 +1291,9 @@ export default function GeneratePage() {
                                         handleArchiveProject(project.id);
                                       }
                                     } else if (option.id === 'delete') {
-                                      handleDeleteProject(project.id);
+                                      setProjectToDelete(project);
+                                      setDeleteConfirmName("");
+                                      setIsDeleteProjectModalOpen(true);
                                     } else if (option.id === 'duplicate') {
                                       if (!session) {
                                         setLockedFeatureName(language === 'TH' ? "ทำสำเนาโปรเจกต์" : "Duplicate Project");
@@ -2129,8 +2145,12 @@ export default function GeneratePage() {
                           >
                             <RotateCw className="h-3.5 w-3.5" />
                           </button>
-                          <button 
-                            onClick={() => handleDeleteProject(project.id)}
+                           <button 
+                            onClick={() => {
+                              setProjectToDelete(project);
+                              setDeleteConfirmName("");
+                              setIsDeleteProjectModalOpen(true);
+                            }}
                             className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'ลบถาวร' : 'Delete Permanently'}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -3103,6 +3123,84 @@ export default function GeneratePage() {
                     {language === 'TH' ? 'บันทึกรายการ' : 'Save Citation'}
                   </button>
                 )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isDeleteProjectModalOpen && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDeleteProjectModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+            >
+              <div className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-12 w-12 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="h-6 w-6 text-red-500 dark:text-red-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                      {language === 'TH' ? 'ยืนยันการลบโปรเจกต์' : 'Confirm Project Deletion'}
+                    </h3>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                      {language === 'TH' ? 'การกระทำนี้ไม่สามารถย้อนกลับได้' : 'This action cannot be undone.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-2xl p-4 mb-6">
+                  <p className="text-sm text-red-700 dark:text-red-300 leading-relaxed">
+                    {language === 'TH' 
+                      ? 'ข้อมูลบรรณานุกรมทั้งหมดในโปรเจกต์นี้จะถูกลบออกถาวร' 
+                      : 'All citations within this project will be permanently deleted.'}
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-8">
+                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider ml-1">
+                    {language === 'TH' 
+                      ? `พิมพ์ชื่อโปรเจกต์ "${projectToDelete?.name}" เพื่อยืนยัน` 
+                      : `Type "${projectToDelete?.name}" to confirm`}
+                  </label>
+                  <input 
+                    type="text"
+                    value={deleteConfirmName}
+                    onChange={(e) => setDeleteConfirmName(e.target.value)}
+                    placeholder={projectToDelete?.name}
+                    className="w-full h-12 px-4 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-transparent focus:border-red-500 focus:bg-white dark:focus:bg-zinc-900 transition-all outline-none font-medium text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => setIsDeleteProjectModalOpen(false)}
+                    className="flex-1 h-12 rounded-xl text-sm font-bold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                  >
+                    {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                  </button>
+                  <button 
+                    disabled={deleteConfirmName !== projectToDelete?.name}
+                    onClick={() => {
+                      handleDeleteProject(projectToDelete.id);
+                      setIsDeleteProjectModalOpen(false);
+                    }}
+                    className="flex-[2] h-12 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-500/20 active:scale-95"
+                  >
+                    {language === 'TH' ? 'ลบโปรเจกต์' : 'Delete Project'}
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
