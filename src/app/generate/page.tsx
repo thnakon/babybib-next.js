@@ -3330,9 +3330,11 @@ export default function GeneratePage() {
 
                 <div className="space-y-3 mb-8">
                   <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider ml-1">
-                    {language === 'TH' 
-                      ? `พิมพ์ชื่อโปรเจกต์ "${projectToDelete?.name}" เพื่อยืนยัน` 
-                      : `Type "${projectToDelete?.name}" to confirm`}
+                    {language === 'TH' ? (
+                      <>พิมพ์ชื่อโปรเจกต์ <span className="text-zinc-900 dark:text-zinc-50 font-black italic">"{projectToDelete?.name}"</span> เพื่อยืนยัน</>
+                    ) : (
+                      <>Type <span className="text-zinc-900 dark:text-zinc-50 font-black italic">"{projectToDelete?.name}"</span> to confirm</>
+                    )}
                   </label>
                   <input 
                     type="text"
