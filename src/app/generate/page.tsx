@@ -8,7 +8,6 @@ import Link from "next/link";
 import { NavLinks } from "@/components/nav-links";
 import { UserNav } from "@/components/user-nav";
 import { UsageLimit } from "@/components/usage-limit";
-import { AccessModal } from "@/components/access-modal";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { 
@@ -39,8 +38,6 @@ export default function GeneratePage() {
   const [style, setStyle] = React.useState("APA - 7th Edition");
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
   const [isExportOpen, setIsExportOpen] = React.useState(false);
-  const [isAccessModalOpen, setIsAccessModalOpen] = React.useState(false);
-  const [lockedFeatureName, setLockedFeatureName] = React.useState("");
   const [copied, setCopied] = React.useState(false);
   const [viewMode, setViewMode] = React.useState("Bibliography");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
@@ -202,9 +199,16 @@ export default function GeneratePage() {
     if (!session) {
       // Enforce guest limit (Global)
       if (localCitations.length >= 5) {
-        toast.error(language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ) กรุณาเข้าสู่ระบบเพื่อสร้างเพิ่ม' : 'Guest limit reached (5 citations). Please sign in to create more.');
-        setIsAccessModalOpen(true);
-        setLockedFeatureName(language === 'TH' ? "เพิ่มบรรณานุกรม" : "Add Citation");
+        toast.error(
+          language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ)' : 'Guest limit reached (5 citations).', 
+          {
+            action: {
+              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+              onClick: () => window.location.href = '/signup'
+            },
+            duration: 5000
+          }
+        );
         return;
       }
 
@@ -339,7 +343,16 @@ export default function GeneratePage() {
 
   const handleImport = async () => {
     if (!session) {
-      setIsAccessModalOpen(true);
+      toast(
+        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+        {
+          action: {
+            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+            onClick: () => window.location.href = '/signup'
+          },
+          duration: 5000
+        }
+      );
       return;
     }
 
@@ -487,9 +500,16 @@ export default function GeneratePage() {
 
     if (!session) {
       if (!editingCitationId && localCitations.length >= 5) {
-        toast.error(language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ) กรุณาเข้าสู่ระบบเพื่อสร้างเพิ่ม' : 'Guest limit reached (5 citations). Please sign in to create more.');
-        setIsAccessModalOpen(true);
-        setLockedFeatureName(language === 'TH' ? "เพิ่มบรรณานุกรม" : "Add Citation");
+        toast.error(
+          language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ)' : 'Guest limit reached (5 citations).',
+          {
+            action: {
+              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+              onClick: () => window.location.href = '/signup'
+            },
+            duration: 5000
+          }
+        );
         return;
       }
 
@@ -909,8 +929,16 @@ export default function GeneratePage() {
 
   const handleExport = async (format: string) => {
     if (!session) {
-      setLockedFeatureName(language === 'TH' ? "ส่งออกข้อมูล" : "Export Bibliography");
-      setIsAccessModalOpen(true);
+      toast(
+        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+        {
+          action: {
+            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+            onClick: () => window.location.href = '/signup'
+          },
+          duration: 5000
+        }
+      );
       return;
     }
 
@@ -1069,9 +1097,16 @@ export default function GeneratePage() {
 
     if (!session) {
       if (localProjects.length >= 1) {
-        toast.error(language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (1 โปรเจกต์) กรุณาเข้าสู่ระบบเพื่อสร้างเพิ่ม' : 'Guest limit reached (1 project). Please sign in to create more.');
-        setIsAccessModalOpen(true);
-        setLockedFeatureName(language === 'TH' ? "สร้างโปรเจกต์" : "Create Project");
+        toast.error(
+          language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (1 โปรเจกต์)' : 'Guest limit reached (1 project).',
+          {
+            action: {
+              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+              onClick: () => window.location.href = '/signup'
+            },
+            duration: 5000
+          }
+        );
         return;
       }
 
@@ -1137,7 +1172,16 @@ export default function GeneratePage() {
 
   const handleDuplicateProject = async (id: number) => {
     if (!session) {
-      setIsAccessModalOpen(true);
+      toast(
+        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+        {
+          action: {
+            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+            onClick: () => window.location.href = '/signup'
+          },
+          duration: 5000
+        }
+      );
       return;
     }
     try {
@@ -1350,8 +1394,16 @@ export default function GeneratePage() {
                                     setProjectMenuIdx(null);
                                     if (option.id === 'archive') {
                                       if (!session) {
-                                        setLockedFeatureName(language === 'TH' ? "เก็บโปรเจกต์ลงคลัง" : "Archive Project");
-                                        setIsAccessModalOpen(true);
+                                        toast(
+                                          language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                                          {
+                                            action: {
+                                              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                                              onClick: () => window.location.href = '/signup'
+                                            },
+                                            duration: 5000
+                                          }
+                                        );
                                       } else {
                                         handleArchiveProject(project.id);
                                       }
@@ -1361,8 +1413,16 @@ export default function GeneratePage() {
                                       setIsDeleteProjectModalOpen(true);
                                     } else if (option.id === 'duplicate') {
                                       if (!session) {
-                                        setLockedFeatureName(language === 'TH' ? "ทำสำเนาโปรเจกต์" : "Duplicate Project");
-                                        setIsAccessModalOpen(true);
+                                        toast(
+                                          language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                                          {
+                                            action: {
+                                              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                                              onClick: () => window.location.href = '/signup'
+                                            },
+                                            duration: 5000
+                                          }
+                                        );
                                       } else {
                                         handleDuplicateProject(project.id);
                                       }
@@ -1421,8 +1481,16 @@ export default function GeneratePage() {
                 <div 
                   onClick={() => {
                     if (!session) {
-                      setLockedFeatureName(language === 'TH' ? "คลังโปรเจกต์" : "Archived Projects");
-                      setIsAccessModalOpen(true);
+                      toast(
+                        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                        {
+                          action: {
+                            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                            onClick: () => window.location.href = '/signup'
+                          },
+                          duration: 5000
+                        }
+                      );
                     } else {
                       setIsArchivedProjectsModalOpen(true);
                     }
@@ -1441,8 +1509,16 @@ export default function GeneratePage() {
                 <div 
                   onClick={() => {
                     if (!session) {
-                      setLockedFeatureName(language === 'TH' ? "ถังขยะ" : "Deleted Items");
-                      setIsAccessModalOpen(true);
+                      toast(
+                        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                        {
+                          action: {
+                            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                            onClick: () => window.location.href = '/signup'
+                          },
+                          duration: 5000
+                        }
+                      );
                     } else {
                       setIsDeletedModalOpen(true);
                     }
@@ -1508,8 +1584,16 @@ export default function GeneratePage() {
                   <button 
                       onClick={() => {
                         if (!session) {
-                          setLockedFeatureName(language === 'TH' ? "นำเข้าข้อมูล" : "Import Bibliography");
-                          setIsAccessModalOpen(true);
+                          toast(
+                            language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                            {
+                              action: {
+                                label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                                onClick: () => window.location.href = '/signup'
+                              },
+                              duration: 5000
+                            }
+                          );
                         } else {
                           setIsImportModalOpen(true);
                         }
@@ -1527,7 +1611,20 @@ export default function GeneratePage() {
                 </button>
               </div>
 
-              <div className="relative group">
+            {/* Focus Backdrop for Smart Search */}
+            <AnimatePresence>
+              {(isMainSearchDropdownOpen && mainSearchQuery.trim().length > 2) && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsMainSearchDropdownOpen(false)}
+                  className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[40]"
+                />
+              )}
+            </AnimatePresence>
+
+            <div className={`relative group transition-all duration-300 ${isMainSearchDropdownOpen && mainSearchQuery.trim().length > 2 ? 'z-[50]' : 'z-10'}`}>
                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                   {isMainSearching ? (
                     <RotateCw className="h-5 w-5 text-zinc-400 animate-spin" />
@@ -1572,16 +1669,22 @@ export default function GeneratePage() {
                       ) : mainSearchResults.length > 0 ? (
                         <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                           {mainSearchResults.map((result) => (
-                            <div key={result.id} className="flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 transition-colors group">
+                            <div 
+                              key={result.id} 
+                              onClick={() => handleSelectSearchResult(result)}
+                              className="flex items-center justify-between p-4 hover:bg-[#407bc4]/5 dark:hover:bg-[#407bc4]/10 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0 transition-all group cursor-pointer active:scale-[0.99]"
+                            >
                                <div className="flex items-start gap-3 flex-1 min-w-0 pr-4">
-                                  <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 mt-0.5">
-                                    <span className="text-zinc-500">{getResourceIcon(result.type)}</span>
+                                  <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#407bc4] transition-colors">
+                                    <span className="text-zinc-500 group-hover:text-white transition-colors">
+                                      {getResourceIcon ? getResourceIcon(result.type) : <FileText className="h-4 w-4" />}
+                                    </span>
                                   </div>
                                   <div className="flex flex-col flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate max-w-[200px]">{result.title}</span>
+                                      <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate max-w-[200px] group-hover:text-[#407bc4] transition-colors">{result.title}</span>
                                       <div className="flex items-center gap-1">
-                                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border shrink-0 ${getResourceBadgeStyle(result.type)}`}>
+                                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border shrink-0 ${getResourceBadgeStyle ? getResourceBadgeStyle(result.type) : ''}`}>
                                           {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
                                         </span>
                                         {result.sourceApi && (
@@ -1599,15 +1702,9 @@ export default function GeneratePage() {
                                     </span>
                                   </div>
                                </div>
-                               <button 
-                                 onClick={(e) => {
-                                   e.preventDefault();
-                                   handleSelectSearchResult(result);
-                                 }}
-                                 className="h-8 w-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#407bc4]/10 text-[#407bc4] hover:bg-[#407bc4] hover:text-white transition-colors"
-                               >
+                               <div className="h-8 w-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#407bc4]/10 text-[#407bc4] group-hover:bg-[#407bc4] group-hover:text-white transition-all">
                                  <Plus className="h-4 w-4" />
-                               </button>
+                               </div>
                             </div>
                           ))}
                         </div>
@@ -1708,8 +1805,16 @@ export default function GeneratePage() {
                   <button 
                     onClick={() => {
                       if (!session) {
-                        setLockedFeatureName(language === 'TH' ? "ส่งออกข้อมูล" : "Export Bibliography");
-                        setIsAccessModalOpen(true);
+                        toast(
+                          language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                          {
+                            action: {
+                              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                              onClick: () => window.location.href = '/signup'
+                            },
+                            duration: 5000
+                          }
+                        );
                       } else {
                         setIsExportOpen(!isExportOpen);
                       }
@@ -2034,16 +2139,6 @@ export default function GeneratePage() {
 
        </motion.div>
  
-      <AccessModal 
-        isOpen={isAccessModalOpen}
-        onClose={() => setIsAccessModalOpen(false)}
-        featureName={lockedFeatureName}
-        title={language === 'TH' ? "ปลดล็อคการเข้าถึงเต็มรูปแบบ" : "Unlock Full Access"}
-        description={language === 'TH' 
-          ? "กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้ และเก็บรักษาข้อมูลของคุณอย่างถาวร" 
-          : "Please sign in to enable this feature and save your bibliographies permanently."}
-      />
-
       <AnimatePresence>
         {isDeletedModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
