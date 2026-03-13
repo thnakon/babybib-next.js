@@ -40,6 +40,7 @@ type HighlightContextType<T extends string> = {
   enabled?: boolean;
   exitDelay?: number;
   forceUpdateBounds?: boolean;
+  valueProp: T | null;
 };
 
 const HighlightContext = React.createContext<
@@ -177,7 +178,7 @@ function Highlight<T extends React.ElementType = 'div'>({
   const [activeClassNameState, setActiveClassNameState] =
     React.useState<string>('');
 
-  const safeSetActiveValue = (id: string | null) => {
+  const safeSetActiveValue = React.useCallback((id: string | null) => {
     setActiveValue((prev) => {
       if (prev !== id) {
         onValueChange?.(id);
@@ -185,7 +186,7 @@ function Highlight<T extends React.ElementType = 'div'>({
       }
       return prev;
     });
-  };
+  }, [onValueChange]);
 
   const safeSetBoundsRef = React.useRef<
     ((bounds: DOMRect) => void) | undefined
@@ -219,9 +220,9 @@ function Highlight<T extends React.ElementType = 'div'>({
     };
   });
 
-  const safeSetBounds = (bounds: DOMRect) => {
+  const safeSetBounds = React.useCallback((bounds: DOMRect) => {
     safeSetBoundsRef.current?.(bounds);
-  };
+  }, []);
 
   const clearBounds = React.useCallback(() => {
     setBoundsState((prev) => (prev === null ? prev : null));
@@ -300,29 +301,48 @@ function Highlight<T extends React.ElementType = 'div'>({
     return children;
   };
 
+  const contextValue = React.useMemo(() => ({
+    mode,
+    activeValue,
+    setActiveValue: safeSetActiveValue,
+    id,
+    hover,
+    click,
+    className,
+    style,
+    transition,
+    disabled,
+    enabled,
+    exitDelay,
+    setBounds: safeSetBounds,
+    clearBounds,
+    activeClassName: activeClassNameState,
+    setActiveClassName: setActiveClassNameState,
+    forceUpdateBounds: (props as ParentModeHighlightProps)?.forceUpdateBounds,
+    valueProp: value ?? null,
+  }), [
+    mode,
+    activeValue,
+    safeSetActiveValue,
+    id,
+    hover,
+    click,
+    className,
+    style,
+    transition,
+    disabled,
+    enabled,
+    exitDelay,
+    safeSetBounds,
+    clearBounds,
+    activeClassNameState,
+    setActiveClassNameState,
+    (props as ParentModeHighlightProps)?.forceUpdateBounds,
+    value
+  ]);
+
   return (
-    <HighlightContext.Provider
-      value={{
-        mode,
-        activeValue,
-        setActiveValue: safeSetActiveValue,
-        id,
-        hover,
-        click,
-        className,
-        style,
-        transition,
-        disabled,
-        enabled,
-        exitDelay,
-        setBounds: safeSetBounds,
-        clearBounds,
-        activeClassName: activeClassNameState,
-        setActiveClassName: setActiveClassNameState,
-        forceUpdateBounds: (props as ParentModeHighlightProps)
-          ?.forceUpdateBounds,
-      }}
-    >
+    <HighlightContext.Provider value={contextValue}>
       {enabled
         ? controlledItems
           ? render(children)
@@ -413,6 +433,7 @@ function HighlightItem<T extends React.ElementType>({
     exitDelay: contextExitDelay,
     forceUpdateBounds: contextForceUpdateBounds,
     setActiveClassName,
+    valueProp,
   } = useHighlight();
 
   const Component = as ?? 'div';
@@ -496,7 +517,7 @@ function HighlightItem<T extends React.ElementType>({
           element.props.onMouseEnter?.(e);
         },
         onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => {
-          setActiveValue(null);
+          setActiveValue(valueProp);
           element.props.onMouseLeave?.(e);
         },
       }

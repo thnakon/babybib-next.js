@@ -35,7 +35,7 @@ export default async function AdminAnalyticsPage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/admin/dashbord">Overview</BreadcrumbLink>
+                  <BreadcrumbLink href="/admin/dashbord" className="text-zinc-500">Overview</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -48,6 +48,7 @@ export default async function AdminAnalyticsPage() {
             <div className="relative hidden md:block w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
               <Input
+                id="admin-analytics-search"
                 type="search"
                 placeholder="Search..."
                 className="pl-9 h-9 bg-zinc-100/50 dark:bg-zinc-800/50 border-transparent focus-visible:border-zinc-200 dark:focus-visible:border-zinc-700 transition-all rounded-xl text-xs font-medium"
@@ -141,7 +142,7 @@ export default async function AdminAnalyticsPage() {
                   <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
                     {trends.map((day) => (
                       <tr key={day.date} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
-                        <td className="p-4 align-middle font-medium text-xs">
+                        <td className="p-4 align-middle font-medium text-xs" suppressHydrationWarning>
                           {new Date(day.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
                         </td>
                         <td className="p-4 align-middle text-right font-black text-sm">

@@ -53,6 +53,7 @@ export default async function AdminDashboardPage() {
             <div className="relative hidden md:block w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
               <Input
+                id="admin-dashboard-search"
                 type="search"
                 placeholder="Search..."
                 className="pl-9 h-9 bg-zinc-100/50 dark:bg-zinc-800/50 border-transparent focus-visible:border-zinc-200 dark:focus-visible:border-zinc-700 transition-all rounded-xl text-xs font-medium"
@@ -141,7 +142,10 @@ export default async function AdminDashboardPage() {
                           <span className="text-[10px] text-zinc-500 truncate max-w-[150px]">{user.email}</span>
                         </div>
                       </div>
-                      <div className="text-[10px] font-medium text-zinc-400 flex items-center gap-1">
+                      <div 
+                        className="text-[10px] font-medium text-zinc-400 flex items-center gap-1"
+                        suppressHydrationWarning
+                      >
                         <Clock className="h-3 w-3" />
                         {new Date(user.createdAt).toLocaleDateString()}
                       </div>
@@ -180,7 +184,10 @@ export default async function AdminDashboardPage() {
                           in <span className="font-bold text-zinc-700 dark:text-zinc-300">{citation.project.name}</span> by {citation.project.user?.username || "Guest"}
                         </span>
                       </div>
-                      <div className="text-[10px] font-medium text-zinc-400 flex items-center gap-1 shrink-0">
+                      <div 
+                        className="text-[10px] font-medium text-zinc-400 flex items-center gap-1 shrink-0"
+                        suppressHydrationWarning
+                      >
                         <Clock className="h-3 w-3" />
                         {new Date(citation.createdAt).toLocaleDateString()}
                       </div>

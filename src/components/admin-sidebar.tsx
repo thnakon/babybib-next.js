@@ -48,9 +48,8 @@ const data = {
   navMain: [
     {
       title: "Overview",
-      url: "/admin/dashbord",
+      url: "#",
       icon: LayoutDashboard,
-      isActive: true,
       items: [
         {
           title: "Dashboard",
@@ -64,7 +63,7 @@ const data = {
     },
     {
       title: "User Management",
-      url: "#",
+      url: "/admin/users",
       icon: Users,
       items: [
         {
@@ -83,7 +82,7 @@ const data = {
     },
     {
       title: "Master Data",
-      url: "#",
+      url: "/admin/citations",
       icon: Database,
       items: [
         {
@@ -102,7 +101,7 @@ const data = {
     },
     {
       title: "AI & Technical",
-      url: "#",
+      url: "/admin/models",
       icon: Bot,
       items: [
         {
@@ -134,13 +133,22 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
   const { data: session } = useSession()
   const user = session?.user
   const pathname = usePathname()
+  const normalizedPathname = pathname?.replace(/\/$/, '') || ''
+  
+  // Debug to see if path matches correctly
+  React.useEffect(() => {
+    console.log("DEBUG AdminSidebar:", {
+      pathname,
+      normalizedPathname,
+    });
+  }, [pathname, normalizedPathname]);
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" value={normalizedPathname} animateOnHover={true} {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild className="group-data-[state=collapsed]:p-0">
+            <SidebarMenuButton size="lg" asChild className="group-data-[state=collapsed]:p-0" value="brand">
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent shrink-0">
                   <NextImage 
@@ -164,51 +172,76 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         <SidebarGroup>
           <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton 
-                  tooltip={item.title}
-                  isActive={pathname === item.url || item.items?.some(sub => pathname === sub.url)}
-                >
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-                {item.items?.length ? (
-                  <SidebarMenuSub>
-                    {item.items.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton 
-                          asChild
-                          isActive={pathname === subItem.url}
-                        >
-                          <a href={subItem.url}>
-                            <span>{subItem.title}</span>
-                          </a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                ) : null}
-              </SidebarMenuItem>
-            ))}
+            {data.navMain.map((item) => {
+              const itemUrl = (item.url || '').replace(/\/$/, '');
+              const subItems = item.items || [];
+              const activeSubItem = subItems.find(sub => (sub.url || '').replace(/\/$/, '') === normalizedPathname);
+              const isChildActive = !!activeSubItem;
+              
+              // Parent is ONLY active if its own URL matches AND it's not just a placeholder
+              const isActive = itemUrl !== '#' && itemUrl !== '' && normalizedPathname === itemUrl;
+              
+              // The value should ONLY match normalizedPathname if it is the intended active item
+              // If a child is active, the parent's value should be its title to avoid double highlight
+              const activeValue = isActive ? itemUrl : item.title;
+              
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    tooltip={item.title}
+                    isActive={isActive}
+                    value={activeValue}
+                  >
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                  {subItems.length ? (
+                    <SidebarMenuSub>
+                      {subItems.map((subItem) => {
+                        const subUrl = (subItem.url || '').replace(/\/$/, '');
+                        const isSubActive = normalizedPathname === subUrl;
+                        return (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton 
+                              asChild
+                              isActive={isSubActive}
+                              value={subUrl}
+                            >
+                              <a href={subItem.url}>
+                                <span>{subItem.title}</span>
+                              </a>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        );
+                      })}
+                    </SidebarMenuSub>
+                  ) : null}
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>System</SidebarGroupLabel>
           <SidebarMenu>
-            {data.system.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton 
-                  asChild
-                  isActive={pathname === item.url}
-                >
-                  <a href={item.url}>
-                    <item.icon />
-                    <span>{item.name}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {data.system.map((item) => {
+              const systemUrl = (item.url || '').replace(/\/$/, '');
+              const isActive = normalizedPathname === systemUrl;
+              return (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton 
+                    asChild
+                    isActive={isActive}
+                    value={systemUrl}
+                  >
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.name}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -216,11 +249,14 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
-              <DropdownMenuTrigger 
+              <DropdownMenuTrigger
+                id="user-menu-trigger"
                 render={
                   <SidebarMenuButton
+                    id="admin-sidebar-footer-button"
                     size="lg"
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                    value="user-menu"
                   >
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage src={user?.image || ""} alt={user?.name || ""} />

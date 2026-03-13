@@ -158,6 +158,8 @@ type SidebarProps = React.ComponentProps<'div'> & {
   containerClassName?: string;
   animateOnHover?: boolean;
   transition?: Transition;
+  value?: string | null;
+  onValueChange?: (value: string | null) => void;
 };
 
 function Sidebar({
@@ -169,6 +171,8 @@ function Sidebar({
   animateOnHover = true,
   containerClassName,
   transition = { type: 'spring', stiffness: 350, damping: 35 },
+  value,
+  onValueChange,
   ...props
 }: SidebarProps) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
@@ -196,6 +200,18 @@ function Sidebar({
       </Highlight>
     );
   }
+
+  const highlightProps = {
+    enabled: animateOnHover,
+    hover: animateOnHover,
+    controlledItems: true as const,
+    mode: 'parent' as const,
+    forceUpdateBounds: true,
+    transition,
+    value,
+    onValueChange,
+    className: 'bg-zinc-100/80 dark:bg-zinc-800/80 rounded-md',
+  };
 
   if (isMobile) {
     return (
@@ -269,12 +285,7 @@ function Sidebar({
       >
         <Highlight
           containerClassName={cn('size-full', containerClassName)}
-          enabled={animateOnHover}
-          hover
-          controlledItems
-          mode="parent"
-          forceUpdateBounds
-          transition={transition}
+          {...highlightProps}
         >
           <div
             data-sidebar="sidebar"
@@ -548,7 +559,7 @@ const sidebarMenuButtonActiveVariants = cva(
 );
 
 const sidebarMenuButtonVariants = cva(
-  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] [&:not([data-highlight])]:hover:bg-sidebar-accent [&:not([data-highlight])]:hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground [&:not([data-highlight])]:data-[state=open]:hover:bg-sidebar-accent [&:not([data-highlight])]:data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] [&:not([data-highlight])]:hover:bg-zinc-100/80 dark:[&:not([data-highlight])]:hover:bg-zinc-800/80 [&:not([data-highlight])]:hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-zinc-100 dark:data-[active=true]:bg-zinc-800 data-[active=true]:text-zinc-900 dark:data-[active=true]:text-white [&:not([data-highlight])]:data-[state=open]:hover:bg-sidebar-accent [&:not([data-highlight])]:data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
   {
     variants: {
       variant: {
@@ -573,12 +584,14 @@ const sidebarMenuButtonVariants = cva(
 type SidebarMenuButtonProps = React.ComponentProps<'button'> & {
   asChild?: boolean;
   isActive?: boolean;
+  value?: string;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants>;
 
 function SidebarMenuButton({
   asChild = false,
   isActive = false,
+  value,
   variant = 'default',
   size = 'default',
   tooltip,
@@ -590,7 +603,8 @@ function SidebarMenuButton({
 
   const button = (
     <HighlightItem
-      activeClassName={sidebarMenuButtonActiveVariants({ variant })}
+      value={value}
+      activeClassName="bg-zinc-100/80 dark:bg-zinc-800/80"
     >
       <Comp
         data-slot="sidebar-menu-button"
@@ -687,7 +701,7 @@ function SidebarMenuSkeleton({
 }: SidebarMenuSkeletonProps) {
   // Random width between 50 to 90%.
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
+    return `80%`;
   }, []);
 
   return (
@@ -750,27 +764,32 @@ type SidebarMenuSubButtonProps = React.ComponentProps<'a'> & {
   asChild?: boolean;
   size?: 'sm' | 'md';
   isActive?: boolean;
+  value?: string;
 };
 
 function SidebarMenuSubButton({
   asChild = false,
   size = 'md',
   isActive = false,
+  value,
   className,
   ...props
 }: SidebarMenuSubButtonProps) {
   const Comp = asChild ? Slot.Root : 'a';
 
   return (
-    <HighlightItem activeClassName="bg-sidebar-accent text-sidebar-accent-foreground rounded-md">
+    <HighlightItem 
+      value={value}
+      activeClassName="bg-zinc-100/80 dark:bg-zinc-800/80"
+    >
       <Comp
         data-slot="sidebar-menu-sub-button"
         data-sidebar="menu-sub-button"
         data-size={size}
         data-active={isActive}
         className={cn(
-          'text-sidebar-foreground ring-sidebar-ring [&:not([data-highlight])]:hover:bg-sidebar-accent [&:not([data-highlight])]:hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
-          'data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
+          'text-sidebar-foreground ring-sidebar-ring [&:not([data-highlight])]:hover:bg-zinc-100/80 dark:[&:not([data-highlight])]:hover:bg-zinc-800/80 [&:not([data-highlight])]:hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+          'data-[active=true]:bg-zinc-100 dark:data-[active=true]:bg-zinc-800 data-[active=true]:text-zinc-900 dark:data-[active=true]:text-white',
           size === 'sm' && 'text-xs',
           size === 'md' && 'text-sm',
           'group-data-[collapsible=icon]:hidden',
