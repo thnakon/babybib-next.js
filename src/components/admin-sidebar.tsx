@@ -25,7 +25,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/animate-ui/components/radix/sidebar"
-import { Logo } from "@/components/logo"
+import Image from "next/image"
 import { signOut } from "next-auth/react"
 
 export function AdminSidebar({ children }: { children: React.ReactNode }) {
@@ -33,38 +33,48 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <Sidebar collapsible="icon" variant="sidebar">
         <SidebarHeader>
-          <div className="flex items-center gap-2 px-2 py-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#407bc4] text-white">
-              <Logo />
+          <div className="flex items-center gap-2.5 px-3 py-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-900 dark:bg-white shadow-lg overflow-hidden">
+              <Image 
+                src="/logo.png" 
+                alt="Babybib Logo" 
+                width={24} 
+                height={24} 
+                className="object-contain"
+              />
             </div>
-            <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-              <span className="font-semibold text-sm">Babybib Admin</span>
-              <span className="text-[10px] text-zinc-500">v1.0.0</span>
+            <div className="flex flex-col min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
+              <span className="font-bold text-sm tracking-tight text-zinc-900 dark:text-white truncate">
+                Babybib Admin
+              </span>
+              <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                v1.0.0
+              </span>
             </div>
           </div>
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Dashboard" isActive>
+              <SidebarMenuButton id="dashboard-btn" tooltip="Dashboard" isActive>
                 <LayoutDashboard className="h-4 w-4" />
                 <span>Dashboard</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Users">
+              <SidebarMenuButton id="users-btn" tooltip="Users">
                 <Users className="h-4 w-4" />
                 <span>Users</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Citations">
+              <SidebarMenuButton id="citations-btn" tooltip="Citations">
                 <FileText className="h-4 w-4" />
                 <span>Citations</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Analytics">
+              <SidebarMenuButton id="analytics-btn" tooltip="Analytics">
                 <PieChart className="h-4 w-4" />
                 <span>Analytics</span>
               </SidebarMenuButton>
@@ -74,13 +84,14 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Settings">
+              <SidebarMenuButton id="settings-btn" tooltip="Settings">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton 
+                id="logout-btn"
                 tooltip="Logout" 
                 onClick={() => signOut({ callbackUrl: "/login" })}
                 className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
