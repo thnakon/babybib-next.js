@@ -31,6 +31,7 @@ import {
   SidebarMenuSubButton,
 } from "@/components/animate-ui/components/radix/sidebar"
 import { useSession, signOut } from "next-auth/react"
+import { usePathname } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -132,6 +133,7 @@ const data = {
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession()
   const user = session?.user
+  const pathname = usePathname()
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -164,7 +166,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
           <SidebarMenu>
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton 
+                  tooltip={item.title}
+                  isActive={pathname === item.url || item.items?.some(sub => pathname === sub.url)}
+                >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
@@ -172,7 +177,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                   <SidebarMenuSub>
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton 
+                          asChild
+                          isActive={pathname === subItem.url}
+                        >
                           <a href={subItem.url}>
                             <span>{subItem.title}</span>
                           </a>
@@ -190,7 +198,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
           <SidebarMenu>
             {data.system.map((item) => (
               <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton 
+                  asChild
+                  isActive={pathname === item.url}
+                >
                   <a href={item.url}>
                     <item.icon />
                     <span>{item.name}</span>
