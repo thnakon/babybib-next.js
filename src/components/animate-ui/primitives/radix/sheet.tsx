@@ -72,7 +72,9 @@ function SheetOverlay({
   ...props
 }: SheetOverlayProps) {
   return (
-    <SheetPrimitive.Overlay forceMount render={<motion.div key="sheet-overlay" data-slot="sheet-overlay" initial={{ opacity: 0, filter: 'blur(4px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} exit={{ opacity: 0, filter: 'blur(4px)' }} transition={transition} {...props} />}></SheetPrimitive.Overlay>
+    <SheetPrimitive.Overlay forceMount asChild>
+      <motion.div key="sheet-overlay" data-slot="sheet-overlay" initial={{ opacity: 0, filter: 'blur(4px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} exit={{ opacity: 0, filter: 'blur(4px)' }} transition={transition} {...props} />
+    </SheetPrimitive.Overlay>
   );
 }
 
@@ -107,11 +109,15 @@ function SheetContent({
   };
 
   return (
-    <SheetPrimitive.Content forceMount {...props} render={<motion.div key="sheet-content" data-slot="sheet-content" data-side={side} initial={offscreen[side]} animate={{ [axis]: 0, opacity: 1 }} exit={offscreen[side]} style={{
+    <SheetPrimitive.Content forceMount {...props} asChild>
+      <motion.div key="sheet-content" data-slot="sheet-content" data-side={side} initial={offscreen[side]} animate={{ [axis]: 0, opacity: 1 }} exit={offscreen[side]} style={{
                 position: 'fixed',
                 ...positionStyle[side],
                 ...style,
-              }} transition={transition} />}>{children}</SheetPrimitive.Content>
+              }} transition={transition}>
+        {children}
+      </motion.div>
+    </SheetPrimitive.Content>
   );
 }
 

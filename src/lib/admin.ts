@@ -93,6 +93,11 @@ export async function getAllUsers() {
       role: true,
       isLisStudent: true,
       studentId: true,
+      orgType: true,
+      province: true,
+      orgName: true,
+      otherOrgType: true,
+      emailVerified: true,
       createdAt: true,
     },
   })
@@ -102,6 +107,19 @@ export async function updateUserRole(userId: number, role: "USER" | "ADMIN") {
   return await prisma.user.update({
     where: { id: userId },
     data: { role },
+  })
+}
+
+export async function updateUser(userId: number, data: any) {
+  return await prisma.user.update({
+    where: { id: userId },
+    data,
+  })
+}
+
+export async function deleteUser(userId: number) {
+  return await prisma.user.delete({
+    where: { id: userId },
   })
 }
 

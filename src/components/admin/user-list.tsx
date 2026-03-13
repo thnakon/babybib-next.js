@@ -8,8 +8,13 @@ import {
   ShieldCheck, 
   Calendar,
   Search,
+  UserCheck,
   UserX,
-  UserCheck
+  Trash2,
+  User as UserIcon,
+  Settings,
+  AlertTriangle,
+  Loader2
 } from "lucide-react"
 import { 
   DropdownMenu, 
@@ -20,11 +25,38 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu"
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { useSession } from "next-auth/react"
+import { toast } from "sonner"
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle, 
+} from "@/components/ui/sheet"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { adminDeleteUserAction, adminUpdateUserAction, adminUpdateRoleAction } from "@/app/actions/admin"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { PROVINCES, ORG_TYPES } from "@/lib/constants/auth"
 
 interface User {
   id: number
@@ -35,6 +67,11 @@ interface User {
   role: string
   isLisStudent: boolean
   studentId: string | null
+  orgType: string | null
+  province: string | null
+  orgName: string | null
+  otherOrgType: string | null
+  emailVerified: Date | null
   createdAt: Date
 }
 
@@ -43,29 +80,172 @@ interface UserListProps {
 }
 
 export function UserList({ initialUsers }: UserListProps) {
+  const { data: session } = useSession()
   const [searchTerm, setSearchTerm] = React.useState("")
+  const [roleFilter, setRoleFilter] = React.useState<string>("ALL")
+  const [lisFilter, setLisFilter] = React.useState<string>("ALL")
   const [users, setUsers] = React.useState(initialUsers)
+  const [isPending, setIsPending] = React.useTransition()
 
-  const filteredUsers = users.filter(user => 
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (user.isLisStudent && "student".includes(searchTerm.toLowerCase())) ||
-    (user.studentId?.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
+  // Selection state
+  const [selectedUser, setSelectedUser] = React.useState<User | null>(null)
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+  const [confirmUsername, setConfirmUsername] = React.useState("")
+
+  // Edit form state
+  const [editFirstName, setEditFirstName] = React.useState("")
+  const [editLastName, setEditLastName] = React.useState("")
+  const [editUsername, setEditUsername] = React.useState("")
+  const [editOrgType, setEditOrgType] = React.useState("")
+  const [editProvince, setEditProvince] = React.useState("")
+  const [editOrgName, setEditOrgName] = React.useState("")
+  const [editIsLisStudent, setEditIsLisStudent] = React.useState(false)
+  const [editStudentId, setEditStudentId] = React.useState("")
+
+  React.useEffect(() => {
+    if (selectedUser) {
+      setEditFirstName(selectedUser.firstName)
+      setEditLastName(selectedUser.lastName)
+      setEditUsername(selectedUser.username)
+      setEditOrgType(selectedUser.orgType || "")
+      setEditProvince(selectedUser.province || "")
+      setEditOrgName(selectedUser.orgName || "")
+      setEditIsLisStudent(selectedUser.isLisStudent)
+      setEditStudentId(selectedUser.studentId || "")
+    }
+  }, [selectedUser])
+
+  const handleUpdateUser = async () => {
+    if (!selectedUser) return
+
+    setIsPending(async () => {
+      try {
+        await adminUpdateUserAction(selectedUser.id, {
+          firstName: editFirstName,
+          lastName: editLastName,
+          username: editUsername,
+          orgType: editOrgType,
+          province: editProvince,
+          orgName: editOrgName,
+          isLisStudent: editIsLisStudent,
+          studentId: editIsLisStudent ? editStudentId : null,
+        })
+        
+        // Optimistic update
+        setUsers(users.map(u => u.id === selectedUser.id ? {
+          ...u,
+          firstName: editFirstName,
+          lastName: editLastName,
+          username: editUsername,
+          orgType: editOrgType,
+          province: editProvince,
+          orgName: editOrgName,
+          isLisStudent: editIsLisStudent,
+          studentId: editIsLisStudent ? editStudentId : null,
+        } : u))
+        
+        toast.success("User updated successfully")
+        setIsEditDialogOpen(false)
+      } catch (error) {
+        toast.error("Failed to update user")
+      }
+    })
+  }
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser || confirmUsername !== session?.user?.name) return
+
+    setIsPending(async () => {
+      try {
+        await adminDeleteUserAction(selectedUser.id)
+        setUsers(users.filter(u => u.id !== selectedUser.id))
+        toast.success("User deleted successfully")
+        setIsDeleteDialogOpen(false)
+        setConfirmUsername("")
+      } catch (error) {
+        toast.error("Failed to delete user")
+      }
+    })
+  }
+
+  const handleToggleRole = async (user: User) => {
+    const newRole = user.role === "ADMIN" ? "USER" : "ADMIN"
+    setIsPending(async () => {
+      try {
+        await adminUpdateRoleAction(user.id, newRole as any)
+        setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole } : u))
+        toast.success(`User demoted to ${newRole}`)
+      } catch (error) {
+        toast.error("Failed to update role")
+      }
+    })
+  }
+
+  const filteredUsers = React.useMemo(() => {
+    return users.filter(user => {
+      // Search match
+      const matchesSearch = 
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (user.isLisStudent && "student".includes(searchTerm.toLowerCase())) ||
+        (user.studentId?.toLowerCase().includes(searchTerm.toLowerCase()))
+
+      // Role filter
+      const matchesRole = roleFilter === "ALL" || user.role === roleFilter
+
+      // LIS filter
+      const matchesLis = lisFilter === "ALL" || 
+        (lisFilter === "LIS" && user.isLisStudent) || 
+        (lisFilter === "NORMAL" && !user.isLisStudent)
+
+      return matchesSearch && matchesRole && matchesLis
+    })
+  }, [users, searchTerm, roleFilter, lisFilter])
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-          <Input
-            id="user-search-input"
-            placeholder="Search users..."
-            className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="flex flex-1 items-center gap-2">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <Input
+              id="user-search-input"
+              placeholder="Search users..."
+              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Role:</span>
+            <Select value={roleFilter} onValueChange={(val) => setRoleFilter(val || "ALL")}>
+              <SelectTrigger className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Roles</SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="USER">User</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">LIS Status:</span>
+            <Select value={lisFilter} onValueChange={(val) => setLisFilter(val || "ALL")}>
+              <SelectTrigger className="w-[160px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+                <SelectValue placeholder="LIS Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Students</SelectItem>
+                <SelectItem value="LIS">LIS Students</SelectItem>
+                <SelectItem value="NORMAL">Regular User</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3">
@@ -80,6 +260,7 @@ export function UserList({ initialUsers }: UserListProps) {
             <thead>
               <tr className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800">
                 <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">User</th>
+                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">LIS</th>
                 <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Role</th>
                 <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Joined At</th>
                 <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider text-right">Actions</th>
@@ -100,11 +281,6 @@ export function UserList({ initialUsers }: UserListProps) {
                           <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                             {user.firstName} {user.lastName}
                           </span>
-                          {user.isLisStudent && (
-                            <Badge className="h-4 px-1.5 text-[8px] font-black uppercase bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 border-none">
-                              LIS: {user.studentId || "Student"}
-                            </Badge>
-                          )}
                         </div>
                         <span className="text-xs text-zinc-500 flex items-center gap-1 font-medium">
                           <Mail className="h-3 w-3" />
@@ -114,8 +290,18 @@ export function UserList({ initialUsers }: UserListProps) {
                     </div>
                   </td>
                   <td className="px-6 py-4">
+                    {user.isLisStudent ? (
+                      <div className="flex items-center gap-1 text-[11px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-tight">
+                        <Badge className="h-4 px-1.5 text-[8px] border-emerald-200 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 border-none">LIS</Badge>
+                        {user.studentId}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-zinc-400 font-medium">-</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
                     <div className={cn(
-                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all",
+                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all w-fit",
                       user.role === "ADMIN" 
                         ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 ring-1 ring-purple-500/10" 
                         : "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 ring-1 ring-blue-500/10"
@@ -149,10 +335,19 @@ export function UserList({ initialUsers }: UserListProps) {
                         <DropdownMenuGroup>
                           <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-zinc-400 font-black">User Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
-                            <Mail className="h-4 w-4" /> View Profile
+                          <DropdownMenuItem 
+                            className="gap-2 cursor-pointer font-medium text-sm"
+                            onClick={() => {
+                              setSelectedUser(user)
+                              setIsEditDialogOpen(true)
+                            }}
+                          >
+                            <UserIcon className="h-4 w-4" /> View & Edit Profile
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
+                          <DropdownMenuItem 
+                            className="gap-2 cursor-pointer font-medium text-sm"
+                            onClick={() => handleToggleRole(user)}
+                          >
                             {user.role === "ADMIN" ? (
                               <><UserX className="h-4 w-4 text-orange-500" /> Demote to User</>
                             ) : (
@@ -160,8 +355,14 @@ export function UserList({ initialUsers }: UserListProps) {
                             )}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm text-red-500 focus:text-red-500">
-                            Delete User
+                          <DropdownMenuItem 
+                            className="gap-2 cursor-pointer font-medium text-sm text-red-500 focus:text-red-500"
+                            onClick={() => {
+                              setSelectedUser(user)
+                              setIsDeleteDialogOpen(true)
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" /> Delete User
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
@@ -173,6 +374,199 @@ export function UserList({ initialUsers }: UserListProps) {
           </table>
         </div>
       </div>
+
+      {/* User Detail Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-14 w-14 border-4 border-zinc-100 dark:border-zinc-800">
+                <AvatarFallback className="text-xl font-black uppercase">
+                  {selectedUser?.firstName.substring(0, 1)}{selectedUser?.lastName.substring(0, 1)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col text-left">
+                <DialogTitle className="text-xl">User Profile Detail</DialogTitle>
+                <DialogDescription className="text-xs">
+                  Review and manage detailed information for <span className="text-zinc-900 dark:text-zinc-100 font-bold">{selectedUser?.username}</span>
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Basic Info */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">First Name</Label>
+                <Input 
+                  value={editFirstName} 
+                  onChange={(e) => setEditFirstName(e.target.value)}
+                  className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Last Name</Label>
+                <Input 
+                  value={editLastName} 
+                  onChange={(e) => setEditLastName(e.target.value)}
+                  className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Username</Label>
+                <Input 
+                  value={editUsername} 
+                  onChange={(e) => setEditUsername(e.target.value)}
+                  className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Email Address</Label>
+                <div className="relative">
+                  <Input 
+                    value={selectedUser?.email || ""} 
+                    disabled
+                    className="rounded-xl bg-zinc-100 dark:bg-zinc-800 opacity-60 pr-20"
+                  />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    {selectedUser?.emailVerified ? (
+                      <Badge className="bg-emerald-50 text-emerald-600 text-[8px] border-none font-black uppercase h-5">Verified</Badge>
+                    ) : (
+                      <Badge className="bg-orange-50 text-orange-600 text-[8px] border-none font-black uppercase h-5">Pending</Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Org Info */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Organization Type</Label>
+                <Select value={editOrgType} onValueChange={(val) => setEditOrgType(val || "")}>
+                  <SelectTrigger className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-none h-11">
+                    <SelectValue placeholder="Select organization type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ORG_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Province</Label>
+                <Select value={editProvince} onValueChange={(val) => setEditProvince(val || "")}>
+                  <SelectTrigger className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-none h-11">
+                    <SelectValue placeholder="Select province" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROVINCES.map((prov) => (
+                      <SelectItem key={prov} value={prov}>{prov}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Organization Name</Label>
+                <Input 
+                  value={editOrgName} 
+                  onChange={(e) => setEditOrgName(e.target.value)}
+                  placeholder="e.g. CMU"
+                  className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50"
+                />
+              </div>
+
+              {/* LIS Section */}
+              <div className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-bold">LIS Student</Label>
+                  <Checkbox 
+                    checked={editIsLisStudent} 
+                    onCheckedChange={(checked) => setEditIsLisStudent(!!checked)}
+                  />
+                </div>
+                {editIsLisStudent && (
+                  <div className="space-y-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Student ID</Label>
+                    <Input 
+                      value={editStudentId} 
+                      onChange={(e) => setEditStudentId(e.target.value)}
+                      placeholder="Enter ID..."
+                      className="rounded-xl bg-white dark:bg-zinc-950 h-8 text-sm"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-8 gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsEditDialogOpen(false)}
+              className="rounded-xl font-bold h-11"
+            >
+              Cancel
+            </Button>
+            <Button 
+              className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl font-black h-11 px-8"
+              onClick={handleUpdateUser}
+              disabled={isPending}
+            >
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Details"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+              <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+            </div>
+            <DialogTitle className="text-center text-xl">Delete User Account</DialogTitle>
+            <DialogDescription className="text-center pt-2">
+              This action is <span className="text-red-600 font-bold">permanent</span> and cannot be undone. 
+              All data associated with <span className="font-bold text-zinc-900 dark:text-zinc-100">{selectedUser?.username}</span> will be lost.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-6 space-y-4">
+            <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800">
+              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                To confirm, please type your admin username: <span className="font-bold text-zinc-900 dark:text-zinc-100">{session?.user?.name}</span>
+              </p>
+            </div>
+            <Input 
+              placeholder="Type your username..." 
+              value={confirmUsername}
+              onChange={(e) => setConfirmUsername(e.target.value)}
+              className="rounded-xl bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800"
+            />
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsDeleteDialogOpen(false)}
+              className="rounded-xl font-bold h-11 flex-1"
+            >
+              Cancel
+            </Button>
+            <Button 
+              className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold h-11 flex-1 shadow-lg shadow-red-500/20"
+              disabled={confirmUsername !== session?.user?.name || isPending}
+              onClick={handleDeleteUser}
+            >
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete User"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
