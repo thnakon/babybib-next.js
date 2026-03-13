@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { signIn } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -63,9 +64,6 @@ export function SignupForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState(1); // 1: Signup, 2: Verification
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [verifying, setVerifying] = useState(false);
   
   const {
     register,
@@ -101,8 +99,19 @@ export function SignupForm({
         headers: { "Content-Type": "application/json" },
       });
       if (res.ok) {
-        // Instead of redirecting, go to verification step
-        setStep(2);
+        // Auto-login after registration
+        const loginRes = await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        });
+        
+        if (!loginRes?.error) {
+          window.location.href = "/verify";
+        } else {
+          // If auto-login fails, still go to login page
+          window.location.href = "/login";
+        }
       } else {
         const error = await res.json();
         alert(error.message || "Something went wrong");
@@ -114,85 +123,9 @@ export function SignupForm({
     }
   };
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) value = value.slice(-1);
-    if (!/^\d*$/.test(value)) return;
 
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
 
-    // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      nextInput?.focus();
-    }
-  };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      prevInput?.focus();
-    }
-  };
-
-  const verifyOtp = async () => {
-    const code = otp.join("");
-    if (code.length !== 6) return;
-
-    setVerifying(true);
-    // Dev mode: simulation
-    setTimeout(() => {
-      setVerifying(false);
-      window.location.href = "/generate";
-    }, 1500);
-  };
-
-  if (step === 2) {
-    return (
-      <div className={cn("flex flex-col gap-6", className)} {...props}>
-        <Card className="overflow-hidden p-0 border-none shadow-2xl bg-card text-card-foreground">
-          <CardContent className="flex flex-col items-center justify-center p-8 md:p-12 text-center">
-            <div className="size-16 rounded-full bg-[#407bc4]/10 flex items-center justify-center mb-6">
-              <Mail className="size-8 text-[#407bc4]" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight mb-2">Verify your email</h1>
-            <p className="text-muted-foreground mb-8 max-w-[320px]">
-              We've sent a 6-digit verification code to <span className="text-foreground font-semibold">{userEmail}</span>
-            </p>
-
-            <div className="flex gap-2 mb-8">
-              {otp.map((digit, i) => (
-                <input
-                  key={i}
-                  id={`otp-${i}`}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleOtpChange(i, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(i, e)}
-                  className="size-11 sm:size-12 text-center text-xl font-bold rounded-lg border border-input bg-background focus:border-[#407bc4] focus:ring-2 focus:ring-[#407bc4]/20 outline-none transition-all"
-                />
-              ))}
-            </div>
-
-            <Button 
-              onClick={verifyOtp} 
-              disabled={otp.join("").length !== 6 || verifying}
-              className="w-full bg-[#407bc4] hover:bg-[#32629e] h-11 text-base font-bold shadow-md border-none mb-4"
-            >
-              {verifying ? "Verifying..." : "Verify & Continue"}
-            </Button>
-
-            <p className="text-sm text-muted-foreground">
-              Didn't receive the code?{" "}
-              <button className="text-[#407bc4] font-semibold hover:underline">Resend code</button>
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

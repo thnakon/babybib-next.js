@@ -41,16 +41,16 @@ export function NavLinks() {
               <div className="absolute top-0 left-full pl-2 hidden group-hover/share:block">
                  <div className="flex flex-col w-40 rounded-xl bg-white dark:bg-zinc-900 shadow-xl border border-zinc-100 dark:border-zinc-800 p-2">
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <Facebook className="h-4 w-4 text-[#1877F2]" /> Facebook
+                      <Facebook className="h-4 w-4 text-[#1877F2]" /> {t.facebook}
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <Instagram className="h-4 w-4 text-[#E4405F]" /> Instagram
+                      <Instagram className="h-4 w-4 text-[#E4405F]" /> {t.instagram}
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <Twitter className="h-4 w-4 text-black dark:text-white" /> X
+                      <Twitter className="h-4 w-4 text-black dark:text-white" /> {t.twitter}
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white">
-                      <MessageCircle className="h-4 w-4 text-[#06C755]" /> Line
+                      <MessageCircle className="h-4 w-4 text-[#06C755]" /> {t.line}
                     </button>
                  </div>
               </div>

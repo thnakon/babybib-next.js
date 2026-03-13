@@ -26,6 +26,8 @@ model User {
   orgName       String?
   isLisStudent  Boolean  @default(false)
   studentId     String?
+  emailVerified DateTime?
+  verificationCode String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

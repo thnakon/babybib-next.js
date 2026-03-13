@@ -40,8 +40,11 @@ ER  - `;
   saveAs(blob, "citations.ris");
 };
 
+import { translations } from "./translations";
+
 export const exportToWord = async (citations: any[], settings: any, language: string) => {
-  const title = language === 'TH' ? 'รายการอ้างอิง' : 'References';
+  const langKey = language as keyof typeof translations;
+  const title = translations[langKey]?.generate?.references || 'References';
   
   const paragraphs = [
     new Paragraph({

@@ -34,6 +34,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function GeneratePage() {
   const { language } = useLanguage();
+  const t = t;
   const { data: session } = useSession();
   const [style, setStyle] = React.useState("APA - 7th Edition");
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
@@ -107,7 +108,7 @@ export default function GeneratePage() {
   const [mainSearchResults, setMainSearchResults] = React.useState<any[]>([]);
   const [localCitations, setLocalCitations] = React.useState<any[]>([]);
   const [localProjects, setLocalProjects] = React.useState<any[]>([
-    { id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" }
+    { id: 1, name: t.myProjects, icon: "BookOpen", color: "#407bc4" }
   ]);
   const [activeProjectId, setActiveProjectId] = React.useState<number | null>(null);
 
@@ -127,7 +128,7 @@ export default function GeneratePage() {
           if (Array.isArray(parsed) && parsed.length > 0) {
             setLocalProjects(parsed);
           } else {
-            const defaultProject = { id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" };
+            const defaultProject = { id: 1, name: t.myProjects, icon: "BookOpen", color: "#407bc4" };
             setLocalProjects([defaultProject]);
             localStorage.setItem("babybib_projects", JSON.stringify([defaultProject]));
           }
@@ -135,7 +136,7 @@ export default function GeneratePage() {
           console.error("Error parsing stored projects", e);
         }
       } else {
-        const defaultProject = { id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" };
+        const defaultProject = { id: 1, name: t.myProjects, icon: "BookOpen", color: "#407bc4" };
         setLocalProjects([defaultProject]);
         localStorage.setItem("babybib_projects", JSON.stringify([defaultProject]));
       }
@@ -167,7 +168,7 @@ export default function GeneratePage() {
     setMainSearchQuery(query);
     if (query.trim().length > 2) {
       if (!checkRateLimit()) {
-        toast.error(language === 'TH' ? 'คุณทำรายการเร็วเกินไป กรุณาลองใหม่อีกครั้งใน 1 นาที' : 'Rate limit exceeded. Please wait a minute.');
+        toast.error(t.toasts.rateLimit);
         return;
       }
       setIsMainSearching(true);
@@ -192,7 +193,7 @@ export default function GeneratePage() {
 
   const handleSelectSearchResult = async (item: any) => {
     if (!activeProjectId) {
-      toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      toast.error(t.toasts.selectProject);
       return;
     }
 
@@ -200,10 +201,10 @@ export default function GeneratePage() {
       // Enforce guest limit (Global)
       if (localCitations.length >= 5) {
         toast.error(
-          language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ)' : 'Guest limit reached (5 citations).', 
+          t.toasts.guestLimit, 
           {
             action: {
-              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+              label: translations[language].usage.signUp,
               onClick: () => window.location.href = '/signup'
             },
             duration: 5000
@@ -230,7 +231,7 @@ export default function GeneratePage() {
       
       setHighlightedId(newLocalCitation.id);
       setTimeout(() => setHighlightedId(null), 3000);
-      toast.success(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ (บันทึกในเครื่อง)' : 'Citation added successfully (Stored locally)');
+      toast.success(t.toasts.added);
       setIsMainSearchDropdownOpen(false);
       setMainSearchQuery("");
       return;
@@ -259,13 +260,13 @@ export default function GeneratePage() {
         mutateCitations([...citations, newCitation], false);
         setHighlightedId(newCitation.id);
         setTimeout(() => setHighlightedId(null), 3000);
-        toast.success(language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully');
+        toast.success(t.toasts.added);
       } else {
         throw new Error("Failed to save citation");
       }
     } catch (error) {
       console.error(error);
-      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
+      toast.error(t.toasts.importError);
     }
     
     setIsMainSearchDropdownOpen(false);
@@ -344,10 +345,10 @@ export default function GeneratePage() {
   const handleImport = async () => {
     if (!session) {
       toast(
-        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+        translations[language].usage.signInPrompt,
         {
           action: {
-            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+            label: translations[language].usage.signUp,
             onClick: () => window.location.href = '/signup'
           },
           duration: 5000
@@ -357,7 +358,7 @@ export default function GeneratePage() {
     }
 
     if (!activeProjectId) {
-      toast.error(language === 'TH' ? 'กรุณาเลือกโปรเจกต์ก่อน' : 'Please select a project first');
+      toast.error(t.toasts.selectProject);
       return;
     }
 
@@ -366,11 +367,11 @@ export default function GeneratePage() {
     if (importRefFilesData.bib) loaders.push({ file: importRefFilesData.bib, parser: parseBibTeX, type: 'BibTeX' });
 
     if (loaders.length === 0) {
-      toast.error(language === 'TH' ? 'กรุณาเลือกไฟล์ที่ต้องการนำเข้า' : 'Please select a file to import');
+      toast.error(t.toasts.selectFile);
       return;
     }
 
-    toast.loading(language === 'TH' ? 'กำลังนำเข้าข้อมูล...' : 'Importing data...');
+    toast.loading(t.toasts.importing);
 
     try {
       let totalImported = 0;
@@ -396,48 +397,48 @@ export default function GeneratePage() {
       setImportRefFiles({ ris: null, bib: null, backup: null });
       setImportRefFilesData({ ris: null, bib: null, backup: null });
       toast.dismiss();
-      toast.success(language === 'TH' ? `นำเข้าสำเร็จ ${totalImported} รายการ` : `Imported ${totalImported} items successfully`);
+      toast.success(t.toasts.importSuccess.replace('{count}', totalImported.toString()));
     } catch (err) {
       toast.dismiss();
-      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการนำเข้า' : 'Error during import');
+      toast.error(t.toasts.importError);
     }
   };
 
-  const resourceLabels: Record<string, { TH: string, EN: string }> = {
-    book: { TH: 'หนังสือ', EN: 'Book' },
-    article: { TH: 'วารสาร', EN: 'Journal' },
-    website: { TH: 'เว็บไซต์', EN: 'Website' },
-    report: { TH: 'รายงาน', EN: 'Report' },
-    news: { TH: 'ข่าวสาร', EN: 'News' },
-    artwork: { TH: 'งานศิลปะ', EN: 'Artwork' },
-    blog: { TH: 'บล็อกโพสต์', EN: 'Blog Post' },
-    chapter: { TH: 'บทในหนังสือ', EN: 'Book Chapter' },
-    review: { TH: 'บทวิจารณ์หนังสือ', EN: 'Book Review' },
-    conference: { TH: 'เอกสารการประชุม', EN: 'Conference Paper' },
-    'db-article': { TH: 'บทความฐานข้อมูล', EN: 'Database Article' },
-    dictionary: { TH: 'พจนานุกรม', EN: 'Dictionary Entry' },
-    ebook: { TH: 'อีบุ๊ก', EN: 'E-book' },
-    encyclopedia: { TH: 'สารานุกรม', EN: 'Encyclopedia Entry' },
-    film: { TH: 'ภาพยนตร์', EN: 'Film/Movie' },
-    image: { TH: 'รูปภาพ', EN: 'Image' },
-    interview: { TH: 'บทสัมภาษณ์', EN: 'Interview' },
-    journal: { TH: 'บทความวารสาร', EN: 'Journal Article' },
-    'legal-bill': { TH: 'ร่างกฎหมาย', EN: 'Legal Bill' },
-    'legal-case': { TH: 'คดีความ', EN: 'Legal Case' },
-    legislation: { TH: 'กฎหมาย', EN: 'Legislation' },
-    magazine: { TH: 'บทความนิตยสาร', EN: 'Magazine Article' },
-    map: { TH: 'แผนที่', EN: 'Map' },
-    'news-article': { TH: 'บทความข่าว', EN: 'News Article' },
-    patent: { TH: 'สิทธิบัตร', EN: 'Patent' },
-    personal: { TH: 'การสื่อสารส่วนตัว', EN: 'Personal Communication' },
-    regulation: { TH: 'ระเบียบข้อบังคับ', EN: 'Regulation' },
-    song: { TH: 'เพลง', EN: 'Song' },
-    speech: { TH: 'สุนทรพจน์', EN: 'Speech' },
-    standard: { TH: 'มาตรฐาน', EN: 'Standard' },
-    thesis: { TH: 'วิทยานิพนธ์', EN: 'Thesis/Dissertation' },
-    broadcast: { TH: 'รายการทีวี/วิทยุ', EN: 'TV/Radio Broadcast' },
-    video: { TH: 'วิดีโอ', EN: 'Video' },
-    paste: { TH: 'เขียน/วางบรรณานุกรม', EN: 'Write/paste citation' },
+  const resourceLabels: Record<string, { TH: string, EN: string, ZH: string }> = {
+    book: { TH: 'หนังสือ', EN: 'Book', ZH: '图书' },
+    article: { TH: 'วารสาร', EN: 'Journal', ZH: '期刊' },
+    website: { TH: 'เว็บไซต์', EN: 'Website', ZH: '网站' },
+    report: { TH: 'รายงาน', EN: 'Report', ZH: '报告' },
+    news: { TH: 'ข่าวสาร', EN: 'News', ZH: '新闻' },
+    artwork: { TH: 'งานศิลปะ', EN: 'Artwork', ZH: '艺术品' },
+    blog: { TH: 'บล็อกโพสต์', EN: 'Blog Post', ZH: '博客文章' },
+    chapter: { TH: 'บทในหนังสือ', EN: 'Book Chapter', ZH: '书章节' },
+    review: { TH: 'บทวิจารณ์หนังสือ', EN: 'Book Review', ZH: '书评' },
+    conference: { TH: 'เอกสารการประชุม', EN: 'Conference Paper', ZH: '会议论文' },
+    'db-article': { TH: 'บทความฐานข้อมูล', EN: 'Database Article', ZH: '数据库文章' },
+    dictionary: { TH: 'พจนานุกรม', EN: 'Dictionary Entry', ZH: '词典条目' },
+    ebook: { TH: 'อีบุ๊ก', EN: 'E-book', ZH: '电子书' },
+    encyclopedia: { TH: 'สารานุกรม', EN: 'Encyclopedia Entry', ZH: '百科全书条目' },
+    film: { TH: 'ภาพยนตร์', EN: 'Film/Movie', ZH: '电影' },
+    image: { TH: 'รูปภาพ', EN: 'Image', ZH: '图像' },
+    interview: { TH: 'บทสัมภาษณ์', EN: 'Interview', ZH: '访谈' },
+    journal: { TH: 'บทความวารสาร', EN: 'Journal Article', ZH: '期刊文章' },
+    'legal-bill': { TH: 'ร่างกฎหมาย', EN: 'Legal Bill', ZH: '法律法案' },
+    'legal-case': { TH: 'คดีความ', EN: 'Legal Case', ZH: '法律案例' },
+    legislation: { TH: 'กฎหมาย', EN: 'Legislation', ZH: '立法' },
+    magazine: { TH: 'บทความนิตยสาร', EN: 'Magazine Article', ZH: '杂志文章' },
+    map: { TH: 'แผนที่', EN: 'Map', ZH: '地图' },
+    'news-article': { TH: 'บทความข่าว', EN: 'News Article', ZH: '新闻文章' },
+    patent: { TH: 'สิทธิบัตร', EN: 'Patent', ZH: '专利' },
+    personal: { TH: 'การสื่อสารส่วนตัว', EN: 'Personal Communication', ZH: '个人通讯' },
+    regulation: { TH: 'ระเบียบข้อบังคับ', EN: 'Regulation', ZH: '规章' },
+    song: { TH: 'เพลง', EN: 'Song', ZH: '歌曲' },
+    speech: { TH: 'สุนพรพจน์', EN: 'Speech', ZH: '演讲' },
+    standard: { TH: 'มาตรฐาน', EN: 'Standard', ZH: '标准' },
+    thesis: { TH: 'วิทยานิพนธ์', EN: 'Thesis/Dissertation', ZH: '论文/学位论文' },
+    broadcast: { TH: 'รายการทีวี/วิทยุ', EN: 'TV/Radio Broadcast', ZH: '电视/广播' },
+    video: { TH: 'วิดีโอ', EN: 'Video', ZH: '视频' },
+    paste: { TH: 'เขียน/วางบรรณานุกรม', EN: 'Write/paste citation', ZH: '键入/粘贴引文' },
   };
 
   const getResourceIcon = (type: string) => {
@@ -488,23 +489,23 @@ export default function GeneratePage() {
 
   const handleSaveManualCitation = async () => {
     if (!activeProjectId) {
-      toast.error(language === 'TH' ? 'กรุณาเลือกหรือสร้างโปรเจกต์ก่อน' : 'Please select or create a project first');
+      toast.error(t.toasts.selectProject);
       return;
     }
     
     // basic validation
     if (!newCitationData.title || newCitationData.authors.every((a: any) => !a.lastName && !a.firstName)) {
-      toast.error(language === 'TH' ? 'กรุณากรอกข้อมูลที่จำเป็น' : 'Please fill in required fields');
+      toast.error(t.toasts.fillRequired);
       return;
     }
 
     if (!session) {
       if (!editingCitationId && localCitations.length >= 5) {
         toast.error(
-          language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (5 รายการ)' : 'Guest limit reached (5 citations).',
+          t.toasts.guestLimit,
           {
             action: {
-              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+              label: translations[language].usage.signUp,
               onClick: () => window.location.href = '/signup'
             },
             duration: 5000
@@ -552,8 +553,8 @@ export default function GeneratePage() {
       setIsAddCitationModalOpen(false);
       setEditingCitationId(null);
       toast.success(editingCitationId 
-        ? (language === 'TH' ? 'แก้ไขรายการสำเร็จ' : 'Citation updated successfully') 
-        : (language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully')
+        ? t.toasts.updated
+        : t.toasts.added
       );
       return;
     }
@@ -592,14 +593,14 @@ export default function GeneratePage() {
         setIsAddCitationModalOpen(false);
         setEditingCitationId(null);
         toast.success(editingCitationId 
-          ? (language === 'TH' ? 'แก้ไขรายการสำเร็จ' : 'Citation updated successfully') 
-          : (language === 'TH' ? 'เพิ่มรายการบรรณานุกรมสำเร็จ' : 'Citation added successfully')
+          ? t.toasts.updated
+          : t.toasts.added
         );
       } else {
         throw new Error();
       }
     } catch (e) {
-      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving citation');
+      toast.error(t.toasts.importError);
     }
   };
   
@@ -617,9 +618,9 @@ export default function GeneratePage() {
         localStorage.removeItem("babybib_citations");
         localStorage.removeItem("babybib_projects");
         setLocalCitations([]);
-        setLocalProjects([{ id: 1, name: "My project", icon: "BookOpen", color: "#407bc4" }]);
+        setLocalProjects([{ id: 1, name: t.myProjects, icon: "BookOpen", color: "#407bc4" }]);
         localStorage.setItem("babybib_guest_started_at", now.toString());
-        toast.info(language === 'TH' ? 'ยกระดับความปลอดภัย: ข้อมูลการใช้งานแบบ Guest ของคุณถูกรีเซ็ตหลังจากครบ 24 ชม.' : 'Security: Your guest session has expired after 24h.');
+        toast.info(t.toasts.securityReset);
       }
     }
   }, [session, language]);
@@ -782,7 +783,7 @@ export default function GeneratePage() {
       const updatedCitations = localCitations.filter(c => c.id !== id);
       setLocalCitations(updatedCitations);
       saveGuestData(updatedCitations, localProjects);
-      toast.success(language === 'TH' ? 'ลบรายการบรรณานุกรมสำเร็จ' : 'Citation deleted successfully');
+      toast.success(t.toasts.deleted);
       return;
     }
 
@@ -796,7 +797,7 @@ export default function GeneratePage() {
         // Optimistic update: remove from citations, add to deletedCitations if available
         mutateCitations(citations.filter((c: any) => c.id !== id), false);
         mutateDeletedCitations();
-        toast.success(language === 'TH' ? 'ย้ายไปที่ถังขยะเรียบร้อย' : 'Citation moved to trash');
+        toast.success(t.toasts.movedToTrash);
       }
     } catch (e) { console.error(e) }
   };
@@ -813,7 +814,7 @@ export default function GeneratePage() {
         // Optimistic update
         mutateCitations([...citations, restoredCitation], false);
         mutateDeletedCitations(deletedCitations.filter((c: any) => c.id !== id), false);
-        toast.success(language === 'TH' ? 'กู้คืนรายการบรรณานุกรมสำเร็จ' : 'Citation restored successfully');
+        toast.success(t.toasts.restored);
       }
     } catch (e) { console.error(e) }
   };
@@ -823,7 +824,7 @@ export default function GeneratePage() {
       const res = await fetch(`/api/citations/${id}`, { method: 'DELETE' });
       if (res.ok) {
         mutateDeletedCitations();
-        toast.warning(language === 'TH' ? 'ลบรายการถาวรแล้ว' : 'Citation permanently deleted');
+        toast.warning(t.toasts.permanentlyDeleted);
       }
     } catch (e) { console.error(e) }
   };
@@ -879,7 +880,7 @@ export default function GeneratePage() {
     if (processedCitations.length === 0) return;
     
     // Header for "References"
-    const headerPlain = language === 'TH' ? 'รายการอ้างอิง' : 'References';
+    const headerPlain = t.viewBibliography;
     const headerHtml = `<h2 style="font-family: serif; font-size: 1.5em; text-align: center; margin-bottom: 1em;">${headerPlain}</h2>`;
     
     // Combine all citations
@@ -893,7 +894,7 @@ export default function GeneratePage() {
     if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      toast.success(language === 'TH' ? 'คัดลอกบรรณานุกรมทั้งหมดแล้ว (พร้อมรูปแบบ)' : 'Copied all bibliographies (with formatting)');
+      toast.success(t.toasts.added); // Assuming added success message or create a generic one
     }
   };
 
@@ -905,7 +906,7 @@ export default function GeneratePage() {
     if (success) {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
-      toast.success(language === 'TH' ? 'คัดลอกบรรณานุกรมแล้ว (พร้อมรูปแบบ)' : 'Copied bibliography (with formatting)');
+      toast.success(t.toasts.copiedBib);
     }
   };
 
@@ -915,25 +916,25 @@ export default function GeneratePage() {
     if (success) {
       setInTextCopiedId(id);
       setTimeout(() => setInTextCopiedId(null), 2000);
-      toast.success(language === 'TH' ? 'คัดลอก In-text citation แล้ว' : 'Copied in-text citation');
+      toast.success(t.toasts.copiedInText);
     }
   };
 
   const styles = ["APA - 7th Edition", "MLA - 9th Edition", "Harvard", "Chicago", "AMA", "CSE"];
   
   const views = [
-    { id: "Plain list", icon: <List className="h-4 w-4" />, label: "Plain list" },
-    { id: "Bibliography", icon: <FileText className="h-4 w-4" />, label: "Bibliography" },
-    { id: "Bibliography and in-text citations", icon: <LayoutList className="h-4 w-4" />, label: "Bibliography and in-text citations" },
+    { id: "Plain list", icon: <List className="h-4 w-4" />, label: t.plainList },
+    { id: "Bibliography", icon: <FileText className="h-4 w-4" />, label: t.viewBibliography },
+    { id: "Bibliography and in-text citations", icon: <LayoutList className="h-4 w-4" />, label: t.bibliographyAndInText },
   ];
 
   const handleExport = async (format: string) => {
     if (!session) {
       toast(
-        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+        translations[language].usage.signInPrompt,
         {
           action: {
-            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+            label: translations[language].usage.signUp,
             onClick: () => window.location.href = '/signup'
           },
           duration: 5000
@@ -943,7 +944,7 @@ export default function GeneratePage() {
     }
 
     if (processedCitations.length === 0) {
-      toast.error(language === 'TH' ? 'ไม่มีรายการให้ออก' : 'No citations to export');
+      toast.error(t.toasts.noCitationsToExport);
       return;
     }
 
@@ -957,10 +958,10 @@ export default function GeneratePage() {
       } else if (format.includes('RIS')) {
         exportToRIS(processedCitations);
       }
-      toast.success(language === 'TH' ? `ออกไฟล์ ${format} สำเร็จ` : `Exported ${format} successfully`);
+      toast.success(t.toasts.exportSuccess);
     } catch (err) {
       console.error(err);
-      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาดในการออกไฟล์' : 'Error exporting file');
+      toast.error(t.toasts.exportError);
     }
   };
 
@@ -1068,12 +1069,12 @@ export default function GeneratePage() {
       const createDefault = async () => {
         setIsCreatingProject(true);
         try {
-          await fetch('/api/projects', {
+              await fetch('/api/projects', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              name: "My project",
-              description: language === 'TH' ? 'โปรเจกต์บรรณานุกรมของฉัน' : 'My personal bibliography project',
+              name: t.myProjects,
+              description: t.defaultProjectDescription,
               color: "#407bc4",
               icon: "BookOpen"
             })
@@ -1081,7 +1082,7 @@ export default function GeneratePage() {
           mutateProjects();
         } catch (e) {
           console.error(e);
-          toast.error(language === 'TH' ? 'ผิดพลาดในการเตรียมโปรเจกต์เริ่มต้น' : 'Failed to initialize default project');
+          toast.error(t.toasts.defaultProjectError);
         } finally {
           setIsCreatingProject(false);
         }
@@ -1098,10 +1099,10 @@ export default function GeneratePage() {
     if (!session) {
       if (localProjects.length >= 1) {
         toast.error(
-          language === 'TH' ? 'คุณถึงขีดจำกัดสำหรับ Guest แล้ว (1 โปรเจกต์)' : 'Guest limit reached (1 project).',
+          t.toasts.guestLimit,
           {
             action: {
-              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+              label: translations[language].usage.signUp,
               onClick: () => window.location.href = '/signup'
             },
             duration: 5000
@@ -1122,7 +1123,7 @@ export default function GeneratePage() {
       setActiveProjectId(newLocalProject.id);
       setIsCreateModalOpen(false);
       setNewProject({ name: "", description: "", color: "#407bc4", icon: "BookOpen" });
-      toast.success(language === 'TH' ? 'สร้างโปรเจกต์สำเร็จ (บันทึกในเครื่อง)' : 'Project created successfully (Stored locally)');
+      toast.success(t.toasts.added);
       return;
     }
 
@@ -1139,11 +1140,11 @@ export default function GeneratePage() {
         mutateProjects();
         setIsCreateModalOpen(false);
         setNewProject({ name: "", description: "", color: "#407bc4", icon: "BookOpen" });
-        toast.success(language === 'TH' ? 'สร้างโปรเจกต์สำเร็จ' : 'Project created successfully');
+        toast.success(t.toasts.added);
       }
     } catch (e) {
       console.error(e);
-      toast.error(language === 'TH' ? 'เกิดข้อผิดพลาด' : 'An error occurred');
+      toast.error(t.toasts.error);
     } finally {
       setIsCreatingProject(false);
     }
@@ -1162,10 +1163,7 @@ export default function GeneratePage() {
         }
         mutateProjects();
         mutateArchivedProjects();
-        toast.success(isArchived 
-          ? (language === 'TH' ? 'เก็บโปรเจกต์ลงคลังแล้ว' : 'Project archived')
-          : (language === 'TH' ? 'กู้คืนโปรเจกต์สำเร็จ' : 'Project restored')
-        );
+        toast.success(isArchived ? t.toasts.projectArchived : t.toasts.projectRestored);
       }
     } catch (e) { console.error(e) }
   };
@@ -1173,10 +1171,10 @@ export default function GeneratePage() {
   const handleDuplicateProject = async (id: number) => {
     if (!session) {
       toast(
-        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+        translations[language].usage.signInPrompt,
         {
           action: {
-            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+            label: translations[language].usage.signUp,
             onClick: () => window.location.href = '/signup'
           },
           duration: 5000
@@ -1188,7 +1186,7 @@ export default function GeneratePage() {
       const res = await fetch(`/api/projects/${id}/duplicate`, { method: 'POST' });
       if (res.ok) {
         mutateProjects();
-        toast.success(language === 'TH' ? 'ทำสำเนาโปรเจกต์สำเร็จ' : 'Project duplicated');
+        toast.success(t.toasts.projectDuplicated);
       }
     } catch (e) { console.error(e) }
   };
@@ -1216,7 +1214,7 @@ export default function GeneratePage() {
       saveGuestData(localCitations, updatedProjects);
       setIsEditProjectModalOpen(false);
       setEditingProject(null);
-      toast.success(language === 'TH' ? 'แก้ไขโปรเจกต์สำเร็จ' : 'Project updated');
+      toast.success(t.toasts.updated);
       return;
     }
 
@@ -1231,7 +1229,7 @@ export default function GeneratePage() {
         mutateArchivedProjects();
         setIsEditProjectModalOpen(false);
         setEditingProject(null);
-        toast.success(language === 'TH' ? 'แก้ไขโปรเจกต์สำเร็จ' : 'Project updated');
+        toast.success(t.toasts.updated);
       }
     } catch (e) { console.error(e) }
   };
@@ -1244,7 +1242,7 @@ export default function GeneratePage() {
       setLocalCitations(updatedCitations);
       saveGuestData(updatedCitations, updatedProjects);
       if (activeProjectId === id) setActiveProjectId(null);
-      toast.success(language === 'TH' ? 'ลบโปรเจกต์สำเร็จ' : 'Project deleted');
+      toast.success(t.toasts.deleted);
       return;
     }
 
@@ -1253,7 +1251,7 @@ export default function GeneratePage() {
       if (res.ok) {
         mutateProjects();
         mutateArchivedProjects();
-        toast.success(language === 'TH' ? 'ลบโปรเจกต์สำเร็จ' : 'Project deleted');
+        toast.success(t.toasts.deleted);
       }
     } catch (e) {
       console.error(e);
@@ -1317,7 +1315,7 @@ export default function GeneratePage() {
                 onClick={() => setIsCreateModalOpen(true)}
                 className="flex h-8 w-32 items-center justify-center gap-1.5 rounded-md bg-[#f58e58] text-xs font-medium text-white hover:bg-[#e67e43] active:scale-95 transition-all shadow-sm"
               >
-                <Plus className="h-3.5 w-3.5" /> Add new
+                <Plus className="h-3.5 w-3.5" /> {t.newProject}
               </button>
               
               <AnimatePresence>
@@ -1340,7 +1338,7 @@ export default function GeneratePage() {
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-[#407bc4]/10 dark:bg-[#407bc4]/20">
                   <BookOpen className="h-3 w-3 text-[#407bc4] dark:text-[#6ba1e6]" />
                 </div>
-                <span className="text-sm font-semibold">Project</span>
+                <span className="text-sm font-semibold">{translations[language].usage.projects}</span>
               </div>
               <ul className="flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-1">
                 {(isProjectsExpanded ? projects : projects.slice(0, 5)).map((project: any, idx: number) => (
@@ -1382,10 +1380,10 @@ export default function GeneratePage() {
                               className="absolute right-0 mt-1 w-44 rounded-2xl border border-zinc-200/50 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl z-50 py-2 px-1.5 overflow-hidden"
                             >
                               {[
-                                { id: 'edit', label: language === 'TH' ? 'Edit' : 'Edit', icon: <Pencil className="h-4 w-4" /> },
-                                { id: 'duplicate', label: language === 'TH' ? 'Duplicate' : 'Duplicate', icon: <Copy className="h-4 w-4" /> },
-                                { id: 'archive', label: language === 'TH' ? 'Archive' : 'Archive', icon: <Archive className="h-4 w-4" /> },
-                                { id: 'delete', label: language === 'TH' ? 'Delete' : 'Delete', icon: <Trash2 className="h-4 w-4" />, color: 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20' },
+                                { id: 'edit', label: t.form.title, icon: <Pencil className="h-4 w-4" /> },
+                                { id: 'duplicate', label: 'Duplicate', icon: <Copy className="h-4 w-4" /> },
+                                { id: 'archive', label: t.archive, icon: <Archive className="h-4 w-4" /> },
+                                { id: 'delete', label: t.deleteTitle, icon: <Trash2 className="h-4 w-4" />, color: 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20' },
                               ].map((option) => (
                                 <button
                                   key={option.id}
@@ -1395,10 +1393,10 @@ export default function GeneratePage() {
                                     if (option.id === 'archive') {
                                       if (!session) {
                                         toast(
-                                          language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                                          translations[language].usage.signInPrompt,
                                           {
                                             action: {
-                                              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                                              label: translations[language].usage.signUp,
                                               onClick: () => window.location.href = '/signup'
                                             },
                                             duration: 5000
@@ -1414,10 +1412,10 @@ export default function GeneratePage() {
                                     } else if (option.id === 'duplicate') {
                                       if (!session) {
                                         toast(
-                                          language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                                          translations[language].usage.signInPrompt,
                                           {
                                             action: {
-                                              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                                              label: translations[language].usage.signUp,
                                               onClick: () => window.location.href = '/signup'
                                             },
                                             duration: 5000
@@ -1454,8 +1452,8 @@ export default function GeneratePage() {
                 >
                   <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${isProjectsExpanded ? 'rotate-180' : ''}`} />
                   {isProjectsExpanded 
-                    ? (language === 'TH' ? 'แสดงน้อยลง' : 'Show less') 
-                    : (language === 'TH' ? 'แสดงเพิ่มเติม' : 'Show more')}
+                    ? t.showLess
+                    : t.showMore}
                 </button>
               )}
             </div>
@@ -1465,7 +1463,7 @@ export default function GeneratePage() {
                 <div className="flex h-5 w-5 items-center justify-center rounded bg-[#f58e58]/10 dark:bg-[#f58e58]/20">
                   <Triangle className="h-3 w-3 text-[#f58e58] dark:text-[#f58e58]" />
                 </div>
-                <span className="text-sm font-semibold text-zinc-500">Latest bibliography</span>
+                <span className="text-sm font-semibold text-zinc-500">{t.latestBibliography}</span>
               </div>
               <ul className="flex flex-col gap-2 border-l border-zinc-200 dark:border-zinc-800 ml-2.5 pl-4 pb-2">
                 {processedCitations.slice(0, 5).map((citation: any) => (
@@ -1482,10 +1480,10 @@ export default function GeneratePage() {
                   onClick={() => {
                     if (!session) {
                       toast(
-                        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                        translations[language].usage.signInPrompt,
                         {
                           action: {
-                            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                            label: translations[language].usage.signUp,
                             onClick: () => window.location.href = '/signup'
                           },
                           duration: 5000
@@ -1499,7 +1497,7 @@ export default function GeneratePage() {
                 >
                   <Archive className="h-3.5 w-3.5 shrink-0" />
                   <span className="ml-2 opacity-0 group-hover/archived:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                    {language === 'TH' ? 'คลังโปรเจกต์' : 'Archived'}
+                    {t.archive}
                   </span>
                 </div>
                 
@@ -1510,10 +1508,10 @@ export default function GeneratePage() {
                   onClick={() => {
                     if (!session) {
                       toast(
-                        language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                        translations[language].usage.signInPrompt,
                         {
                           action: {
-                            label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                            label: translations[language].usage.signUp,
                             onClick: () => window.location.href = '/signup'
                           },
                           duration: 5000
@@ -1526,7 +1524,7 @@ export default function GeneratePage() {
                   className="flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:bg-white dark:hover:bg-zinc-800 rounded-full px-2 py-1 group/deleted w-8 hover:w-24"
                 >
                   <Trash2 className="h-3.5 w-3.5 shrink-0 group-hover/deleted:text-red-500" />
-                  <span className="ml-2 opacity-0 group-hover/deleted:opacity-100 transition-opacity duration-200 whitespace-nowrap group-hover/deleted:text-red-500">Deleted</span>
+                  <span className="ml-2 opacity-0 group-hover/deleted:opacity-100 transition-opacity duration-200 whitespace-nowrap group-hover/deleted:text-red-500">{t.trash}</span>
                 </div>
               </div>
             </div>
@@ -1578,17 +1576,17 @@ export default function GeneratePage() {
                       className="flex h-9 items-center gap-2 rounded-xl bg-[#407bc4] px-4 text-xs font-bold text-white shadow-md hover:bg-[#32629e] transition-all active:scale-95 group"
                     >
                       <Plus className="h-4 w-4 transition-transform group-hover:rotate-90" />
-                      {language === 'TH' ? 'เพิ่ม รายการบรรณานุกรม' : 'New Citation'}
+                      {t.addCitation}
                     </button>
                   
                   <button 
                       onClick={() => {
                         if (!session) {
                           toast(
-                            language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                            translations[language].usage.signInPrompt,
                             {
                               action: {
-                                label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                                label: translations[language].usage.signUp,
                                 onClick: () => window.location.href = '/signup'
                               },
                               duration: 5000
@@ -1601,13 +1599,13 @@ export default function GeneratePage() {
                       className="flex h-9 items-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all active:scale-95"
                     >
                       <FileUp className="h-4 w-4" />
-                      {language === 'TH' ? 'นำเข้า' : 'Import'}
+                      {t.import}
                     </button>
                 </div>
                 
                 <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
                   <HelpCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Help</span>
+                  <span className="text-sm font-medium">{translations[language].nav.help}</span>
                 </button>
               </div>
 
@@ -1643,7 +1641,7 @@ export default function GeneratePage() {
                     // Slight delay to allow clicking on results
                     setTimeout(() => setIsMainSearchDropdownOpen(false), 200);
                   }}
-                  placeholder={language === 'TH' ? 'ค้นหาด้วย ISBN / DOI / URL / ชื่อเรื่อง ฯลฯ' : 'Search by ISBN / DOI / URL / Title etc.'}
+                  placeholder={t.searchPlaceholder}
                   className="w-full h-11 bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-12 pr-16 text-sm font-medium placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-[#407bc4]/5 dark:focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all shadow-sm"
                 />
                 <div className="absolute inset-y-0 right-4 flex items-center gap-2">
@@ -1664,7 +1662,7 @@ export default function GeneratePage() {
                       {isMainSearching ? (
                         <div className="p-8 flex flex-col items-center justify-center text-zinc-400">
                           <RotateCw className="h-6 w-6 animate-spin mb-2" />
-                          <span className="text-xs">{language === 'TH' ? 'กำลังค้นหา...' : 'Searching...'}</span>
+                          <span className="text-xs">{t.searching}</span>
                         </div>
                       ) : mainSearchResults.length > 0 ? (
                         <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
@@ -1697,7 +1695,7 @@ export default function GeneratePage() {
                                     <span className="text-xs text-zinc-500 line-clamp-1">
                                       {result.authors?.length > 0 
                                         ? result.authors.map((a: any) => `${a.firstName} ${a.lastName}`).join(', ') 
-                                        : (language === 'TH' ? 'ไม่ระบุผู้แต่ง' : 'Unknown Author')} 
+                                        : t.unknownAuthor} 
                                       {result.year ? ` (${result.year})` : ''} - {result.source}
                                     </span>
                                   </div>
@@ -1711,7 +1709,7 @@ export default function GeneratePage() {
                       ) : (
                         <div className="p-8 flex flex-col items-center justify-center text-zinc-400">
                           <Search className="h-6 w-6 mb-2 opacity-50" />
-                          <span className="text-xs">{language === 'TH' ? 'ไม่พบผลลัพธ์' : 'No results found'}</span>
+                          <span className="text-xs">{t.noResults}</span>
                         </div>
                       )}
                     </motion.div>
@@ -1737,7 +1735,7 @@ export default function GeneratePage() {
                     <div className="absolute top-full left-0 mt-1 w-64 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 overflow-hidden flex flex-col">
                       <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30">
                         <p className="text-[10px] text-zinc-500 leading-relaxed">
-                          Choose a style format your bibliography and citation. <Link href="#" className="text-[#407bc4] hover:underline">Learn More</Link>
+                          {t.styleHelp} <Link href="#" className="text-[#407bc4] hover:underline">{translations[language].nav.help}</Link>
                         </p>
                       </div>
                       <div className="py-1">
@@ -1756,7 +1754,7 @@ export default function GeneratePage() {
                       </div>
                       <div className="px-3 py-2 border-t border-zinc-100 dark:border-zinc-800">
                         <button className="flex items-center justify-between w-full text-[10px] font-bold text-[#407bc4] hover:underline group">
-                          <span>More Citation styles</span>
+                          <span>{t.moreCitationStyles}</span>
                           <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
                         </button>
                       </div>
@@ -1798,7 +1796,7 @@ export default function GeneratePage() {
                   className="flex h-8 items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800/80 px-3 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors border border-zinc-200 dark:border-zinc-800"
                 >
                   {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
-                  {copied ? "Copied!" : "Copy"}
+                  {copied ? t.copied : t.copyAll}
                 </button>
                 
                 <div className="relative">
@@ -1806,10 +1804,10 @@ export default function GeneratePage() {
                     onClick={() => {
                       if (!session) {
                         toast(
-                          language === 'TH' ? 'กรุณาเข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้' : 'Please sign in to use this feature',
+                          translations[language].usage.signInPrompt,
                           {
                             action: {
-                              label: language === 'TH' ? 'สมัครสมาชิก' : 'Sign Up',
+                              label: translations[language].usage.signUp,
                               onClick: () => window.location.href = '/signup'
                             },
                             duration: 5000
@@ -1821,7 +1819,7 @@ export default function GeneratePage() {
                     }}
                     className="flex h-8 items-center gap-1 rounded-md bg-[#407bc4] pl-3 pr-2 text-xs font-medium text-white hover:bg-[#32629e] transition-colors shadow-sm"
                   >
-                    <Download className="h-3 w-3 mr-1" /> Export <ChevronDown className={`h-3 w-3 ml-1 transition-transform ${isExportOpen ? 'rotate-180' : ''}`} />
+                    <Download className="h-3 w-3 mr-1" /> {t.export} <ChevronDown className={`h-3 w-3 ml-1 transition-transform ${isExportOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {isExportOpen && (
@@ -1861,7 +1859,7 @@ export default function GeneratePage() {
                     type="text"
                     value={searchReferencesQuery}
                     onChange={(e) => setSearchReferencesQuery(e.target.value)}
-                    placeholder={language === 'TH' ? 'ค้นหา รายการบรรณานุกรม' : 'Search references'}
+                    placeholder={t.searchReferences}
                     className="flex h-7 w-48 pl-8 pr-3 items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-700 dark:text-zinc-300 transition-colors uppercase tracking-tight focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4]"
                   />
                   {searchReferencesQuery && (
@@ -1892,14 +1890,14 @@ export default function GeneratePage() {
                       <div className="absolute top-full right-0 mt-2 w-64 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl z-50 flex flex-col translate-y-0 opacity-100 transition-all">
                         <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/30 rounded-t-xl">
                           <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                            <Settings2 className="h-3.5 w-3.5 text-[#407bc4]" /> Bibliography Settings
+                            <Settings2 className="h-3.5 w-3.5 text-[#407bc4]" /> {t.bibliographySettings}
                           </span>
                         </div>
                         
                         <div className="p-2 flex flex-col gap-1">
                           {[
-                            { id: 'hangingIndent', label: 'Hanging Indent', desc: 'Second line indentation' },
-                            { id: 'doubleSpaced', label: 'Double Spacing', desc: 'Increase vertical spacing' },
+                            { id: 'hangingIndent', label: t.hangingIndent, desc: t.hangingIndentDesc },
+                            { id: 'doubleSpaced', label: t.doubleSpacing, desc: t.doubleSpacingDesc },
                           ].map((item) => (
                             <button
                               key={item.id}
@@ -1923,9 +1921,9 @@ export default function GeneratePage() {
                           <div className="h-[1px] bg-zinc-100 dark:bg-zinc-800 my-1 mx-2" />
                           
                           {[
-                            { label: 'Font', value: settings.font, options: FONT_OPTIONS, handler: handleFontChange },
-                            { label: 'Text size', value: settings.textSize, options: TEXT_SIZE_OPTIONS, handler: handleTextSizeChange },
-                            { label: 'Sort by', value: settings.sortBy, options: SORT_OPTIONS, handler: handleSortSettings },
+                            { label: t.font, value: settings.font, options: FONT_OPTIONS, handler: handleFontChange },
+                            { label: t.textSize, value: settings.textSize, options: TEXT_SIZE_OPTIONS, handler: handleTextSizeChange },
+                            { label: t.sortBy, value: settings.sortBy, options: SORT_OPTIONS, handler: handleSortSettings },
                           ].map((option) => (
                             <div key={option.label} className="relative">
                               <button
@@ -1973,7 +1971,7 @@ export default function GeneratePage() {
                           <div className="flex items-start gap-2">
                             <Info className="h-3 w-3 text-[#407bc4] mt-0.5 shrink-0" />
                             <p className="text-[9px] text-zinc-500 leading-tight">
-                              These settings applied to the current bibliography view. Changes are saved automatically.
+                              {t.bibliographySettingsInfo}
                             </p>
                           </div>
                         </div>
@@ -1993,7 +1991,7 @@ export default function GeneratePage() {
                   fontSize: settings.textSize 
                 }}
               >
-                <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">References</h2>
+                <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">{t.references}</h2>
                 
                 {citations.length > 0 ? (
                   <div className="flex flex-col gap-1">
@@ -2062,7 +2060,7 @@ export default function GeneratePage() {
                         <div className="absolute bottom-2 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
                           <button 
                             onClick={() => handleEditCitation(citation)}
-                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title={language === 'TH' ? "แก้ไข" : "Edit"}
+                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4] transition-all shadow-sm" title={t.edit}
                           >
                             <Pencil className="h-3 w-3" />
                           </button>
@@ -2073,7 +2071,7 @@ export default function GeneratePage() {
                                 ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400"
                                 : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
                             }`} 
-                            title={language === 'TH' ? "คัดลอก In-text citation" : "Copy In-text citation"}
+                            title={t.copyInTextCitation}
                           >
                             {inTextCopiedId === citation.id ? <Check className="h-3 w-3" /> : <Quote className="h-3 w-3" />}
                           </button>
@@ -2084,13 +2082,13 @@ export default function GeneratePage() {
                                 ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400" 
                                 : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-[#407bc4] hover:border-[#407bc4]"
                             }`} 
-                            title="Copy"
+                            title={t.copyAll}
                           >
                             {copiedId === citation.id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                           </button>
                           <button 
                             onClick={() => deleteCitation(citation.id)}
-                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title="Delete"
+                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title={t.deleteTitle}
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
@@ -2104,9 +2102,9 @@ export default function GeneratePage() {
                     <div className="h-20 w-20 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800">
                       <Library className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
                     </div>
-                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">No citations yet</h3>
+                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">{t.noCitationsYet}</h3>
                     <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
-                      Search above or use the "Add new" button to start building your bibliography.
+                      {t.noCitationsYetDesc}
                     </p>
                   </div>
                 )}
@@ -2160,7 +2158,7 @@ export default function GeneratePage() {
                   <div className="h-8 w-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                     <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
                   </div>
-                  {language === 'TH' ? 'รายการที่เตรียมลบถาวร (Deleted Items)' : 'Deleted Items'}
+                  {t.trash}
                   <span className="ml-1 text-[11px] font-bold text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full">{deletedCitations?.length || 0}</span>
                 </h3>
                 <button 
@@ -2176,7 +2174,7 @@ export default function GeneratePage() {
                   <div className="flex flex-col items-center justify-center text-center py-12">
                     <Trash2 className="h-10 w-10 text-zinc-200 dark:text-zinc-800 mb-4" />
                     <p className="text-sm font-medium text-zinc-400">
-                      {language === 'TH' ? 'ไม่มีรายการบรรณานุกรมในถังขยะ' : 'No deleted citations found'}
+                      {t.noDeletedCitations}
                     </p>
                   </div>
                 ) : (
@@ -2196,13 +2194,13 @@ export default function GeneratePage() {
                           <div className="flex flex-col sm:flex-row gap-1.5 items-center shrink-0 mt-0.5">
                             <button 
                               onClick={() => restoreCitation(citation.id)}
-                              className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 hover:text-emerald-600 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'กู้คืนกลับไปยังตาราง' : 'Restore'}
+                              className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 hover:text-emerald-600 text-zinc-500 rounded-lg transition-all shadow-sm" title={t.toasts.restored}
                             >
                               <RotateCw className="h-3.5 w-3.5" />
                             </button>
                             <button 
                               onClick={() => permanentlyDeleteCitation(citation.id)}
-                              className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'ลบทิ้งถาวร 1 รายการ' : 'Delete Permanently'}
+                              className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={t.deleteTitle}
                             >
                               <X className="h-3.5 w-3.5" />
                             </button>
@@ -2216,7 +2214,7 @@ export default function GeneratePage() {
               
               <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/30 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
                 <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
-                  {language === 'TH' ? 'ระบบกู้คืนไฟล์' : 'Trash System'}
+                  {t.trashSystem}
                 </span>
                 {deletedCitations?.length > 0 && (
                   <button 
@@ -2226,7 +2224,7 @@ export default function GeneratePage() {
                           fetch(`/api/citations/${c.id}`, { method: 'DELETE' })
                         ));
                         mutateDeletedCitations();
-                        toast.success(language === 'TH' ? 'เคลียร์ถังขยะเรียบร้อย' : 'Trash emptied');
+                        toast.success(t.toasts.trashEmptied);
                       } catch (e) {
                          console.error("Failed to empty trash", e);
                          toast.error("Failed to empty trash");
@@ -2235,7 +2233,7 @@ export default function GeneratePage() {
                     className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-600 dark:text-red-400 font-bold transition-colors bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg active:scale-95"
                   >
                     <Trash2 className="h-3 w-3" />
-                    {language === 'TH' ? 'ล้างถังขยะทั้งหมด' : 'Empty Trash'}
+                    {t.emptyTrash}
                   </button>
                 )}
               </div>
@@ -2263,7 +2261,7 @@ export default function GeneratePage() {
                   <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
                     <Archive className="h-4 w-4 text-zinc-500" />
                   </div>
-                  {language === 'TH' ? 'คลังโปรเจกต์ (Archived Projects)' : 'Archived Projects'}
+                  {t.archive}
                   <span className="ml-1 text-[11px] font-bold text-zinc-500 bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded-full">{archivedProjects?.length || 0}</span>
                 </h3>
                 <button 
@@ -2279,7 +2277,7 @@ export default function GeneratePage() {
                   <div className="flex flex-col items-center justify-center text-center py-12">
                     <Archive className="h-10 w-10 text-zinc-200 dark:text-zinc-800 mb-4" />
                     <p className="text-sm font-medium text-zinc-400">
-                      {language === 'TH' ? 'ไม่มีโปรเจกต์ในคลัง' : 'No archived projects found'}
+                      {t.noArchivedProjects}
                     </p>
                   </div>
                 ) : (
@@ -2295,13 +2293,13 @@ export default function GeneratePage() {
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{project.name}</span>
-                            <span className="text-[10px] text-zinc-500">{project.description || (language === 'TH' ? 'ไม่มีรายละเอียด' : 'No description')}</span>
+                            <span className="text-[10px] text-zinc-500">{project.description || t.noDescription}</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => handleArchiveProject(project.id, false)}
-                            className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 hover:text-emerald-600 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'กู้คืน' : 'Restore'}
+                            className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 hover:text-emerald-600 text-zinc-500 rounded-lg transition-all shadow-sm" title={t.restore}
                           >
                             <RotateCw className="h-3.5 w-3.5" />
                           </button>
@@ -2311,7 +2309,7 @@ export default function GeneratePage() {
                               setDeleteConfirmName("");
                               setIsDeleteProjectModalOpen(true);
                             }}
-                            className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={language === 'TH' ? 'ลบถาวร' : 'Delete Permanently'}
+                            className="h-8 w-8 flex items-center justify-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:text-red-500 text-zinc-500 rounded-lg transition-all shadow-sm" title={t.deletePermanently}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -2345,7 +2343,7 @@ export default function GeneratePage() {
                   <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                     <Pencil className="h-4 w-4 text-blue-500" />
                   </div>
-                  {language === 'TH' ? 'แก้ไขโปรเจกต์' : 'Edit Project'}
+                  {editingProject ? t.edit : t.newProject}
                 </h3>
                 <button 
                   onClick={() => setIsEditProjectModalOpen(false)}
@@ -2358,26 +2356,26 @@ export default function GeneratePage() {
               <div className="p-6 flex flex-col gap-5">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                    {language === 'TH' ? 'ชื่อโปรเจกต์' : 'Project Name'}
+                    {translations[language].usage.projects}
                   </label>
                   <input 
                     type="text" 
                     value={newProject.name}
                     onChange={(e) => setNewProject({...newProject, name: e.target.value})}
-                    placeholder={language === 'TH' ? 'ระบุชื่อโปรเจกต์...' : 'Enter project name...'}
+                    placeholder={t.searchPlaceholder}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                    {language === 'TH' ? 'รายละเอียด' : 'Description'}
+                    {t.details}
                   </label>
                   <textarea 
                     rows={3}
                     value={newProject.description}
                     onChange={(e) => setNewProject({...newProject, description: e.target.value})}
-                    placeholder={language === 'TH' ? 'ระบุรายละเอียดคร่าวๆ...' : 'Optional description...'}
+                    placeholder={t.noDescription}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all resize-none"
                   />
                 </div>
@@ -2385,7 +2383,7 @@ export default function GeneratePage() {
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                      {language === 'TH' ? 'ธีมสี' : 'Theme Color'}
+                      {t.themeColor}
                     </label>
                     <div className="flex flex-wrap gap-2.5">
                       {['#407bc4', '#f58e58', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#facc15', '#71717a'].map((color) => (
@@ -2403,7 +2401,7 @@ export default function GeneratePage() {
 
                   <div className="flex flex-col gap-2">
                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1 flex justify-between">
-                      <span>{language === 'TH' ? 'ไอคอน' : 'Icon'}</span>
+                      <span>{t.icon}</span>
                     </label>
                     <div className="grid grid-cols-6 gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-700/50 max-h-32 overflow-y-auto custom-scrollbar">
                       {[
@@ -2450,13 +2448,13 @@ export default function GeneratePage() {
                   onClick={() => setIsEditProjectModalOpen(false)}
                   className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-zinc-700 transition-colors"
                 >
-                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                  {t.cancel}
                 </button>
                 <button 
                   onClick={handleUpdateProject}
                   className="px-6 py-2 rounded-xl bg-[#407bc4] text-white text-xs font-bold hover:bg-[#32629e] transition-all shadow-md active:scale-95"
                 >
-                  {language === 'TH' ? 'บันทึกการแก้ไข' : 'Save Changes'}
+                  {t.save}
                 </button>
               </div>
             </motion.div>
@@ -2489,7 +2487,7 @@ export default function GeneratePage() {
                   <div className="h-8 w-8 rounded-lg bg-[#f58e58]/10 flex items-center justify-center">
                     <FilePlus className="h-4 w-4 text-[#f58e58]" />
                   </div>
-                  {language === 'TH' ? 'สร้างโปรเจกต์ใหม่' : 'Create New Project'}
+                  {t.newProject}
                 </h3>
                 <button 
                   onClick={() => setIsCreateModalOpen(false)}
@@ -2503,13 +2501,13 @@ export default function GeneratePage() {
                 {/* Project Name */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                    {language === 'TH' ? 'ชื่อโปรเจกต์' : 'Project Name'}
+                    {translations[language].usage.projects}
                   </label>
                   <input 
                     type="text" 
                     value={newProject.name}
                     onChange={(e) => setNewProject({...newProject, name: e.target.value})}
-                    placeholder={language === 'TH' ? 'ระบุชื่อโปรเจกต์...' : 'Enter project name...'}
+                    placeholder={t.searchPlaceholder}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
                   />
                 </div>
@@ -2517,13 +2515,13 @@ export default function GeneratePage() {
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                    {language === 'TH' ? 'รายละเอียด' : 'Description'}
+                    {t.details}
                   </label>
                   <textarea 
                     rows={3}
                     value={newProject.description}
                     onChange={(e) => setNewProject({...newProject, description: e.target.value})}
-                    placeholder={language === 'TH' ? 'ระบุรายละเอียดคร่าวๆ...' : 'Optional description...'}
+                    placeholder={t.noDescription}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all resize-none"
                   />
                 </div>
@@ -2532,7 +2530,7 @@ export default function GeneratePage() {
                   {/* Color Selection */}
                   <div className="flex flex-col gap-2">
                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                      {language === 'TH' ? 'ธีมสี' : 'Theme Color'}
+                      {t.themeColor}
                     </label>
                     <div className="flex flex-wrap gap-2.5">
                       {['#407bc4', '#f58e58', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#facc15', '#71717a'].map((color) => (
@@ -2551,8 +2549,8 @@ export default function GeneratePage() {
                   {/* Icon Selection */}
                   <div className="flex flex-col gap-2">
                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1 flex justify-between">
-                      <span>{language === 'TH' ? 'ไอคอน' : 'Icon'}</span>
-                      <span className="text-[10px] lowercase opacity-60">Scroll for more</span>
+                      <span>{t.icon}</span>
+                      <span className="text-[10px] lowercase opacity-60">{t.scrollForMore}</span>
                     </label>
                     <div className="grid grid-cols-6 gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-700/50 max-h-32 overflow-y-auto custom-scrollbar">
                       {[
@@ -2599,14 +2597,14 @@ export default function GeneratePage() {
                   onClick={() => setIsCreateModalOpen(false)}
                   className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-zinc-700 transition-colors"
                 >
-                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                  {t.cancel}
                 </button>
                 <button 
                   onClick={handleCreateProject}
                   disabled={isCreatingProject || !newProject.name.trim()}
                   className="px-6 py-2 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] disabled:opacity-50 transition-all shadow-md active:scale-95 flex items-center gap-2"
                 >
-                  {isCreatingProject ? (language === 'TH' ? 'กำลังสร้าง...' : 'Creating...') : (language === 'TH' ? 'สร้างโปรเจกต์' : 'Create Project')}
+                  {isCreatingProject ? t.creating : t.newProject}
                 </button>
               </div>
             </motion.div>
@@ -2633,7 +2631,7 @@ export default function GeneratePage() {
                   <div className="h-8 w-8 rounded-lg bg-[#407bc4]/10 flex items-center justify-center">
                     <FileUp className="h-4 w-4 text-[#407bc4]" />
                   </div>
-                  {language === 'TH' ? 'นำเข้าบรรณานุกรม' : 'Import Bibliography'}
+                  {t.import}
                 </h3>
                 <button 
                   onClick={() => setIsImportModalOpen(false)}
@@ -2651,10 +2649,10 @@ export default function GeneratePage() {
                    </label>
                    <div className="group relative flex items-center justify-between gap-3 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 hover:border-[#407bc4]/50 transition-all cursor-pointer">
                      <span className="text-xs text-zinc-500 overflow-hidden truncate">
-                       {importRefFiles.ris || (language === 'TH' ? 'ยังไม่ได้เลือกไฟล์' : 'No file chosen')}
+                       {importRefFiles.ris || (t.noFileChosen)}
                      </span>
                      <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#407bc4] group-hover:text-white group-hover:border-transparent transition-all">
-                       {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
+                       {t.chooseFile}
                      </button>
                       <input 
                         type="file" accept=".ris" className="absolute inset-0 opacity-0 cursor-pointer" 
@@ -2676,10 +2674,10 @@ export default function GeneratePage() {
                    </label>
                    <div className="group relative flex items-center justify-between gap-3 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 hover:border-[#407bc4]/50 transition-all cursor-pointer">
                      <span className="text-xs text-zinc-500 overflow-hidden truncate">
-                       {importRefFiles.bib || (language === 'TH' ? 'ยังไม่ได้เลือกไฟล์' : 'No file chosen')}
+                       {importRefFiles.bib || (t.noFileChosen)}
                      </span>
                      <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#407bc4] group-hover:text-white group-hover:border-transparent transition-all">
-                       {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
+                       {t.chooseFile}
                      </button>
                       <input 
                         type="file" accept=".bib,.bibtex" className="absolute inset-0 opacity-0 cursor-pointer" 
@@ -2697,14 +2695,14 @@ export default function GeneratePage() {
                 {/* Load backup */}
                 <div className="flex flex-col gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
                    <label className="text-[11px] font-bold text-[#f58e58] uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                     <RotateCw className="h-3 w-3" /> Load Backup
+                     <RotateCw className="h-3 w-3" /> {t.loadBackup}
                    </label>
                    <div className="group relative flex items-center justify-between gap-3 p-3 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/40 hover:border-[#f58e58]/50 transition-all cursor-pointer">
                      <span className="text-xs text-zinc-500 overflow-hidden truncate">
-                       {importRefFiles.backup || (language === 'TH' ? 'ยังไม่ได้เลือกไฟล์' : 'No file chosen')}
+                       {importRefFiles.backup || (t.noFileChosen)}
                      </span>
                      <button className="h-7 px-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 rounded-lg group-hover:bg-[#f58e58] group-hover:text-white group-hover:border-transparent transition-all">
-                       {language === 'TH' ? 'เลือกไฟล์' : 'Choose file'}
+                       {t.chooseFile}
                      </button>
                      <input 
                        type="file" className="absolute inset-0 opacity-0 cursor-pointer" 
@@ -2719,13 +2717,13 @@ export default function GeneratePage() {
                   onClick={() => setIsImportModalOpen(false)}
                   className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-zinc-700 transition-colors"
                 >
-                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                  {t.cancel}
                 </button>
                  <button 
                    onClick={handleImport}
                    className="px-8 py-2.5 rounded-xl bg-[#f58e58] text-white text-xs font-bold hover:bg-[#e67e43] transition-all shadow-md active:scale-95"
                  >
-                   {language === 'TH' ? 'นำเข้าข้อมูล' : 'Import'}
+                   {t.import}
                  </button>
               </div>
             </motion.div>
@@ -2753,18 +2751,16 @@ export default function GeneratePage() {
                     {citationStep === 0 ? <Plus className="h-5 w-5 text-[#407bc4]" /> : <BookOpen className="h-5 w-5 text-[#407bc4]" />}
                   </div>
                   {citationStep === 0 
-                    ? (language === 'TH' ? 'เลือกประเภททรัพยากร' : 'Select Resource Type')
+                    ? t.selectResourceType
                     : citationStep === 2 
-                        ? (language === 'TH' ? 'ทรัพยากรเพิ่มเติม' : 'More Resources')
+                        ? t.moreResources
                         : (
                           <button 
                             onClick={() => setCitationStep(0)}
                             className="flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 px-2 py-1 -ml-2 rounded-lg transition-all text-left"
                           >
                             <span className="font-bold">
-                              {language === 'TH' 
-                                ? `กรอกข้อมูล: ${selectedType ? resourceLabels[selectedType]?.TH : 'บรรณานุกรม'}` 
-                                : `Cite manually: ${selectedType ? resourceLabels[selectedType]?.EN : 'Citation'}`}
+                              {t.citeManually} {selectedType ? (resourceLabels[selectedType] as any)[language] : t.references}
                             </span>
                             <ChevronDown className="h-4 w-4 text-zinc-400 group-hover:text-[#407bc4]" />
                           </button>
@@ -2790,12 +2786,12 @@ export default function GeneratePage() {
                     >
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {[
-                          { id: 'book', icon: <Book className="h-6 w-6" />, label: { TH: 'หนังสือ', EN: 'Book' }, color: '#407bc4' },
-                          { id: 'article', icon: <FileText className="h-6 w-6" />, label: { TH: 'วารสาร', EN: 'Journal' }, color: '#10b981' },
-                          { id: 'website', icon: <Globe className="h-6 w-6" />, label: { TH: 'เว็บไซต์', EN: 'Website' }, color: '#f59e0b' },
-                          { id: 'report', icon: <Library className="h-6 w-6" />, label: { TH: 'รายงาน', EN: 'Report' }, color: '#ef4444' },
-                          { id: 'news', icon: <Newspaper className="h-6 w-6" />, label: { TH: 'ข่าวสาร', EN: 'News' }, color: '#8b5cf6' },
-                          { id: 'more', icon: <Plus className="h-6 w-6" />, label: { TH: 'อื่นๆ', EN: 'More' }, color: '#f58e58' },
+                          { id: 'book', icon: <Book className="h-6 w-6" />, label: { TH: 'หนังสือ', EN: 'Book', ZH: '书籍' }, color: '#407bc4' },
+                          { id: 'article', icon: <FileText className="h-6 w-6" />, label: { TH: 'วารสาร', EN: 'Journal', ZH: '期刊' }, color: '#10b981' },
+                          { id: 'website', icon: <Globe className="h-6 w-6" />, label: { TH: 'เว็บไซต์', EN: 'Website', ZH: '网站' }, color: '#f59e0b' },
+                          { id: 'report', icon: <Library className="h-6 w-6" />, label: { TH: 'รายงาน', EN: 'Report', ZH: '报告' }, color: '#ef4444' },
+                          { id: 'news', icon: <Newspaper className="h-6 w-6" />, label: { TH: 'ข่าวสาร', EN: 'News', ZH: '新闻' }, color: '#8b5cf6' },
+                          { id: 'more', icon: <Plus className="h-6 w-6" />, label: { TH: 'อื่นๆ', EN: 'More', ZH: '更多' }, color: '#f58e58' },
                         ].map((type) => (
                           <button 
                             key={type.id}
@@ -2817,7 +2813,7 @@ export default function GeneratePage() {
                               {type.icon}
                             </div>
                             <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100">
-                              {language === 'TH' ? type.label.TH : type.label.EN}
+                              {(type.label as any)[language] || type.label.EN}
                             </span>
                           </button>
                         ))}
@@ -2840,7 +2836,7 @@ export default function GeneratePage() {
                             type="text"
                             value={resourceSearch}
                             onChange={(e) => setResourceSearch(e.target.value)}
-                            placeholder={language === 'TH' ? 'ค้นหาทรัพยากร...' : 'Search resources...'}
+                            placeholder={t.searchReferences}
                             className="w-full pl-10 pr-10 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/10 focus:border-[#407bc4] transition-all"
                           />
                           {resourceSearch && (
@@ -2920,7 +2916,7 @@ export default function GeneratePage() {
                       ].filter(i => i.label.toLowerCase().includes(resourceSearch.toLowerCase())).length === 0) && (
                         <div className="flex flex-col items-center justify-center py-12 text-zinc-400">
                           <Search className="h-8 w-8 mb-3 opacity-20" />
-                          <p className="text-xs">{language === 'TH' ? 'ไม่พบทรัพยากรที่ค้นหา' : 'No resources found'}</p>
+                          <p className="text-xs">{t.no_resources_found}</p>
                         </div>
                       )}
                     </motion.div>
@@ -2938,7 +2934,7 @@ export default function GeneratePage() {
                           <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-2">
                               <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                                {language === 'TH' ? 'รายการผู้แต่ง' : 'Authors'}
+                                {t.authors_list}
                               </label>
                             </div>
 
@@ -2948,11 +2944,11 @@ export default function GeneratePage() {
                                   {/* Author Header with Condition */}
                                   <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800/50">
                                     <span className="text-[10px] font-bold text-[#407bc4] uppercase tracking-widest">
-                                      {language === 'TH' ? `ผู้แต่งคนที่ ${index + 1}` : `Author ${index + 1}`}
+                                      {t.authorIndex} {index + 1}
                                     </span>
                                     <div className="flex items-center gap-2">
                                       <label className="text-[9px] font-bold text-zinc-400 uppercase">
-                                        {language === 'TH' ? 'เงื่อนไข' : 'Condition'}
+                                        {t.resourceCondition}
                                       </label>
                                       <select 
                                         value={author.condition || 'general'}
@@ -2961,16 +2957,16 @@ export default function GeneratePage() {
                                           updated[index].condition = e.target.value;
                                           setNewCitationData({...newCitationData, authors: updated});
                                         }}
-                                        className="text-[10px] font-bold text-white bg-[#407bc4] px-2 py-1 rounded-lg border-none focus:ring-0 cursor-pointer hover:bg-[#32629e] transition-colors shadow-sm"
+                                        className="text-[10px] font-bold text-white bg-[#407bc4] px-2 py-1 rounded-lg border-none focus:ring-0 cursor:pointer hover:bg-[#32629e] transition-colors shadow-sm"
                                       >
-                                        <option value="general">{language === 'TH' ? 'ทั่วไป' : 'General'}</option>
-                                        <option value="none">{language === 'TH' ? 'ไม่ปรากฏชื่อ' : 'No author'}</option>
-                                        <option value="pseudonym">{language === 'TH' ? 'นามแฝง' : 'Pseudonym'}</option>
-                                        <option value="royal">{language === 'TH' ? 'ราชสกุล / ฐานันดร' : 'Royal family'}</option>
-                                        <option value="title">{language === 'TH' ? 'บรรดาศักดิ์' : 'Titled author'}</option>
-                                        <option value="monk">{language === 'TH' ? 'พระสงฆ์' : 'Buddhist Monk'}</option>
-                                        <option value="editor">{language === 'TH' ? 'บรรณาธิการ' : 'Editor'}</option>
-                                        <option value="org">{language === 'TH' ? 'หน่วยงาน / สถาบัน' : 'Organization'}</option>
+                                         <option value="general">{t.author_condition_general}</option>
+                                         <option value="none">{t.author_condition_no_author}</option>
+                                         <option value="pseudonym">{t.author_condition_pseudonym}</option>
+                                         <option value="royal">{t.author_condition_royal_family}</option>
+                                         <option value="title">{t.author_condition_titled_author}</option>
+                                         <option value="monk">{t.author_condition_buddhist_monk}</option>
+                                         <option value="editor">{t.author_condition_editor}</option>
+                                         <option value="org">{t.author_condition_organization}</option>
                                       </select>
                                     </div>
                                   </div>
@@ -2981,7 +2977,7 @@ export default function GeneratePage() {
                                       {(author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk') && (
                                         <div className="sm:col-span-3 flex flex-col gap-1.5">
                                           <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                            {author.condition === 'monk' ? (language === 'TH' ? 'สมณศักดิ์' : 'Ecclesiastical Title') : (language === 'TH' ? 'คำนำหน้า / ฐานันดร' : 'Prefix / Title')}
+                                             {author.condition === 'monk' ? t.ecclesiastical_title : t.prefix_title}
                                           </label>
                                           <input 
                                             type="text" 
@@ -2999,8 +2995,8 @@ export default function GeneratePage() {
 
                                       <div className={`${author.condition === 'org' ? '' : (author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk' ? 'sm:col-span-3' : 'sm:col-span-4')} flex flex-col gap-1.5`}>
                                         <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                          {author.condition === 'org' ? (language === 'TH' ? 'ชื่อหน่วยงาน' : 'Organization Name') : (language === 'TH' ? 'ชื่อ' : 'First Name')}
-                                        </label>
+                                           {author.condition === 'org' ? t.organization_name : t.first_name}
+                                         </label>
                                         <input 
                                           type="text" 
                                           value={author.firstName}
@@ -3018,8 +3014,8 @@ export default function GeneratePage() {
                                         <>
                                           <div className={`${author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk' ? 'sm:col-span-3' : 'sm:col-span-4'} flex flex-col gap-1.5`}>
                                             <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                              {language === 'TH' ? 'ชื่อกลาง' : 'Middle Name'}
-                                            </label>
+                                               {t.middle_name}
+                                             </label>
                                             <input 
                                               type="text" 
                                               value={author.middleName}
@@ -3034,7 +3030,7 @@ export default function GeneratePage() {
                                           </div>
                                           <div className={`${author.condition === 'royal' || author.condition === 'title' || author.condition === 'monk' ? 'sm:col-span-3' : 'sm:col-span-4'} flex flex-col gap-1.5`}>
                                             <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight ml-0.5">
-                                              {language === 'TH' ? 'นามสกุล' : 'Last Name'}
+                                              {t.last_name}
                                             </label>
                                             <input 
                                               type="text" 
@@ -3056,7 +3052,7 @@ export default function GeneratePage() {
                                   {author.condition === 'none' && (
                                     <div className="flex items-center justify-center py-4 bg-zinc-100 dark:bg-zinc-900/50 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800">
                                       <p className="text-[10px] font-bold text-zinc-400 italic">
-                                        {language === 'TH' ? 'ระบุว่าไม่ทราบชื่อผู้แต่ง' : 'Marked as unknown author'}
+                                        {t.marked_as_unknown}
                                       </p>
                                     </div>
                                   )}
@@ -3091,7 +3087,7 @@ export default function GeneratePage() {
                             <div className="grid grid-cols-2 gap-6">
                             <div className="flex flex-col gap-2">
                               <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                                {language === 'TH' ? 'ปีที่พิมพ์' : 'Year'}
+                                {t.publication_year}
                               </label>
                               <input 
                                 type="text" 
@@ -3103,13 +3099,13 @@ export default function GeneratePage() {
                             </div>
                             <div className="flex flex-col gap-2">
                               <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                                {language === 'TH' ? 'แหล่งที่มา' : 'Source'}
+                                {t.source}
                               </label>
                               <input 
                                 type="text" 
                                 value={newCitationData.source}
                                 onChange={(e) => setNewCitationData({...newCitationData, source: e.target.value})}
-                                placeholder={language === 'TH' ? 'ชื่อวารสาร / สำนักพิมพ์...' : 'Journal / Publisher...'}
+                                placeholder={t.sourcePlaceholder}
                                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
                               />
                             </div>
@@ -3117,13 +3113,13 @@ export default function GeneratePage() {
 
                           <div className="flex flex-col gap-2">
                             <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                              {language === 'TH' ? 'ชื่อเรื่อง' : 'Title'}
+                              {t.form.title}
                             </label>
                             <input 
                               type="text" 
                               value={newCitationData.title}
                               onChange={(e) => setNewCitationData({...newCitationData, title: e.target.value})}
-                              placeholder={language === 'TH' ? 'ชื่อบทความหรือหนังสือ...' : 'Article or Book title...'}
+                              placeholder={t.titlePlaceholder}
                               className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
                             />
                           </div>
@@ -3147,7 +3143,7 @@ export default function GeneratePage() {
                       <div className="w-full md:w-[380px] bg-zinc-50/50 dark:bg-zinc-800/30 p-8 flex flex-col gap-6">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                            <Eye className="h-3.5 w-3.5" /> {language === 'TH' ? 'พรีวิว' : 'Live Preview'}
+                            <Eye className="h-3.5 w-3.5" /> {t.livePreview}
                           </span>
                           <div className="relative">
                             <button 
@@ -3182,7 +3178,7 @@ export default function GeneratePage() {
                         {/* Bibliography Preview */}
                         <div className="flex flex-col gap-2.5">
                           <div className="flex items-center justify-between ml-1">
-                            <span className="text-[10px] font-bold text-zinc-400">{language === 'TH' ? 'บรรณานุกรม' : 'Bibliography'}</span>
+                            <span className="text-[10px] font-bold text-zinc-400">{t.references}</span>
                             <button 
                               onClick={() => {
                                 setCopiedBib(true);
@@ -3225,7 +3221,7 @@ export default function GeneratePage() {
                         {/* In-text Preview */}
                         <div className="flex flex-col gap-2.5">
                           <div className="flex items-center justify-between ml-1">
-                            <span className="text-[10px] font-bold text-zinc-400">{language === 'TH' ? 'การอ้างอิงในเนื้อหา' : 'In-text citation'}</span>
+                            <span className="text-[10px] font-bold text-zinc-400">{t.viewInText}</span>
                             <button 
                               onClick={() => {
                                 setCopiedInText(true);
@@ -3264,7 +3260,7 @@ export default function GeneratePage() {
                     }}
                     className="mr-auto flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#407bc4] hover:bg-[#407bc4]/5 rounded-xl transition-all"
                   >
-                    <ArrowLeft className="h-4 w-4" /> {language === 'TH' ? 'ย้อนกลับ' : 'Back'}
+                    <ArrowLeft className="h-4 w-4" /> {t.back}
                   </button>
                 )}
                 
@@ -3272,7 +3268,7 @@ export default function GeneratePage() {
                   onClick={() => setIsAddCitationModalOpen(false)}
                   className="px-5 py-2.5 text-sm font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
                 >
-                  {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                  {t.cancel}
                 </button>
                 
                 {citationStep === 1 && (
@@ -3280,7 +3276,7 @@ export default function GeneratePage() {
                     onClick={handleSaveManualCitation}
                     className="px-8 py-2.5 rounded-xl bg-[#407bc4] text-white text-sm font-bold hover:bg-[#32629e] transition-all shadow-lg active:scale-95"
                   >
-                    {language === 'TH' ? 'บันทึกรายการ' : 'Save Citation'}
+                    {t.form.submit}
                   </button>
                 )}
               </div>
@@ -3312,10 +3308,10 @@ export default function GeneratePage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                      {language === 'TH' ? 'ยืนยันการลบโปรเจกต์' : 'Confirm Project Deletion'}
+                      {t.confirmDeletion}
                     </h3>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                      {language === 'TH' ? 'การกระทำนี้ไม่สามารถย้อนกลับได้' : 'This action cannot be undone.'}
+                      {t.deleteWarning}
                     </p>
                   </div>
                 </div>
@@ -3330,11 +3326,7 @@ export default function GeneratePage() {
 
                 <div className="space-y-3 mb-8">
                   <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider ml-1">
-                    {language === 'TH' ? (
-                      <>พิมพ์ชื่อโปรเจกต์ <span className="text-zinc-900 dark:text-zinc-50 font-black italic">"{projectToDelete?.name}"</span> เพื่อยืนยัน</>
-                    ) : (
-                      <>Type <span className="text-zinc-900 dark:text-zinc-50 font-black italic">"{projectToDelete?.name}"</span> to confirm</>
-                    )}
+                    {t.deleteConfirmPrefix} <span className="text-zinc-900 dark:text-zinc-50 font-black italic">"{projectToDelete?.name}"</span> {t.deleteConfirmSuffix}
                   </label>
                   <input 
                     type="text"
@@ -3350,7 +3342,7 @@ export default function GeneratePage() {
                     onClick={() => setIsDeleteProjectModalOpen(false)}
                     className="flex-1 h-12 rounded-xl text-sm font-bold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
                   >
-                    {language === 'TH' ? 'ยกเลิก' : 'Cancel'}
+                    {t.cancel}
                   </button>
                   <button 
                     disabled={deleteConfirmName !== projectToDelete?.name}
@@ -3360,7 +3352,7 @@ export default function GeneratePage() {
                     }}
                     className="flex-[2] h-12 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-500/20 active:scale-95"
                   >
-                    {language === 'TH' ? 'ลบโปรเจกต์' : 'Delete Project'}
+                    {t.deleteTitle}
                   </button>
                 </div>
               </div>

@@ -38,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: `${user.firstName} ${user.lastName}`,
           username: user.username,
+          emailVerified: user.emailVerified,
         };
       }
     })
@@ -49,17 +50,34 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.username = (user as any).username;
+        token.emailVerified = (user as any).emailVerified;
       }
+
+      // Handle session update on the client side
+      if (trigger === "update" && session?.emailVerified) {
+        token.emailVerified = session.emailVerified;
+      } else if (trigger === "update") {
+        // Fallback: re-fetch from database if needed
+        const updatedUser = await prisma.user.findUnique({
+          where: { id: Number(token.id) },
+          select: { emailVerified: true }
+        });
+        if (updatedUser) {
+          token.emailVerified = updatedUser.emailVerified;
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).username = token.username;
+        (session.user as any).emailVerified = token.emailVerified;
       }
       return session;
     }

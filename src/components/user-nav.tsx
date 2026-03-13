@@ -15,9 +15,13 @@ import {
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/components/language-context"
+import { translations } from "@/lib/translations"
 
 export function UserNav() {
   const { data: session, status } = useSession()
+  const { language } = useLanguage()
+  const t = translations[language].userNav
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -41,13 +45,13 @@ export function UserNav() {
         href="/login" 
         className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#407bc4] px-4 text-sm font-medium text-white transition-all hover:bg-[#32629e] active:scale-95 shadow-sm"
       >
-        Sign In <span aria-hidden="true">&rarr;</span>
+        {translations[language].nav.signIn} <span aria-hidden="true">&rarr;</span>
       </Link>
     )
   }
 
   const user = session.user
-  const initials = user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "UN"
+  const initials = user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : (t.guest === "Guest" ? "G" : "U")
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -60,7 +64,7 @@ export function UserNav() {
           {initials}
         </div>
         <span className="text-sm font-medium hidden md:block">
-          {user?.name || "User"}
+          {user?.name || t.guest}
         </span>
         <ChevronDown className={cn("size-4 text-muted-foreground transition-transform duration-200", isOpen && "rotate-180")} />
       </button>
@@ -90,24 +94,24 @@ export function UserNav() {
             <div className="p-1.5">
               <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group">
                 <Sparkles className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="font-medium">Upgrade to Pro</span>
+                <span className="font-medium">{t.upgrade}</span>
               </button>
               
               <div className="my-1.5 h-px bg-border/50 mx-1.5" />
               
               <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group">
                 <BadgeCheck className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="font-medium">Account</span>
+                <span className="font-medium">{t.account}</span>
               </button>
               
               <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group">
                 <CreditCard className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="font-medium">Billing</span>
+                <span className="font-medium">{t.billing}</span>
               </button>
               
               <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group">
                 <Bell className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="font-medium">Notifications</span>
+                <span className="font-medium">{t.notifications}</span>
               </button>
 
               <div className="my-1.5 h-px bg-border/50 mx-1.5" />
@@ -117,7 +121,7 @@ export function UserNav() {
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors group"
               >
                 <LogOut className="size-4 transition-colors" />
-                <span className="font-medium">Log out</span>
+                <span className="font-medium">{t.logout}</span>
               </button>
             </div>
           </motion.div>
