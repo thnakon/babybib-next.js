@@ -34,7 +34,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function GeneratePage() {
   const { language } = useLanguage();
-  const t = t;
+  const t = translations[language].generate;
   const { data: session } = useSession();
   const [style, setStyle] = React.useState("APA - 7th Edition");
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
@@ -1683,7 +1683,7 @@ export default function GeneratePage() {
                                       <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate max-w-[200px] group-hover:text-[#407bc4] transition-colors">{result.title}</span>
                                       <div className="flex items-center gap-1">
                                         <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border shrink-0 ${getResourceBadgeStyle ? getResourceBadgeStyle(result.type) : ''}`}>
-                                          {language === 'TH' && resourceLabels[result.type] ? resourceLabels[result.type].TH : resourceLabels[result.type]?.EN || result.type}
+                                          {(resourceLabels[result.type] as any)?.[language] || result.type}
                                         </span>
                                         {result.sourceApi && (
                                           <span className="text-[8px] font-bold uppercase tracking-tighter px-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border border-zinc-200 dark:border-zinc-700">
@@ -3318,9 +3318,7 @@ export default function GeneratePage() {
 
                 <div className="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-2xl p-4 mb-6">
                   <p className="text-sm text-red-700 dark:text-red-300 leading-relaxed">
-                    {language === 'TH' 
-                      ? 'ข้อมูลบรรณานุกรมทั้งหมดในโปรเจกต์นี้จะถูกลบออกถาวร' 
-                      : 'All citations within this project will be permanently deleted.'}
+                    {t.deleteProjectWarning}
                   </p>
                 </div>
 
