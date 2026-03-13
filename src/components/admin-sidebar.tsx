@@ -4,12 +4,15 @@ import * as React from "react"
 import {
   LayoutDashboard,
   Users,
-  Settings,
+  Database,
+  Bot,
   FileText,
-  PieChart,
+  Settings2,
+  BadgeCheck,
+  Bell,
+  CreditCard,
   LogOut,
-  ChevronRight,
-  Search,
+  ChevronsUpDown,
 } from "lucide-react"
 
 import {
@@ -20,113 +23,259 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
-  SidebarInset,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/animate-ui/components/radix/sidebar"
-import Image from "next/image"
-import { signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import NextImage from "next/image"
 
-export function AdminSidebar({ children }: { children: React.ReactNode }) {
+const data = {
+  navMain: [
+    {
+      title: "Overview",
+      url: "/admin/dashbord",
+      icon: LayoutDashboard,
+      isActive: true,
+      items: [
+        {
+          title: "Dashboard",
+          url: "/admin/dashbord",
+        },
+        {
+          title: "Analytics",
+          url: "/admin/analytics",
+        },
+      ],
+    },
+    {
+      title: "User Management",
+      url: "#",
+      icon: Users,
+      items: [
+        {
+          title: "All Users",
+          url: "/admin/users",
+        },
+        {
+          title: "Subscriptions",
+          url: "/admin/subscriptions",
+        },
+        {
+          title: "Support Tickets",
+          url: "/admin/support",
+        },
+      ],
+    },
+    {
+      title: "Master Data",
+      url: "#",
+      icon: Database,
+      items: [
+        {
+          title: "Citations",
+          url: "/admin/citations",
+        },
+        {
+          title: "User Projects",
+          url: "/admin/projects",
+        },
+        {
+          title: "Citation Styles",
+          url: "/admin/styles",
+        },
+      ],
+    },
+    {
+      title: "AI & Technical",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Extraction Models",
+          url: "/admin/models",
+        },
+        {
+          title: "API Configurations",
+          url: "/admin/api-keys",
+        },
+      ],
+    },
+  ],
+  system: [
+    {
+      name: "System Logs",
+      url: "/admin/logs",
+      icon: FileText,
+    },
+    {
+      name: "Security Settings",
+      url: "/admin/security",
+      icon: Settings2,
+    },
+  ],
+}
+
+export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession()
+  const user = session?.user
+
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon" variant="sidebar">
-        <SidebarHeader>
-          <div className="flex items-center gap-2.5 px-3 py-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-900 dark:bg-white shadow-lg overflow-hidden">
-              <Image 
-                src="/logo.png" 
-                alt="Babybib Logo" 
-                width={24} 
-                height={24} 
-                className="object-contain"
-              />
-            </div>
-            <div className="flex flex-col min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
-              <span className="font-bold text-sm tracking-tight text-zinc-900 dark:text-white truncate">
-                Babybib Admin
-              </span>
-              <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
-                v1.0.0
-              </span>
-            </div>
-          </div>
-        </SidebarHeader>
-        <SidebarContent>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild className="group-data-[state=collapsed]:p-0">
+              <a href="#">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent shrink-0">
+                  <NextImage 
+                    src="/logo.png" 
+                    alt="Babybib Logo" 
+                    width={24} 
+                    height={24} 
+                    className="object-contain"
+                  />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight group-data-[state=collapsed]:hidden">
+                  <span className="truncate font-semibold text-zinc-900 dark:text-white">Babybib Inc</span>
+                  <span className="truncate text-[10px] font-bold text-zinc-400 uppercase tracking-tight">Enterprise</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton id="dashboard-btn" tooltip="Dashboard" isActive>
-                <LayoutDashboard className="h-4 w-4" />
-                <span>Dashboard</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton id="users-btn" tooltip="Users">
-                <Users className="h-4 w-4" />
-                <span>Users</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton id="citations-btn" tooltip="Citations">
-                <FileText className="h-4 w-4" />
-                <span>Citations</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton id="analytics-btn" tooltip="Analytics">
-                <PieChart className="h-4 w-4" />
-                <span>Analytics</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {data.navMain.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton tooltip={item.title}>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
+                {item.items?.length ? (
+                  <SidebarMenuSub>
+                    {item.items.map((subItem) => (
+                      <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubButton asChild>
+                          <a href={subItem.url}>
+                            <span>{subItem.title}</span>
+                          </a>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                ) : null}
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter>
+        </SidebarGroup>
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <SidebarGroupLabel>System</SidebarGroupLabel>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton id="settings-btn" tooltip="Settings">
-                <Settings className="h-4 w-4" />
-                <span>Settings</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton 
-                id="logout-btn"
-                tooltip="Logout" 
-                onClick={() => signOut({ callbackUrl: "/login" })}
-                className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
+            {data.system.map((item) => (
+              <SidebarMenuItem key={item.name}>
+                <SidebarMenuButton asChild>
+                  <a href={item.url}>
+                    <item.icon />
+                    <span>{item.name}</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger 
+                render={
+                  <SidebarMenuButton
+                    size="lg"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  >
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage src={user?.image || ""} alt={user?.name || ""} />
+                      <AvatarFallback className="rounded-lg bg-zinc-100 dark:bg-zinc-800 text-[11px] font-black uppercase">
+                        {user?.name?.substring(0, 2) || "AD"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">{user?.name || "Admin"}</span>
+                      <span className="truncate text-xs text-zinc-500">{user?.email || "admin@babybib.com"}</span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4 text-zinc-400" />
+                  </SidebarMenuButton>
+                }
+              />
+              <DropdownMenuContent
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                side="bottom"
+                align="end"
+                sideOffset={4}
               >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4 transition-[width,height] ease-linear">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
-            <h1 className="text-sm font-medium">Dashboard Overview</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative hidden md:block">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className="h-8 w-64 rounded-lg bg-zinc-100 dark:bg-zinc-900 pl-8 pr-4 text-xs focus:outline-none focus:ring-1 focus:ring-[#407bc4]"
-              />
-            </div>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-[#407bc4] to-[#f58e58]" />
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-          {children}
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage src={user?.image || ""} alt={user?.name || ""} />
+                        <AvatarFallback className="rounded-lg bg-zinc-100 dark:bg-zinc-800 text-[11px] font-black uppercase">
+                          {user?.name?.substring(0, 2) || "AD"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-semibold">{user?.name || "Admin"}</span>
+                        <span className="truncate text-xs text-zinc-500">{user?.email || "admin@babybib.com"}</span>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator className="bg-zinc-100 dark:bg-zinc-800" />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer rounded-md">
+                    <BadgeCheck className="mr-2 size-4" />
+                    <span className="font-medium">Account</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer rounded-md">
+                    <CreditCard className="mr-2 size-4" />
+                    <span className="font-medium">Billing</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer rounded-md">
+                    <Bell className="mr-2 size-4" />
+                    <span className="font-medium">Notifications</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator className="bg-zinc-100 dark:bg-zinc-800" />
+                <DropdownMenuItem 
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer rounded-md"
+                >
+                  <LogOut className="mr-2 size-4" />
+                  <span className="font-bold">Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   )
 }
