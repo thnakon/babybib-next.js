@@ -15,6 +15,7 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
+  DropdownMenuGroup,
   DropdownMenuLabel, 
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
@@ -145,22 +146,24 @@ export function UserList({ initialUsers }: UserListProps) {
                         <MoreHorizontal className="h-4 w-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-[180px] rounded-xl">
-                        <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-zinc-400 font-black">User Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
-                          <Mail className="h-4 w-4" /> View Profile
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
-                          {user.role === "ADMIN" ? (
-                            <><UserX className="h-4 w-4 text-orange-500" /> Demote to User</>
-                          ) : (
-                            <><UserCheck className="h-4 w-4 text-emerald-500" /> Promote to Admin</>
-                          )}
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm text-red-500 focus:text-red-500">
-                          Delete User
-                        </DropdownMenuItem>
+                        <DropdownMenuGroup>
+                          <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-zinc-400 font-black">User Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
+                            <Mail className="h-4 w-4" /> View Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
+                            {user.role === "ADMIN" ? (
+                              <><UserX className="h-4 w-4 text-orange-500" /> Demote to User</>
+                            ) : (
+                              <><UserCheck className="h-4 w-4 text-emerald-500" /> Promote to Admin</>
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm text-red-500 focus:text-red-500">
+                            Delete User
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </td>
