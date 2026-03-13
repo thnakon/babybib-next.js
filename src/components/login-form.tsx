@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { signIn } from "next-auth/react"
+import { signIn, getSession } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -56,13 +56,22 @@ export function LoginForm({
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        // Fetch session to check role
-        const sessionRes = await fetch('/api/auth/session');
-        const session = await sessionRes.json();
-        
-        if (session?.user?.role === 'ADMIN') {
-          window.location.href = "/admin/dashbord";
-        } else {
+        // Give the session a moment to update and use getSession with no cache
+        const checkRole = async (retries = 3) => {
+          const session = await getSession();
+          if ((session?.user as any)?.role === 'ADMIN') {
+            window.location.href = "/admin/dashbord";
+            return true;
+          }
+          if (retries > 0) {
+            await new Promise(r => setTimeout(r, 500));
+            return checkRole(retries - 1);
+          }
+          return false;
+        };
+
+        const isAdmin = await checkRole();
+        if (!isAdmin) {
           window.location.href = "/generate";
         }
       }
