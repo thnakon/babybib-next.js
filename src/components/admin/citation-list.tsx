@@ -42,6 +42,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { toast } from "sonner"
 import { adminDeleteCitationAction, adminUpdateCitationAction } from "@/app/actions/admin"
 import {
@@ -166,52 +167,50 @@ export function CitationList({ initialCitations }: CitationListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 min-w-[300px]">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-1 items-center gap-2">
+          <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <Input
-              placeholder="Search citations, projects, owners, or content..."
-              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-10"
+              placeholder="Search citations..."
+              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-8 text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 h-10">
-              <span className="text-[10px] font-black uppercase text-zinc-400 whitespace-nowrap">Type:</span>
-              <Select value={typeFilter} onValueChange={(val) => setTypeFilter(val || "ALL")}>
-                <SelectTrigger id="type-filter" className="border-none shadow-none h-8 p-0 focus:ring-0 text-xs font-bold w-[100px]">
-                  <SelectValue placeholder="All Types" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
-                  <SelectItem value="ALL" className="text-xs font-bold">All Types</SelectItem>
-                  {types.map(type => (
-                    <SelectItem key={type} value={type} className="text-xs font-bold">{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Type:</span>
+            <Select value={typeFilter} onValueChange={(val) => setTypeFilter(val || "ALL")}>
+              <SelectTrigger id="type-filter" className="w-[130px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
+                <SelectValue placeholder="All Types" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
+                <SelectItem value="ALL" className="text-xs font-bold">All Types</SelectItem>
+                {types.map(type => (
+                  <SelectItem key={type} value={type} className="text-xs font-bold">{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 h-10">
-              <span className="text-[10px] font-black uppercase text-zinc-400 whitespace-nowrap">Project:</span>
-              <Select value={projectFilter} onValueChange={(val) => setProjectFilter(val || "ALL")}>
-                <SelectTrigger id="project-filter" className="border-none shadow-none h-8 p-0 focus:ring-0 text-xs font-bold w-[120px]">
-                  <SelectValue placeholder="All Projects" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
-                  <SelectItem value="ALL" className="text-xs font-bold">All Projects</SelectItem>
-                  {projects.map(project => (
-                    <SelectItem key={project} value={project} className="text-xs font-bold">{project}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Project:</span>
+            <Select value={projectFilter} onValueChange={(val) => setProjectFilter(val || "ALL")}>
+              <SelectTrigger id="project-filter" className="w-[150px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
+                <SelectValue placeholder="All Projects" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
+                <SelectItem value="ALL" className="text-xs font-bold">All Projects</SelectItem>
+                {projects.map(project => (
+                  <SelectItem key={project} value={project} className="text-xs font-bold">{project}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         
-        <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3 h-10 self-start md:self-auto shrink-0">
+        <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3">
           {filteredCitations.length} Citations
         </Badge>
       </div>
@@ -235,8 +234,9 @@ export function CitationList({ initialCitations }: CitationListProps) {
                     <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">
                       {citation.title || "Untitled"}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded w-fit">
-                      ID: {citation.id}
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded w-fit flex items-center gap-1">
+                      <Mail className="h-2.5 w-2.5" />
+                      {citation.project?.user?.email}
                     </span>
                   </div>
                 </TableCell>
@@ -331,44 +331,50 @@ export function CitationList({ initialCitations }: CitationListProps) {
       </div>
 
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-2xl overflow-hidden rounded-3xl border-none p-0">
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 text-white">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-white/20 backdrop-blur-md rounded-xl">
-                <Eye className="h-6 w-6" />
+        <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center border-4 border-white dark:border-zinc-800 shadow-sm">
+                <Eye className="h-7 w-7 text-blue-600 dark:text-blue-400" />
               </div>
-              <h2 className="text-2xl font-black tracking-tight">Citation Preview</h2>
+              <div className="flex flex-col text-left">
+                <DialogTitle className="text-xl font-bold">Citation Preview</DialogTitle>
+                <DialogDescription className="text-xs font-medium text-zinc-500">
+                  Detailed administrator overview of formatted bibliography
+                </DialogDescription>
+              </div>
             </div>
-            <p className="text-blue-100 text-sm font-medium">Verify formatted bibliography across different standards.</p>
-          </div>
-          <div className="p-8 space-y-6 bg-white dark:bg-zinc-950">
-            <div className="space-y-3">
-              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Standard APA 7th Edition</Label>
-              <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-sm italic font-medium leading-relaxed">
-                {formatFullBibliography(selectedCitation)}
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4 md:col-span-2">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Standard APA 7th Edition</Label>
+                <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50 text-sm italic font-medium leading-relaxed">
+                  {formatFullBibliography(selectedCitation)}
+                </div>
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-2">Project</Label>
-                <div className="flex items-center gap-2 text-sm font-bold">
-                  <Projector className="h-4 w-4 text-blue-500" />
-                  {selectedCitation?.project?.name}
-                </div>
+            <div className="p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block mb-2">Project Folder</Label>
+              <div className="flex items-center gap-2 text-sm font-bold">
+                <Projector className="h-4 w-4 text-blue-500" />
+                {selectedCitation?.project?.name}
               </div>
-              <div className="p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-2">Owner</Label>
-                <div className="flex items-center gap-2 text-sm font-bold text-zinc-600 dark:text-zinc-400">
-                  <Mail className="h-4 w-4 text-zinc-400" />
-                  {selectedCitation?.project?.user?.username}
-                </div>
+            </div>
+            <div className="p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block mb-2">Creator Account</Label>
+              <div className="flex items-center gap-2 text-sm font-bold text-zinc-600 dark:text-zinc-400">
+                <Mail className="h-4 w-4 text-zinc-400" />
+                {selectedCitation?.project?.user?.email}
               </div>
             </div>
           </div>
-          <DialogFooter className="p-6 pt-0 bg-white dark:bg-zinc-950">
+
+          <DialogFooter className="mt-8 gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-6">
             <Button 
-              className="w-full h-12 rounded-2xl font-black bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90 transition-opacity underline decoration-blue-500/50 underline-offset-4"
+              className="w-full h-11 rounded-xl font-black bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900"
               onClick={() => setIsPreviewOpen(false)}
             >
               Close Preview
@@ -378,56 +384,78 @@ export function CitationList({ initialCitations }: CitationListProps) {
       </Dialog>
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-md rounded-3xl overflow-hidden p-0 border-none">
-          <div className="bg-zinc-900 p-6 text-white">
-            <h2 className="text-xl font-black">Edit Citation Metadata</h2>
-            <p className="text-zinc-400 text-xs font-medium">Administrator Correction Mode</p>
-          </div>
-          <div className="p-6 space-y-4 bg-white dark:bg-zinc-950">
-            <div className="space-y-2">
-              <Label className="text-xs font-bold ml-1">Title</Label>
-              <Input 
-                value={editTitle} 
-                onChange={(e) => setEditTitle(e.target.value)} 
-                className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
-              />
+        <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center border-4 border-white dark:border-zinc-800 shadow-sm">
+                <FileText className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex flex-col text-left">
+                <DialogTitle className="text-xl font-bold">Edit Citation Details</DialogTitle>
+                <DialogDescription className="text-xs font-medium text-zinc-500">
+                  Review and manage detailed information for administrative corrections
+                </DialogDescription>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold ml-1">Source / Publisher / Journal</Label>
-              <Input 
-                value={editSource} 
-                onChange={(e) => setEditSource(e.target.value)} 
-                className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-xs font-bold ml-1">Year</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Title</Label>
                 <Input 
-                  value={editYear} 
-                  onChange={(e) => setEditYear(e.target.value)} 
-                  className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium text-center"
+                  value={editTitle} 
+                  onChange={(e) => setEditTitle(e.target.value)} 
+                  className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900/50 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
                 />
               </div>
-              <div className="space-y-2 flex flex-col justify-end">
-                <Badge variant="outline" className="h-11 rounded-xl justify-center font-black uppercase tracking-tight bg-blue-50 text-blue-600 border-none">
-                  TYPE: {selectedCitation?.type}
-                </Badge>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Source / Publisher</Label>
+                <Input 
+                  value={editSource} 
+                  onChange={(e) => setEditSource(e.target.value)} 
+                  className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900/50 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
+                />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold ml-1">Source URL</Label>
-              <Input 
-                value={editUrl} 
-                onChange={(e) => setEditUrl(e.target.value)} 
-                className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
-              />
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Year</Label>
+                  <Input 
+                    value={editYear} 
+                    onChange={(e) => setEditYear(e.target.value)} 
+                    className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900/50 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium text-center"
+                  />
+                </div>
+                <div className="space-y-2 flex flex-col justify-end">
+                  <Badge variant="outline" className="h-11 rounded-xl justify-center font-black uppercase tracking-tight bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-none">
+                    {selectedCitation?.type}
+                  </Badge>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Source URL</Label>
+                <Input 
+                  value={editUrl} 
+                  onChange={(e) => setEditUrl(e.target.value)} 
+                  className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900/50 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
+                />
+              </div>
             </div>
           </div>
-          <DialogFooter className="p-6 pt-0 bg-white dark:bg-zinc-950 gap-2">
-            <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold h-11 flex-1">Cancel</Button>
+
+          <DialogFooter className="mt-8 gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-6">
             <Button 
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black h-11 flex-1 shadow-lg shadow-blue-500/20"
+              variant="outline" 
+              onClick={() => setIsEditDialogOpen(false)}
+              className="rounded-xl font-bold h-11 flex-1"
+            >
+              Cancel
+            </Button>
+            <Button 
+              className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl font-black h-11 flex-1 px-8"
               onClick={handleUpdate}
               disabled={isPending}
             >
