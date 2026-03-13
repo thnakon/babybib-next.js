@@ -11,7 +11,8 @@ import {
   Loader2,
   AlertTriangle,
   Mail,
-  Projector
+  Projector,
+  Settings
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { 
@@ -31,11 +32,18 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu"
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import { adminDeleteCitationAction } from "@/app/actions/admin"
+import { adminDeleteCitationAction, adminUpdateCitationAction } from "@/app/actions/admin"
 import {
   Dialog,
   DialogContent,
@@ -44,32 +52,77 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { useSession } from "next-auth/react"
 
 interface CitationListProps {
   initialCitations: any[]
 }
 
 export function CitationList({ initialCitations }: CitationListProps) {
+  const { data: session } = useSession()
   const [citations, setCitations] = React.useState(initialCitations)
   const [searchTerm, setSearchTerm] = React.useState("")
+  const [typeFilter, setTypeFilter] = React.useState<string>("ALL")
+  const [projectFilter, setProjectFilter] = React.useState<string>("ALL")
   const [isPending, setIsPending] = React.useState(false)
+  
+  // Selection & Dialog states
   const [selectedCitation, setSelectedCitation] = React.useState<any>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false)
+  const [confirmAdminName, setConfirmAdminName] = React.useState("")
+
+  // Edit form state
+  const [editTitle, setEditTitle] = React.useState("")
+  const [editSource, setEditSource] = React.useState("")
+  const [editYear, setEditYear] = React.useState("")
+  const [editUrl, setEditUrl] = React.useState("")
+
+  const projects = React.useMemo(() => {
+    const uniqueProjects = Array.from(new Set(citations.map(c => c.project?.name))).filter(Boolean)
+    return uniqueProjects.sort()
+  }, [citations])
+
+  const types = React.useMemo(() => {
+    const uniqueTypes = Array.from(new Set(citations.map(c => c.type))).filter(Boolean)
+    return uniqueTypes.sort()
+  }, [citations])
 
   const filteredCitations = React.useMemo(() => {
     return citations.filter((c) => {
       const search = searchTerm.toLowerCase()
-      return (
+      const matchesSearch = (
         c.title?.toLowerCase().includes(search) ||
         c.project?.name?.toLowerCase().includes(search) ||
         c.project?.user?.username?.toLowerCase().includes(search) ||
-        c.project?.user?.email?.toLowerCase().includes(search)
+        c.project?.user?.email?.toLowerCase().includes(search) ||
+        formatFullBibliography(c).toLowerCase().includes(search)
       )
+      
+      const matchesType = typeFilter === "ALL" || c.type === typeFilter
+      const matchesProject = projectFilter === "ALL" || c.project?.name === projectFilter
+      
+      return matchesSearch && matchesType && matchesProject
     })
-  }, [citations, searchTerm])
+  }, [citations, searchTerm, typeFilter, projectFilter])
+
+  function formatFullBibliography(c: any) {
+    if (!c) return ""
+    const authors = c.authors ? JSON.parse(c.authors) : []
+    const authorStr = authors.map((a: any) => `${a.lastName}, ${a.firstName.charAt(0)}..`).join(", ")
+    const yearStr = c.year ? `(${c.year}).` : ""
+    const titleStr = c.title ? `${c.title}.` : ""
+    const sourceStr = c.source ? `${c.source}.` : ""
+    return `${authorStr} ${yearStr} ${titleStr} ${sourceStr}`.trim()
+  }
 
   const handleDelete = async () => {
-    if (!selectedCitation) return
+    if (!selectedCitation || confirmAdminName !== session?.user?.name) {
+      toast.error("Admin name mismatch")
+      return
+    }
 
     setIsPending(true)
     try {
@@ -78,6 +131,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
         setCitations(citations.filter((c) => c.id !== selectedCitation.id))
         toast.success("Citation deleted successfully")
         setIsDeleteDialogOpen(false)
+        setConfirmAdminName("")
       }
     } catch (error) {
       toast.error("Failed to delete citation")
@@ -86,19 +140,78 @@ export function CitationList({ initialCitations }: CitationListProps) {
     }
   }
 
+  const handleUpdate = async () => {
+    if (!selectedCitation) return
+
+    setIsPending(true)
+    try {
+      const data = {
+        title: editTitle,
+        source: editSource,
+        year: editYear,
+        url: editUrl
+      }
+      const result = await adminUpdateCitationAction(selectedCitation.id, data)
+      if (result.success) {
+        setCitations(citations.map(c => c.id === selectedCitation.id ? { ...c, ...data } : c))
+        toast.success("Citation updated successfully")
+        setIsEditDialogOpen(false)
+      }
+    } catch (error) {
+      toast.error("Failed to update citation")
+    } finally {
+      setIsPending(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-          <Input
-            placeholder="Search citations, projects, or users..."
-            className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[300px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <Input
+              placeholder="Search citations, projects, owners, or content..."
+              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 h-10">
+              <span className="text-[10px] font-black uppercase text-zinc-400 whitespace-nowrap">Type:</span>
+              <Select value={typeFilter} onValueChange={(val) => setTypeFilter(val || "ALL")}>
+                <SelectTrigger id="type-filter" className="border-none shadow-none h-8 p-0 focus:ring-0 text-xs font-bold w-[100px]">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
+                  <SelectItem value="ALL" className="text-xs font-bold">All Types</SelectItem>
+                  {types.map(type => (
+                    <SelectItem key={type} value={type} className="text-xs font-bold">{type}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 h-10">
+              <span className="text-[10px] font-black uppercase text-zinc-400 whitespace-nowrap">Project:</span>
+              <Select value={projectFilter} onValueChange={(val) => setProjectFilter(val || "ALL")}>
+                <SelectTrigger id="project-filter" className="border-none shadow-none h-8 p-0 focus:ring-0 text-xs font-bold w-[120px]">
+                  <SelectValue placeholder="All Projects" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
+                  <SelectItem value="ALL" className="text-xs font-bold">All Projects</SelectItem>
+                  {projects.map(project => (
+                    <SelectItem key={project} value={project} className="text-xs font-bold">{project}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
-        <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3 h-10">
+        
+        <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3 h-10 self-start md:self-auto shrink-0">
           {filteredCitations.length} Citations
         </Badge>
       </div>
@@ -108,6 +221,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
           <TableHeader>
             <TableRow className="bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50">
               <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Citation Content</TableHead>
+              <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Full Bibliography</TableHead>
               <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Project & Owner</TableHead>
               <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Type</TableHead>
               <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider text-right">Actions</TableHead>
@@ -116,15 +230,20 @@ export function CitationList({ initialCitations }: CitationListProps) {
           <TableBody className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {filteredCitations.map((citation) => (
               <TableRow key={citation.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30 transition-colors group">
-                <TableCell className="px-6 py-4 max-w-md">
+                <TableCell className="px-6 py-4 max-w-[200px]">
                   <div className="flex flex-col gap-1">
                     <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">
                       {citation.title || "Untitled"}
                     </span>
-                    <span className="text-xs text-zinc-500 line-clamp-2 italic font-medium">
-                      {citation.authors ? JSON.parse(citation.authors).map((a: any) => `${a.lastName}, ${a.firstName}`).join("; ") : "No authors"}
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded w-fit">
+                      ID: {citation.id}
                     </span>
                   </div>
+                </TableCell>
+                <TableCell className="px-6 py-4 max-w-md">
+                   <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 italic bg-zinc-50 dark:bg-zinc-900/30 p-2 rounded-lg border border-zinc-100 dark:border-zinc-800/50">
+                     {formatFullBibliography(citation)}
+                   </p>
                 </TableCell>
                 <TableCell className="px-6 py-4">
                   <div className="flex flex-col">
@@ -157,8 +276,27 @@ export function CitationList({ initialCitations }: CitationListProps) {
                       <DropdownMenuGroup>
                         <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-zinc-400 font-black">Admin Oversight</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 cursor-pointer font-medium text-sm">
+                        <DropdownMenuItem 
+                          className="gap-2 cursor-pointer font-medium text-sm"
+                          onClick={() => {
+                            setSelectedCitation(citation)
+                            setIsPreviewOpen(true)
+                          }}
+                        >
                           <Eye className="h-4 w-4" /> Quick Preview
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="gap-2 cursor-pointer font-medium text-sm"
+                          onClick={() => {
+                            setSelectedCitation(citation)
+                            setEditTitle(citation.title || "")
+                            setEditSource(citation.source || "")
+                            setEditYear(citation.year || "")
+                            setEditUrl(citation.url || "")
+                            setIsEditDialogOpen(true)
+                          }}
+                        >
+                          <Settings className="h-4 w-4" /> Edit Details
                         </DropdownMenuItem>
                         {citation.url && (
                           <DropdownMenuItem className="p-0">
@@ -192,6 +330,113 @@ export function CitationList({ initialCitations }: CitationListProps) {
         </Table>
       </div>
 
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent className="max-w-2xl overflow-hidden rounded-3xl border-none p-0">
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 text-white">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-white/20 backdrop-blur-md rounded-xl">
+                <Eye className="h-6 w-6" />
+              </div>
+              <h2 className="text-2xl font-black tracking-tight">Citation Preview</h2>
+            </div>
+            <p className="text-blue-100 text-sm font-medium">Verify formatted bibliography across different standards.</p>
+          </div>
+          <div className="p-8 space-y-6 bg-white dark:bg-zinc-950">
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Standard APA 7th Edition</Label>
+              <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-sm italic font-medium leading-relaxed">
+                {formatFullBibliography(selectedCitation)}
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-2">Project</Label>
+                <div className="flex items-center gap-2 text-sm font-bold">
+                  <Projector className="h-4 w-4 text-blue-500" />
+                  {selectedCitation?.project?.name}
+                </div>
+              </div>
+              <div className="p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-2">Owner</Label>
+                <div className="flex items-center gap-2 text-sm font-bold text-zinc-600 dark:text-zinc-400">
+                  <Mail className="h-4 w-4 text-zinc-400" />
+                  {selectedCitation?.project?.user?.username}
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="p-6 pt-0 bg-white dark:bg-zinc-950">
+            <Button 
+              className="w-full h-12 rounded-2xl font-black bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90 transition-opacity underline decoration-blue-500/50 underline-offset-4"
+              onClick={() => setIsPreviewOpen(false)}
+            >
+              Close Preview
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-md rounded-3xl overflow-hidden p-0 border-none">
+          <div className="bg-zinc-900 p-6 text-white">
+            <h2 className="text-xl font-black">Edit Citation Metadata</h2>
+            <p className="text-zinc-400 text-xs font-medium">Administrator Correction Mode</p>
+          </div>
+          <div className="p-6 space-y-4 bg-white dark:bg-zinc-950">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold ml-1">Title</Label>
+              <Input 
+                value={editTitle} 
+                onChange={(e) => setEditTitle(e.target.value)} 
+                className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold ml-1">Source / Publisher / Journal</Label>
+              <Input 
+                value={editSource} 
+                onChange={(e) => setEditSource(e.target.value)} 
+                className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold ml-1">Year</Label>
+                <Input 
+                  value={editYear} 
+                  onChange={(e) => setEditYear(e.target.value)} 
+                  className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium text-center"
+                />
+              </div>
+              <div className="space-y-2 flex flex-col justify-end">
+                <Badge variant="outline" className="h-11 rounded-xl justify-center font-black uppercase tracking-tight bg-blue-50 text-blue-600 border-none">
+                  TYPE: {selectedCitation?.type}
+                </Badge>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold ml-1">Source URL</Label>
+              <Input 
+                value={editUrl} 
+                onChange={(e) => setEditUrl(e.target.value)} 
+                className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
+              />
+            </div>
+          </div>
+          <DialogFooter className="p-6 pt-0 bg-white dark:bg-zinc-950 gap-2">
+            <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold h-11 flex-1">Cancel</Button>
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black h-11 flex-1 shadow-lg shadow-blue-500/20"
+              onClick={handleUpdate}
+              disabled={isPending}
+            >
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -201,12 +446,24 @@ export function CitationList({ initialCitations }: CitationListProps) {
             <DialogTitle className="text-center text-xl">Confirm Permanent Deletion</DialogTitle>
             <DialogDescription className="text-center pt-2 text-zinc-500">
               Are you sure you want to delete this citation? This will remove it from <span className="font-bold text-zinc-900 dark:text-zinc-100">{selectedCitation?.project?.user?.username}&apos;s</span> project permanently.
+              <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
+                <Label className="text-red-800 dark:text-red-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Confirm with your admin username:</Label>
+                <Input 
+                  placeholder={session?.user?.name || "Admin Name"}
+                  className="bg-white dark:bg-zinc-900 border-red-200 dark:border-red-900 focus-visible:ring-red-500 h-11 rounded-xl font-black"
+                  value={confirmAdminName}
+                  onChange={(e) => setConfirmAdminName(e.target.value)}
+                />
+              </div>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0 mt-4">
             <Button 
               variant="outline" 
-              onClick={() => setIsDeleteDialogOpen(false)}
+              onClick={() => {
+                setIsDeleteDialogOpen(false)
+                setConfirmAdminName("")
+              }}
               className="rounded-xl font-bold h-11 flex-1"
             >
               Cancel
@@ -214,7 +471,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
             <Button 
               className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold h-11 flex-1 shadow-lg shadow-red-500/20"
               onClick={handleDelete}
-              disabled={isPending}
+              disabled={isPending || confirmAdminName !== session?.user?.name}
             >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete Forever"}
             </Button>

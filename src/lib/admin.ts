@@ -181,8 +181,29 @@ export async function deleteCitationAdmin(citationId: number) {
   })
 }
 
+export async function updateCitationAdmin(citationId: number, data: any) {
+  return await prisma.citation.update({
+    where: { id: citationId },
+    data,
+  })
+}
+
 export async function deleteProjectAdmin(projectId: number) {
   return await prisma.project.delete({
     where: { id: projectId },
+  })
+}
+
+export async function updateProjectAdmin(projectId: number, data: any) {
+  return await prisma.project.update({
+    where: { id: projectId },
+    data,
+  })
+}
+
+export async function getProjectCitationsAdmin(projectId: number) {
+  return await prisma.citation.findMany({
+    where: { projectId },
+    orderBy: { createdAt: "desc" },
   })
 }

@@ -61,3 +61,38 @@ export async function adminDeleteProjectAction(projectId: number) {
   revalidatePath("/admin/projects")
   return { success: true }
 }
+
+export async function adminUpdateCitationAction(citationId: number, data: any) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Unauthorized")
+  }
+
+  const { updateCitationAdmin } = await import("@/lib/admin")
+  await updateCitationAdmin(citationId, data)
+  revalidatePath("/admin/citations")
+  return { success: true }
+}
+
+export async function adminUpdateProjectAction(projectId: number, data: any) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Unauthorized")
+  }
+
+  const { updateProjectAdmin } = await import("@/lib/admin")
+  await updateProjectAdmin(projectId, data)
+  revalidatePath("/admin/projects")
+  return { success: true }
+}
+
+export async function adminGetProjectCitationsAction(projectId: number) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Unauthorized")
+  }
+
+  const { getProjectCitationsAdmin } = await import("@/lib/admin")
+  const citations = await getProjectCitationsAdmin(projectId)
+  return { success: true, citations }
+}
