@@ -56,7 +56,15 @@ export function LoginForm({
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        window.location.href = "/generate";
+        // Fetch session to check role
+        const sessionRes = await fetch('/api/auth/session');
+        const session = await sessionRes.json();
+        
+        if (session?.user?.role === 'ADMIN') {
+          window.location.href = "/admin/dashbord";
+        } else {
+          window.location.href = "/generate";
+        }
       }
     } catch (err) {
       setError("An unexpected error occurred");

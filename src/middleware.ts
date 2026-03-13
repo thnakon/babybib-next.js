@@ -12,6 +12,10 @@ export default withAuth(
     // But since the signup form already has the logic, let's see.
     // User said: "บังคับให้ไปหน้า ยืนยันเมลก่อน" (Force to go to verification page first)
     
+    if (req.nextUrl.pathname.startsWith("/admin") && token?.role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/generate", req.url));
+    }
+
     if (req.nextUrl.pathname.startsWith("/generate") && !isVerified) {
         return NextResponse.redirect(new URL("/verify", req.url));
     }
@@ -24,5 +28,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/generate/:path*"],
+  matcher: ["/generate/:path*", "/admin/:path*"],
 };

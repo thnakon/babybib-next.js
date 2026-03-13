@@ -28,10 +28,16 @@ model User {
   studentId     String?
   emailVerified DateTime?
   verificationCode String?
+  role          Role     @default(USER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   projects      Project[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Project {

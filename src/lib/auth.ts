@@ -39,6 +39,7 @@ export const authOptions: NextAuthOptions = {
           name: `${user.firstName} ${user.lastName}`,
           username: user.username,
           emailVerified: user.emailVerified,
+          role: user.role,
         };
       }
     })
@@ -55,6 +56,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.username = (user as any).username;
         token.emailVerified = (user as any).emailVerified;
+        token.role = (user as any).role;
       }
 
       // Handle session update on the client side
@@ -78,6 +80,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.id;
         (session.user as any).username = token.username;
         (session.user as any).emailVerified = token.emailVerified;
+        (session.user as any).role = token.role;
       }
       return session;
     }
