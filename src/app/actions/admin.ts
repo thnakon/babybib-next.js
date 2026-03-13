@@ -37,3 +37,27 @@ export async function adminUpdateRoleAction(userId: number, role: "USER" | "ADMI
   revalidatePath("/admin/users")
   return { success: true }
 }
+
+export async function adminDeleteCitationAction(citationId: number) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Unauthorized")
+  }
+
+  const { deleteCitationAdmin } = await import("@/lib/admin")
+  await deleteCitationAdmin(citationId)
+  revalidatePath("/admin/citations")
+  return { success: true }
+}
+
+export async function adminDeleteProjectAction(projectId: number) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Unauthorized")
+  }
+
+  const { deleteProjectAdmin } = await import("@/lib/admin")
+  await deleteProjectAdmin(projectId)
+  revalidatePath("/admin/projects")
+  return { success: true }
+}

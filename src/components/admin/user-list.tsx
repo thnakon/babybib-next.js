@@ -222,7 +222,7 @@ export function UserList({ initialUsers }: UserListProps) {
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Role:</span>
             <Select value={roleFilter} onValueChange={(val) => setRoleFilter(val || "ALL")}>
-              <SelectTrigger className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+              <SelectTrigger id="role-filter-trigger" className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
@@ -236,7 +236,7 @@ export function UserList({ initialUsers }: UserListProps) {
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">LIS Status:</span>
             <Select value={lisFilter} onValueChange={(val) => setLisFilter(val || "ALL")}>
-              <SelectTrigger className="w-[160px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+              <SelectTrigger id="lis-filter-trigger" className="w-[160px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
                 <SelectValue placeholder="LIS Status" />
               </SelectTrigger>
               <SelectContent>
@@ -445,7 +445,7 @@ export function UserList({ initialUsers }: UserListProps) {
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Organization Type</Label>
                 <Select value={editOrgType} onValueChange={(val) => setEditOrgType(val || "")}>
-                  <SelectTrigger className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-none h-11">
+                  <SelectTrigger id="edit-org-type-trigger" className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-none h-11">
                     <SelectValue placeholder="Select organization type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -458,7 +458,7 @@ export function UserList({ initialUsers }: UserListProps) {
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Province</Label>
                 <Select value={editProvince} onValueChange={(val) => setEditProvince(val || "")}>
-                  <SelectTrigger className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-none h-11">
+                  <SelectTrigger id="edit-province-trigger" className="rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-none h-11">
                     <SelectValue placeholder="Select province" />
                   </SelectTrigger>
                   <SelectContent>

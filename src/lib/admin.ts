@@ -136,3 +136,53 @@ export async function getSubscriptionStats() {
     ],
   }
 }
+
+export async function getAllCitations() {
+  return await prisma.citation.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      project: {
+        select: {
+          name: true,
+          user: {
+            select: {
+              username: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+  })
+}
+
+export async function getAllProjects() {
+  return await prisma.project.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          username: true,
+          email: true,
+        },
+      },
+      _count: {
+        select: {
+          citations: true,
+        },
+      },
+    },
+  })
+}
+
+export async function deleteCitationAdmin(citationId: number) {
+  return await prisma.citation.delete({
+    where: { id: citationId },
+  })
+}
+
+export async function deleteProjectAdmin(projectId: number) {
+  return await prisma.project.delete({
+    where: { id: projectId },
+  })
+}
