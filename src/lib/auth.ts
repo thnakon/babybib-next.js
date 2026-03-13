@@ -30,10 +30,10 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isCorrectPassword) {
-          throw new Error("Invalid credentials");
+          throw new Error("Invalid email or password");
         }
 
-        return {
+        const returnUser = {
           id: user.id.toString(),
           email: user.email,
           name: `${user.firstName} ${user.lastName}`,
@@ -41,6 +41,8 @@ export const authOptions: NextAuthOptions = {
           emailVerified: user.emailVerified,
           role: (user as any).role,
         };
+
+        return returnUser;
       }
     })
   ],

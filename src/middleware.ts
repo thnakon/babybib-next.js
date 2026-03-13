@@ -12,7 +12,10 @@ export default withAuth(
     // But since the signup form already has the logic, let's see.
     // User said: "บังคับให้ไปหน้า ยืนยันเมลก่อน" (Force to go to verification page first)
     
+    console.log("Middleware Check:", { path: req.nextUrl.pathname, role: token?.role });
+
     if (req.nextUrl.pathname.startsWith("/admin") && token?.role !== "ADMIN") {
+      console.log("Middleware Redirecting: User is not ADMIN, path is /admin. Redirecting to /generate");
       return NextResponse.redirect(new URL("/generate", req.url));
     }
 
