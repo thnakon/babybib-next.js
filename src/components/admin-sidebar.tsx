@@ -63,7 +63,7 @@ const data = {
     },
     {
       title: "User Management",
-      url: "/admin/users",
+      url: "#",
       icon: Users,
       items: [
         {
@@ -82,7 +82,7 @@ const data = {
     },
     {
       title: "Master Data",
-      url: "/admin/citations",
+      url: "#",
       icon: Database,
       items: [
         {

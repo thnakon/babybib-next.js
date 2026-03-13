@@ -80,3 +80,41 @@ export async function getCitationTrends() {
     count,
   }))
 }
+
+export async function getAllUsers() {
+  return await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      isLisStudent: true,
+      studentId: true,
+      createdAt: true,
+    },
+  })
+}
+
+export async function updateUserRole(userId: number, role: "USER" | "ADMIN") {
+  return await prisma.user.update({
+    where: { id: userId },
+    data: { role },
+  })
+}
+
+export async function getSubscriptionStats() {
+  // Placeholder as subscription model is not yet in schema
+  const totalUsers = await prisma.user.count()
+  return {
+    totalActive: Math.floor(totalUsers * 0.1), // Mock data
+    totalRevenue: totalUsers * 9.99, // Mock data
+    trends: [
+      { month: "Jan", count: 10 },
+      { month: "Feb", count: 15 },
+      { month: "Mar", count: 25 },
+    ],
+  }
+}
