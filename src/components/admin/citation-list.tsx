@@ -172,6 +172,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <Input
+              id="citation-search-input"
               placeholder="Search citations..."
               className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-8 text-sm"
               value={searchTerm}
@@ -253,7 +254,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
                     </div>
                     <div className="flex items-center gap-1 text-[11px] text-zinc-400 font-bold uppercase tracking-tight mt-0.5">
                       <Mail className="h-3 w-3" />
-                      {citation.project?.user?.username}
+                      {citation.project?.user?.email}
                     </div>
                   </div>
                 </TableCell>
@@ -265,6 +266,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
                 <TableCell className="px-6 py-4 text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger
+                      id={`citation-actions-trigger-${citation.id}`}
                       className={cn(
                         buttonVariants({ variant: "ghost", size: "icon" }),
                         "h-8 w-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
@@ -404,6 +406,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Title</Label>
                 <Input 
+                  id="edit-citation-title"
                   value={editTitle} 
                   onChange={(e) => setEditTitle(e.target.value)} 
                   className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900/50 border-none focus-visible:ring-2 focus-visible:ring-blue-500 font-medium"
@@ -474,16 +477,17 @@ export function CitationList({ initialCitations }: CitationListProps) {
             <DialogTitle className="text-center text-xl">Confirm Permanent Deletion</DialogTitle>
             <DialogDescription className="text-center pt-2 text-zinc-500">
               Are you sure you want to delete this citation? This will remove it from <span className="font-bold text-zinc-900 dark:text-zinc-100">{selectedCitation?.project?.user?.username}&apos;s</span> project permanently.
-              <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
-                <Label className="text-red-800 dark:text-red-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Confirm with your admin username:</Label>
-                <Input 
-                  placeholder={session?.user?.name || "Admin Name"}
-                  className="bg-white dark:bg-zinc-900 border-red-200 dark:border-red-900 focus-visible:ring-red-500 h-11 rounded-xl font-black"
-                  value={confirmAdminName}
-                  onChange={(e) => setConfirmAdminName(e.target.value)}
-                />
-              </div>
             </DialogDescription>
+            <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
+              <Label className="text-red-800 dark:text-red-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Confirm with your admin username:</Label>
+              <Input 
+                id="delete-citation-confirm"
+                placeholder={session?.user?.name || "Admin Name"}
+                className="bg-white dark:bg-zinc-900 border-red-200 dark:border-red-900 focus-visible:ring-red-500 h-11 rounded-xl font-black"
+                value={confirmAdminName}
+                onChange={(e) => setConfirmAdminName(e.target.value)}
+              />
+            </div>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0 mt-4">
             <Button 

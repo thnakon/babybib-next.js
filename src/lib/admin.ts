@@ -37,6 +37,7 @@ export async function getRecentActivity() {
             user: {
               select: {
                 username: true,
+                email: true,
               },
             },
           },

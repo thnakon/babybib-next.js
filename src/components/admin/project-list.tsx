@@ -177,6 +177,7 @@ export function ProjectList({ initialProjects }: ProjectListProps) {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <Input
+              id="project-search-input"
               placeholder="Search projects..."
               className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-8 text-sm"
               value={searchTerm}
@@ -245,7 +246,7 @@ export function ProjectList({ initialProjects }: ProjectListProps) {
                       <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                         {project.name}
                       </span>
-                      <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest flex items-center gap-1">
+                      <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest flex items-center gap-1" suppressHydrationWarning>
                         <Calendar className="h-2.5 w-2.5" />
                         Created {new Date(project.createdAt).toLocaleDateString()}
                       </span>
@@ -283,6 +284,7 @@ export function ProjectList({ initialProjects }: ProjectListProps) {
                 <TableCell className="px-6 py-4 text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger
+                      id={`project-actions-trigger-${project.id}`}
                       className={cn(
                         buttonVariants({ variant: "ghost", size: "icon" }),
                         "h-8 w-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
@@ -439,6 +441,7 @@ export function ProjectList({ initialProjects }: ProjectListProps) {
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Project Name</Label>
                 <Input 
+                  id="edit-project-name"
                   value={editName} 
                   onChange={(e) => setEditName(e.target.value)} 
                   className="rounded-xl h-11 bg-zinc-50 dark:bg-zinc-900/50 border-none focus-visible:ring-2 focus-visible:ring-emerald-500 font-bold"
@@ -508,20 +511,28 @@ export function ProjectList({ initialProjects }: ProjectListProps) {
               <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
             </div>
             <DialogTitle className="text-center text-xl">Confirm Project Deletion</DialogTitle>
-            <DialogDescription className="text-center pt-2 text-zinc-500">
-              Are you sure you want to delete <span className="font-bold text-zinc-900 dark:text-zinc-100">{selectedProject?.name}</span>? This will permanently remove all citations within this project for user <span className="font-bold">{selectedProject?.user?.username}</span>.
-              <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
-                <Label className="text-red-800 dark:text-red-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Confirm with your admin username:</Label>
-                <Input 
-                  placeholder={session?.user?.name || "Admin Name"}
-                  className="bg-white dark:bg-zinc-900 border-red-200 dark:border-red-900 focus-visible:ring-red-500 h-11 rounded-xl font-black"
-                  value={confirmAdminName}
-                  onChange={(e) => setConfirmAdminName(e.target.value)}
-                />
-              </div>
+            <DialogDescription className="text-center pt-2">
+              This action is <span className="text-red-600 font-bold">permanent</span> and cannot be undone. 
+              All citations within the project <span className="font-bold text-zinc-900 dark:text-zinc-100">{selectedProject?.name}</span> will be permanently removed.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0 mt-4">
+
+          <div className="py-6 space-y-4">
+            <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800">
+              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                To confirm, please type your admin username: <span className="font-bold text-zinc-900 dark:text-zinc-100">{session?.user?.name}</span>
+              </p>
+            </div>
+            <Input 
+              id="delete-project-confirm"
+              placeholder="Type your username..." 
+              value={confirmAdminName}
+              onChange={(e) => setConfirmAdminName(e.target.value)}
+              className="rounded-xl bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800"
+            />
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button 
               variant="outline" 
               onClick={() => {
