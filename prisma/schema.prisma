@@ -8,9 +8,9 @@ datasource db {
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  username         String    @unique
-  email            String    @unique
+  id               Int        @id @default(autoincrement())
+  username         String     @unique
+  email            String     @unique
   password         String
   firstName        String
   lastName         String
@@ -18,15 +18,15 @@ model User {
   province         String?
   orgName          String?
   studentId        String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  isLisStudent     Boolean   @default(false)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  isLisStudent     Boolean    @default(false)
   otherOrgType     String?
   emailVerified    DateTime?
   verificationCode String?
-  role             Role      @default(USER)
-  projects         Project[]
+  role             Role       @default(USER)
   auditLogs        AuditLog[]
+  projects         Project[]
 }
 
 model Project {
