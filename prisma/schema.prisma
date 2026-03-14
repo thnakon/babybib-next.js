@@ -26,6 +26,7 @@ model User {
   verificationCode String?
   role             Role      @default(USER)
   projects         Project[]
+  auditLogs        AuditLog[]
 }
 
 model Project {
@@ -60,6 +61,20 @@ model Citation {
   project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId], map: "Citation_projectId_fkey")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  category  String
+  status    String
+  details   String?  @db.LongText
+  userId    Int?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "AuditLog_userId_fkey")
 }
 
 enum Role {

@@ -28,81 +28,46 @@ import {
 import { Button } from "@/components/ui/button"
 
 interface LogEntry {
-  id: string
-  event: string
-  category: "AUTH" | "DATA" | "SYSTEM" | "SECURITY"
-  status: "SUCCESS" | "WARNING" | "INFO" | "CRITICAL"
-  user: string
-  ip: string
-  timestamp: string
+  id: number
+  action: string
+  category: string
+  status: string
+  details: string | null
+  userId: number | null
+  ipAddress: string | null
+  createdAt: string
+  user: {
+    username: string
+    email: string
+  } | null
 }
 
-const MOCK_LOGS: LogEntry[] = [
-  {
-    id: "LOG-001",
-    event: "User Login Successful",
-    category: "AUTH",
-    status: "SUCCESS",
-    user: "admin",
-    ip: "192.168.1.1",
-    timestamp: new Date().toISOString()
-  },
-  {
-    id: "LOG-002",
-    event: "Permanent Project Deletion",
-    category: "DATA",
-    status: "WARNING",
-    user: "thnakon",
-    ip: "172.16.0.45",
-    timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString()
-  },
-  {
-    id: "LOG-003",
-    event: "Unauthorized API Access Attempt",
-    category: "SECURITY",
-    status: "CRITICAL",
-    user: "Guest_942",
-    ip: "45.12.33.102",
-    timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString()
-  },
-  {
-    id: "LOG-004",
-    event: "System Cache Cleared",
-    category: "SYSTEM",
-    status: "INFO",
-    user: "System",
-    ip: "Locahost",
-    timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-  },
-  {
-    id: "LOG-005",
-    event: "New Citation Created",
-    category: "DATA",
-    status: "SUCCESS",
-    user: "alice_w",
-    ip: "158.42.11.9",
-    timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString()
-  }
-]
-
-export function LogList() {
+export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
   const [searchTerm, setSearchTerm] = React.useState("")
   const [categoryFilter, setCategoryFilter] = React.useState("ALL")
   const [statusFilter, setStatusFilter] = React.useState("ALL")
+  const [startDate, setStartDate] = React.useState("")
+  const [endDate, setEndDate] = React.useState("")
 
   const filteredLogs = React.useMemo(() => {
-    return MOCK_LOGS.filter(log => {
+    return initialLogs.filter(log => {
+      const logDate = new Date(log.createdAt).toISOString().split("T")[0]
+      
       const matchesSearch = 
-        log.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.ip.toLowerCase().includes(searchTerm.toLowerCase())
+        log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.user?.email || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.user?.username || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.ipAddress || "").toLowerCase().includes(searchTerm.toLowerCase())
       
       const matchesCategory = categoryFilter === "ALL" || log.category === categoryFilter
       const matchesStatus = statusFilter === "ALL" || log.status === statusFilter
+      
+      const matchesStartDate = !startDate || logDate >= startDate
+      const matchesEndDate = !endDate || logDate <= endDate
 
-      return matchesSearch && matchesCategory && matchesStatus
+      return matchesSearch && matchesCategory && matchesStatus && matchesStartDate && matchesEndDate
     })
-  }, [searchTerm, categoryFilter, statusFilter])
+  }, [searchTerm, categoryFilter, statusFilter, startDate, endDate, initialLogs])
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -139,7 +104,7 @@ export function LogList() {
 
           <div className="hidden lg:flex items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Category:</span>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <Select value={categoryFilter} onValueChange={(val) => setCategoryFilter(val || "ALL")}>
               <SelectTrigger id="category-filter" className="w-[130px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
@@ -155,7 +120,7 @@ export function LogList() {
 
           <div className="hidden lg:flex items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Severity:</span>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
               <SelectTrigger id="status-filter" className="w-[130px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
@@ -167,6 +132,25 @@ export function LogList() {
                 <SelectItem value="INFO" className="text-xs font-bold text-blue-600">Info</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="hidden xl:flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Range:</span>
+            <div className="flex items-center gap-1">
+              <Input
+                type="date"
+                className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-[10px] w-[120px] px-2 font-bold"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <span className="text-zinc-400 text-[10px] font-black">-</span>
+              <Input
+                type="date"
+                className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-[10px] w-[120px] px-2 font-bold"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
           </div>
         </div>
         
@@ -199,9 +183,9 @@ export function LogList() {
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-0.5">
                       <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">
-                        {log.event}
+                        {log.action}
                       </span>
-                      <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">{log.id}</span>
+                      <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">LOG-{log.id}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -226,15 +210,15 @@ export function LogList() {
                     <div className="flex flex-col">
                       <div className="flex items-center gap-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-300">
                         <User className="h-3 w-3" />
-                        {log.user}
+                        {log.user?.email || "System"}
                       </div>
-                      <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-tight mt-0.5">{log.ip}</span>
+                      <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-tight mt-0.5">{log.ipAddress || "Internal"}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-medium" suppressHydrationWarning>
                       <Clock className="h-3.5 w-3.5" />
-                      {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -259,25 +243,6 @@ export function LogList() {
         )}
       </div>
 
-      <div className="p-4 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-100 dark:border-zinc-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-xl text-purple-600 dark:text-purple-400">
-            <Calendar className="h-4 w-4" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">System Status Insight</span>
-            <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-widest">Global Live Activity Monitoring</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-           <div className="flex -space-x-2">
-             {[1,2,3].map(i => (
-               <div key={i} className="h-6 w-6 rounded-full bg-zinc-200 dark:bg-zinc-800 border-2 border-white dark:border-zinc-950" />
-             ))}
-           </div>
-           <span className="text-[10px] text-zinc-400 font-bold">Live Stream Active</span>
-        </div>
-      </div>
     </div>
   )
 }

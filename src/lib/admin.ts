@@ -208,3 +208,65 @@ export async function getProjectCitationsAdmin(projectId: number) {
     orderBy: { createdAt: "desc" },
   })
 }
+
+export async function createAuditLog(data: {
+  action: string
+  category: string
+  status: string
+  details?: string
+  userId?: number
+  ipAddress?: string
+}) {
+  return await prisma.auditLog.create({
+    data,
+  })
+}
+
+export async function getAuditLogs(filters: {
+  search?: string
+  category?: string
+  status?: string
+  startDate?: Date
+  endDate?: Date
+}) {
+  const { search, category, status, startDate, endDate } = filters
+
+  const where: any = {}
+
+  if (category && category !== "ALL") {
+    where.category = category
+  }
+
+  if (status && status !== "ALL") {
+    where.status = status
+  }
+
+  if (startDate || endDate) {
+    where.createdAt = {}
+    if (startDate) where.createdAt.gte = startDate
+    if (endDate) where.createdAt.lte = endDate
+  }
+
+  if (search) {
+    where.OR = [
+      { action: { contains: search } },
+      { details: { contains: search } },
+      { ipAddress: { contains: search } },
+      { user: { username: { contains: search } } },
+      { user: { email: { contains: search } } },
+    ]
+  }
+
+  return await prisma.auditLog.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          username: true,
+          email: true,
+        },
+      },
+    },
+  })
+}

@@ -15,10 +15,12 @@ import {
 } from "@/components/animate-ui/components/radix/sidebar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
+import { getAuditLogs } from "@/lib/admin"
 import { LogList } from "@/components/admin/log-list"
 import { Terminal, ShieldAlert } from "lucide-react"
 
-export default function AdminLogsPage() {
+export default async function AdminLogsPage() {
+  const logs = await getAuditLogs({})
   return (
     <SidebarProvider>
       <AdminSidebar />
@@ -71,7 +73,7 @@ export default function AdminLogsPage() {
             </p>
           </div>
 
-          <LogList />
+          <LogList initialLogs={JSON.parse(JSON.stringify(logs))} />
         </main>
       </SidebarInset>
     </SidebarProvider>
