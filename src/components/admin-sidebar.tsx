@@ -93,10 +93,6 @@ const data = {
           title: "User Projects",
           url: "/admin/projects",
         },
-        {
-          title: "Citation Styles",
-          url: "/admin/styles",
-        },
       ],
     },
     {
