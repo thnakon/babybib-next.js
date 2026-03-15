@@ -271,7 +271,7 @@ export function CitationList({ initialCitations }: CitationListProps) {
                       id={`citation-actions-trigger-${citation.id}`}
                       className={cn(
                         buttonVariants({ variant: "ghost", size: "icon" }),
-                        "h-8 w-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                        "h-8 w-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors ml-auto"
                       )}
                     >
                       <MoreHorizontal className="h-4 w-4" />
