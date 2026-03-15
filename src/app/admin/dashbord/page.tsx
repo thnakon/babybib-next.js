@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
-import { Search, Users, BookOpen, Database, TrendingUp, Clock, ShieldAlert } from "lucide-react"
+import { Search, Users, BookOpen, Database, TrendingUp, Clock, ShieldAlert, LayoutDashboard } from "lucide-react"
 import {
   SidebarInset,
   SidebarProvider,
@@ -71,6 +71,17 @@ export default async function AdminDashboardPage() {
         </header>
 
         <main className="flex flex-1 flex-col gap-6 p-6">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center text-zinc-900 dark:text-zinc-100">
+                <LayoutDashboard className="h-5 w-5" />
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Administrative Overview</h1>
+                <p className="text-xs text-zinc-500 font-medium">Real-time metrics and platform activity summary.</p>
+              </div>
+            </div>
+          </div>
           {/* Stats Grid */}
           <div className="grid gap-4 md:grid-cols-3">
             <Card className="border-zinc-100 dark:border-zinc-800/50 shadow-sm overflow-hidden group hover:shadow-md transition-all">
