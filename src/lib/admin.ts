@@ -270,3 +270,9 @@ export async function getAuditLogs(filters: {
     },
   })
 }
+
+export async function deleteAuditLog(logId: number) {
+  return await prisma.auditLog.delete({
+    where: { id: logId },
+  })
+}

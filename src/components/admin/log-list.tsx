@@ -13,10 +13,13 @@ import {
   Info,
   Calendar,
   Filter,
-  MoreHorizontal
+  MoreHorizontal,
+  Eye,
+  Trash2,
+  Loader2,
+  Key
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { 
   Select, 
@@ -26,6 +29,26 @@ import {
   SelectValue 
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuGroup,
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { toast } from "sonner"
+import { useSession } from "next-auth/react"
+import { adminDeleteLogAction } from "@/app/actions/admin"
 
 interface LogEntry {
   id: number
@@ -43,14 +66,23 @@ interface LogEntry {
 }
 
 export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
+  const { data: session } = useSession()
+  const [logs, setLogs] = React.useState(initialLogs)
   const [searchTerm, setSearchTerm] = React.useState("")
   const [categoryFilter, setCategoryFilter] = React.useState("ALL")
   const [statusFilter, setStatusFilter] = React.useState("ALL")
   const [startDate, setStartDate] = React.useState("")
   const [endDate, setEndDate] = React.useState("")
 
+  // Modal states
+  const [selectedLog, setSelectedLog] = React.useState<LogEntry | null>(null)
+  const [isDetailOpen, setIsDetailOpen] = React.useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+  const [isDeleting, setIsDeleting] = React.useState(false)
+  const [confirmAdminName, setConfirmAdminName] = React.useState("")
+
   const filteredLogs = React.useMemo(() => {
-    return initialLogs.filter(log => {
+    return logs.filter(log => {
       const logDate = new Date(log.createdAt).toISOString().split("T")[0]
       
       const matchesSearch = 
@@ -67,7 +99,30 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
 
       return matchesSearch && matchesCategory && matchesStatus && matchesStartDate && matchesEndDate
     })
-  }, [searchTerm, categoryFilter, statusFilter, startDate, endDate, initialLogs])
+  }, [searchTerm, categoryFilter, statusFilter, startDate, endDate, logs])
+
+  const handleDelete = async () => {
+    if (!selectedLog) return
+    if (confirmAdminName !== session?.user?.name) {
+      toast.error("Admin name mismatch")
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      const result = await adminDeleteLogAction(selectedLog.id)
+      if (result.success) {
+        setLogs(logs.filter(l => l.id !== selectedLog.id))
+        toast.success("Audit log entry deleted successfully")
+        setIsDeleteDialogOpen(false)
+        setConfirmAdminName("")
+      }
+    } catch (error) {
+      toast.error("Failed to delete audit log")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -223,9 +278,36 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">
-                       <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="flex items-center justify-center h-8 w-8 rounded-lg text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors outline-none focus-visible:ring-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                        <DropdownMenuGroup>
+                          <DropdownMenuLabel className="text-[10px] uppercase font-black tracking-widest text-zinc-400">Log Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            className="gap-2 cursor-pointer font-medium text-sm"
+                            onClick={() => {
+                              setSelectedLog(log)
+                              setIsDetailOpen(true)
+                            }}
+                          >
+                            <Eye className="h-4 w-4" /> View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            className="gap-2 cursor-pointer font-medium text-sm text-red-500 focus:text-red-500"
+                            onClick={() => {
+                              setSelectedLog(log)
+                              setIsDeleteDialogOpen(true)
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" /> Delete Log
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 </tr>
               ))}
@@ -244,6 +326,123 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
         )}
       </div>
 
+      {/* Log Detail Dialog */}
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="max-w-2xl bg-white dark:bg-zinc-950 border-zinc-100 dark:border-zinc-800 rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div className={cn(
+                "p-2.5 rounded-xl",
+                selectedLog?.status === "SUCCESS" && "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400",
+                selectedLog?.status === "WARNING" && "bg-orange-50 text-orange-600 dark:bg-orange-950/20 dark:text-orange-400",
+                selectedLog?.status === "CRITICAL" && "bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400",
+                selectedLog?.status === "INFO" && "bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400",
+              )}>
+                {selectedLog ? getStatusIcon(selectedLog.status) : null}
+              </div>
+              <div className="flex flex-col text-left">
+                <DialogTitle className="text-xl font-bold">Event Log Transaction</DialogTitle>
+                <DialogDescription className="text-xs font-medium text-zinc-500">
+                  Full auditing trace for <span className="text-zinc-900 dark:text-zinc-100 font-bold uppercase tracking-tight">LOG-{selectedLog?.id}</span>
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="grid gap-6 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50">
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Action</span>
+                <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-2">{selectedLog?.action}</p>
+              </div>
+              <div className="space-y-1.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50">
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Timestamp</span>
+                <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                  {selectedLog ? new Date(selectedLog.createdAt).toLocaleString() : ""}
+                </p>
+              </div>
+              <div className="space-y-1.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50">
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">IP Address</span>
+                <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{selectedLog?.ipAddress || "Internal System"}</p>
+              </div>
+              <div className="space-y-1.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50">
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Initiator</span>
+                <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{selectedLog?.user?.email || "System/Automated"}</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Payload Details</span>
+              <pre className="p-4 rounded-xl bg-zinc-900 text-zinc-100 text-[11px] font-mono overflow-auto max-h-[250px] border border-zinc-800 shadow-inner leading-relaxed">
+                {selectedLog?.details ? (
+                  (() => {
+                    try {
+                      return selectedLog?.details ? JSON.stringify(JSON.parse(selectedLog.details), null, 2) : ""
+                    } catch {
+                      return selectedLog?.details || ""
+                    }
+                  })()
+                ) : "No auxiliary details available for this event."}
+              </pre>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDetailOpen(false)} className="rounded-xl font-bold h-10 border-zinc-200 dark:border-zinc-800">
+              Close Trace
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md bg-white dark:bg-zinc-950 border-zinc-100 dark:border-zinc-800 rounded-2xl">
+          <DialogHeader>
+            <div className="mx-auto w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4">
+              <Trash2 className="h-6 w-6" />
+            </div>
+            <DialogTitle className="text-center text-xl font-bold">Delete Audit Log Entry?</DialogTitle>
+            <DialogDescription className="text-center text-sm pt-2">
+              This action is irreversible. It will permanently remove 
+              <span className="block font-bold text-zinc-900 dark:text-zinc-100 mt-1 uppercase tracking-tighter">LOG-{selectedLog?.id}: {selectedLog?.action}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6 space-y-4">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Confirm with administrator name</label>
+              <div className="relative group">
+                <Key className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-red-500 transition-colors" />
+                <Input 
+                  placeholder={session?.user?.name || "Type admin name"} 
+                  className="pl-10 h-11 bg-zinc-50 dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 rounded-xl focus-visible:ring-red-500/20 focus-visible:border-red-500/50"
+                  value={confirmAdminName}
+                  onChange={(e) => setConfirmAdminName(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button 
+              variant="ghost" 
+              onClick={() => {
+                setIsDeleteDialogOpen(false)
+                setConfirmAdminName("")
+              }}
+              className="flex-1 rounded-xl font-bold h-11 text-zinc-500"
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleDelete}
+              disabled={isDeleting || confirmAdminName !== (session?.user?.name || "")}
+              className="flex-1 rounded-xl font-bold h-11 shadow-lg shadow-red-500/20"
+            >
+              {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm Deletion"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -163,3 +163,16 @@ export async function adminGetProjectCitationsAction(projectId: number) {
   const citations = await getProjectCitationsAdmin(projectId)
   return { success: true, citations }
 }
+
+export async function adminDeleteLogAction(logId: number) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Unauthorized")
+  }
+
+  const { deleteAuditLog } = await import("@/lib/admin")
+  await deleteAuditLog(logId)
+
+  revalidatePath("/admin/logs")
+  return { success: true }
+}
