@@ -17,7 +17,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
 import { getAllUsers } from "@/lib/admin"
 import { UserList } from "@/components/admin/user-list"
-import { Users } from "lucide-react"
+import { Users, ShieldAlert } from "lucide-react"
 
 export default async function AdminUsersPage() {
   const users = await getAllUsers()
@@ -52,22 +52,28 @@ export default async function AdminUsersPage() {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
+            <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
+               <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
+               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
+            </div>
             <LanguageDropdown />
             <ThemeToggle />
           </div>
         </header>
 
         <main className="flex flex-1 flex-col gap-6 p-6 bg-zinc-50/50 dark:bg-zinc-950/50">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-blue-600 dark:text-blue-400">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center text-zinc-900 dark:text-zinc-100">
                 <Users className="h-5 w-5" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">User Identification</h1>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">User Identification</h1>
+                <p className="text-xs text-zinc-500 font-medium">
+                  Manage and monitor all registered accounts within the system.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-zinc-500 font-medium ml-11">
-              Manage and monitor all registered accounts within the system.
-            </p>
           </div>
 
           <UserList initialUsers={users} />

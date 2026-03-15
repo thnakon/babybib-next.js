@@ -15,7 +15,7 @@ import {
 } from "@/components/animate-ui/components/radix/sidebar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
-import { MessageSquare, LifeBuoy, Clock, CheckCircle2, AlertCircle } from "lucide-react"
+import { MessageSquare, LifeBuoy, Clock, CheckCircle2, AlertCircle, ShieldAlert } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -58,33 +58,43 @@ export default async function AdminSupportPage() {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
+            <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
+               <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
+               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
+            </div>
             <LanguageDropdown />
             <ThemeToggle />
           </div>
         </header>
 
         <main className="flex flex-1 flex-col gap-6 p-6 bg-zinc-50/50 dark:bg-zinc-950/50">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-orange-50 dark:bg-orange-950/30 rounded-lg text-orange-600 dark:text-orange-400">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center text-zinc-900 dark:text-zinc-100">
                 <LifeBuoy className="h-5 w-5" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">Customer Support</h1>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Customer Support</h1>
+                <p className="text-xs text-zinc-500 font-medium">
+                  Respond to user inquiries and resolve technical issues.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-zinc-500 font-medium ml-11">
-              Respond to user inquiries and resolve technical issues.
-            </p>
           </div>
 
           <div className="grid gap-6">
-            <div className="flex items-center gap-4">
-              <Badge variant="outline" className="rounded-full bg-orange-50 text-orange-600 border-none font-black px-4 py-1 uppercase text-[10px] tracking-widest">
-                3 Pending Tickets
-              </Badge>
-              <Badge variant="outline" className="rounded-full bg-zinc-100 dark:bg-zinc-800 border-none font-black px-4 py-1 uppercase text-[10px] tracking-widest">
-                12 Resolved Today
-              </Badge>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-orange-100/50 dark:bg-orange-800/50 rounded-full border border-orange-200/50 dark:border-orange-700/50">
+              <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 whitespace-nowrap">
+                3 <span className="font-medium">Pending Tickets</span>
+              </span>
             </div>
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100/50 dark:bg-zinc-800/50 rounded-full border border-zinc-200/50 dark:border-zinc-700/50">
+              <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                12 <span className="font-medium">Resolved Today</span>
+              </span>
+            </div>
+          </div>
 
             <div className="space-y-3">
               {mockTickets.map((ticket) => (

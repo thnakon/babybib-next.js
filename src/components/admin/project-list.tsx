@@ -174,61 +174,63 @@ export function ProjectList({ initialProjects }: ProjectListProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+          <div className="relative flex-1 max-w-sm group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-purple-500 transition-colors" />
             <Input
               id="project-search-input"
               placeholder="Search projects..."
-              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-8 text-sm"
+              className="pl-9 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl h-8.5 text-xs focus-visible:ring-1 focus-visible:ring-purple-500/30 focus-visible:border-purple-500/30 transition-all shadow-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Status:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Status</span>
             <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
-              <SelectTrigger id="status-filter" className="w-[120px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
+              <SelectTrigger id="status-filter" className="w-[120px] rounded-xl bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 !h-8.5 shadow-none text-[11px] font-semibold">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
-                <SelectItem value="ALL" className="text-xs font-bold">All Status</SelectItem>
-                <SelectItem value="ACTIVE" className="text-xs font-bold">Active</SelectItem>
-                <SelectItem value="ARCHIVED" className="text-xs font-bold">Archived</SelectItem>
+                <SelectItem value="ALL">All Status</SelectItem>
+                <SelectItem value="ACTIVE">Active</SelectItem>
+                <SelectItem value="ARCHIVED">Archived</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Owner:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Owner</span>
             <Select value={ownerFilter} onValueChange={(val) => setOwnerFilter(val || "ALL")}>
-              <SelectTrigger id="owner-filter" className="w-[150px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
+              <SelectTrigger id="owner-filter" className="w-[140px] rounded-xl bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 !h-8.5 shadow-none text-[11px] font-semibold">
                 <SelectValue placeholder="All Owners" />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800">
-                <SelectItem value="ALL" className="text-xs font-bold">All Owners</SelectItem>
+                <SelectItem value="ALL">All Owners</SelectItem>
                 {owners.map(owner => (
-                  <SelectItem key={owner} value={owner} className="text-xs font-bold">{owner}</SelectItem>
+                  <SelectItem key={owner} value={owner}>{owner}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </div>
         
-        <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3">
-          {filteredProjects.length} Projects
-        </Badge>
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100/50 dark:bg-zinc-800/50 rounded-full border border-zinc-200/50 dark:border-zinc-700/50">
+          <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+            {filteredProjects.length} <span className="font-medium">Projects Total</span>
+          </span>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             <TableRow className="bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50">
-              <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Project Info</TableHead>
-              <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Owner</TableHead>
-              <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Stats</TableHead>
-              <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Status</TableHead>
-              <TableHead className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider text-right">Actions</TableHead>
+              <TableHead className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Project Info</TableHead>
+              <TableHead className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Owner</TableHead>
+              <TableHead className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Stats</TableHead>
+              <TableHead className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+              <TableHead className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-zinc-100 dark:divide-zinc-800">

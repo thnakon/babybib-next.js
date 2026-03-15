@@ -8,7 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
-import { Search, TrendingUp, BarChart3, Clock, ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { Search, TrendingUp, BarChart3, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert } from "lucide-react"
 import {
   SidebarInset,
   SidebarProvider,
@@ -45,16 +45,20 @@ export default async function AdminAnalyticsPage() {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative hidden md:block w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+            <div className="relative hidden md:block w-64 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-purple-500 transition-colors" />
               <Input
                 id="admin-analytics-search"
                 type="search"
                 placeholder="Search..."
-                className="pl-9 h-9 bg-zinc-100/50 dark:bg-zinc-800/50 border-transparent focus-visible:border-zinc-200 dark:focus-visible:border-zinc-700 transition-all rounded-xl text-xs font-medium"
+                className="pl-9 h-8.5 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl text-xs focus-visible:ring-1 focus-visible:ring-purple-500/30 shadow-none transition-all"
               />
             </div>
             <div className="flex items-center gap-2">
+              <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                 <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
+                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
+              </div>
               <LanguageDropdown />
               <ThemeToggle />
             </div>
@@ -62,9 +66,16 @@ export default async function AdminAnalyticsPage() {
         </header>
 
         <main className="flex flex-1 flex-col gap-6 p-6">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-black tracking-tight">Usage Analytics</h1>
-            <p className="text-sm text-zinc-500 font-medium">Monitoring platform growth and citation trends.</p>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center text-zinc-900 dark:text-zinc-100">
+                <BarChart3 className="h-5 w-5" />
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Usage Analytics</h1>
+                <p className="text-xs text-zinc-500 font-medium">Monitoring platform growth and citation trends.</p>
+              </div>
+            </div>
           </div>
 
           {/* Growth Summary */}

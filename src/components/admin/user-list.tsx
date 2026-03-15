@@ -208,21 +208,21 @@ export function UserList({ initialUsers }: UserListProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+          <div className="relative flex-1 max-w-sm group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-purple-500 transition-colors" />
             <Input
               id="user-search-input"
               placeholder="Search users..."
-              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl"
+              className="pl-9 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl h-8.5 text-xs focus-visible:ring-1 focus-visible:ring-purple-500/30 focus-visible:border-purple-500/30 transition-all shadow-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Role:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Role</span>
             <Select value={roleFilter} onValueChange={(val) => setRoleFilter(val || "ALL")}>
-              <SelectTrigger id="role-filter-trigger" className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+              <SelectTrigger id="role-filter-trigger" className="w-[130px] rounded-xl bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 !h-8.5 shadow-none text-[11px] font-semibold">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
@@ -234,9 +234,9 @@ export function UserList({ initialUsers }: UserListProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">LIS Status:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">LIS Status</span>
             <Select value={lisFilter} onValueChange={(val) => setLisFilter(val || "ALL")}>
-              <SelectTrigger id="lis-filter-trigger" className="w-[160px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+              <SelectTrigger id="lis-filter-trigger" className="w-[140px] rounded-xl bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 !h-8.5 shadow-none text-[11px] font-semibold">
                 <SelectValue placeholder="LIS Status" />
               </SelectTrigger>
               <SelectContent>
@@ -248,9 +248,11 @@ export function UserList({ initialUsers }: UserListProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3">
-            {filteredUsers.length} Users
-          </Badge>
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100/50 dark:bg-zinc-800/50 rounded-full border border-zinc-200/50 dark:border-zinc-700/50">
+            <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+              {filteredUsers.length} <span className="font-medium">Users Total</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -258,12 +260,12 @@ export function UserList({ initialUsers }: UserListProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800">
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">User</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">LIS</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Joined At</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider text-right">Actions</th>
+              <tr className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800/50">
+                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">User</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">LIS</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Role</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Joined At</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
