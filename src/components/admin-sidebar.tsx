@@ -13,6 +13,7 @@ import {
   CreditCard,
   LogOut,
   ChevronsUpDown,
+  ShieldCheck,
 } from "lucide-react"
 
 import {
@@ -120,6 +121,11 @@ const data = {
     {
       name: "Security Settings",
       url: "/admin/security",
+      icon: ShieldCheck,
+    },
+    {
+      name: "General Settings",
+      url: "/admin/settings",
       icon: Settings2,
     },
   ],
