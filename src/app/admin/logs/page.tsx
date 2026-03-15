@@ -51,9 +51,9 @@ export default async function AdminLogsPage() {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
-            <div className="mr-2 flex items-center gap-1.5 px-3 py-1 bg-red-50 dark:bg-red-950/20 rounded-full border border-red-100 dark:border-red-900/30">
-               <ShieldAlert className="h-3 w-3 text-red-600 animate-pulse" />
-               <span className="text-[10px] font-black uppercase tracking-tighter text-red-600">Secure Audit</span>
+            <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
+               <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
+               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
             </div>
             <LanguageDropdown />
             <ThemeToggle />
@@ -61,16 +61,18 @@ export default async function AdminLogsPage() {
         </header>
 
         <main className="flex flex-1 flex-col gap-6 p-6 bg-zinc-50/50 dark:bg-zinc-950/50">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg text-purple-600 dark:text-purple-400">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center text-zinc-900 dark:text-zinc-100">
                 <Terminal className="h-5 w-5" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">System Activity Logs</h1>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">System Activity Logs</h1>
+                <p className="text-xs text-zinc-500 font-medium">
+                  Real-time auditing of system events, security exceptions, and administrative actions.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-zinc-500 font-medium ml-11">
-              Real-time auditing of system events, security exceptions, and administrative actions.
-            </p>
           </div>
 
           <LogList initialLogs={JSON.parse(JSON.stringify(logs))} />

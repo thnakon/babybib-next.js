@@ -91,21 +91,21 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+          <div className="relative flex-1 max-w-sm group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-purple-500 transition-colors" />
             <Input
               id="log-search-input"
-              placeholder="Search by event, user, or IP..."
-              className="pl-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl h-9 text-sm focus-visible:ring-purple-500"
+              placeholder="Search activity logs..."
+              className="pl-9 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl h-8.5 text-xs focus-visible:ring-1 focus-visible:ring-purple-500/30 focus-visible:border-purple-500/30 transition-all shadow-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Category:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Category</span>
             <Select value={categoryFilter} onValueChange={(val) => setCategoryFilter(val || "ALL")}>
-              <SelectTrigger id="category-filter-trigger" className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+              <SelectTrigger id="category-filter-trigger" className="w-[130px] rounded-xl bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 !h-8.5 shadow-none text-[11px] font-semibold">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
@@ -119,9 +119,9 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
           </div>
 
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Severity:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Severity</span>
             <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
-              <SelectTrigger id="status-filter-trigger" className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
+              <SelectTrigger id="status-filter-trigger" className="w-[130px] rounded-xl bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 !h-8.5 shadow-none text-[11px] font-semibold">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent>
@@ -135,20 +135,20 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
           </div>
 
           <div className="hidden xl:flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Range:</span>
-            <div className="flex items-center gap-1">
-              <Input
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Range</span>
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 rounded-xl">
+              <input
                 id="log-start-date-input"
                 type="date"
-                className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-[10px] w-[120px] px-2 font-bold"
+                className="bg-transparent border-none outline-none text-[10px] font-semibold text-zinc-600 dark:text-zinc-400 w-[100px] cursor-pointer"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
-              <span className="text-zinc-400 text-[10px] font-black">-</span>
-              <Input
+              <div className="w-1 h-[1px] bg-zinc-300 dark:bg-zinc-700" />
+              <input
                 id="log-end-date-input"
                 type="date"
-                className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-[10px] w-[120px] px-2 font-bold"
+                className="bg-transparent border-none outline-none text-[10px] font-semibold text-zinc-600 dark:text-zinc-400 w-[100px] cursor-pointer"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
@@ -157,12 +157,11 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
         </div>
         
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-zinc-100 dark:bg-zinc-800 border-none font-bold py-1 px-3">
-            {filteredLogs.length} Events Total
-          </Badge>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-zinc-400">
-             <Filter className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100/50 dark:bg-zinc-800/50 rounded-full border border-zinc-200/50 dark:border-zinc-700/50">
+            <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+              {filteredLogs.length} <span className="font-medium">Events Total</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -171,12 +170,12 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800">
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider w-[250px]">Event Description</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Initiator</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Timestamp</th>
-                <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-wider text-right">Action</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[250px]">Event Description</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Initiator</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Timestamp</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -184,15 +183,15 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
                 <tr key={log.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                      <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
                         {log.action}
                       </span>
-                      <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest">LOG-{log.id}</span>
+                      <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-widest">LOG-{log.id}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className={cn(
-                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider",
+                      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
                       log.status === "SUCCESS" && "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400",
                       log.status === "WARNING" && "bg-orange-50 text-orange-600 dark:bg-orange-950/20 dark:text-orange-400",
                       log.status === "CRITICAL" && "bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 underline decoration-red-500/30 underline-offset-4",
@@ -203,18 +202,18 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/50 px-2 py-1 rounded-lg w-fit border border-zinc-100 dark:border-zinc-800/50">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/50 px-2 py-1 rounded-lg w-fit border border-zinc-100 dark:border-zinc-800/50">
                       {getCategoryIcon(log.category)}
                       {log.category}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <div className="flex items-center gap-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                      <div className="flex items-center gap-1.5 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                         <User className="h-3 w-3" />
                         {log.user?.email || "System"}
                       </div>
-                      <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-tight mt-0.5">{log.ipAddress || "Internal"}</span>
+                      <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-tight mt-0.5">{log.ipAddress || "Internal"}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
