@@ -89,8 +89,8 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex flex-1 items-center gap-2 w-full md:w-auto">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-1 items-center gap-2">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <Input
@@ -103,41 +103,42 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
           </div>
 
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Category:</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Category:</span>
             <Select value={categoryFilter} onValueChange={(val) => setCategoryFilter(val || "ALL")}>
-              <SelectTrigger id="category-filter" className="w-[130px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
+              <SelectTrigger id="category-filter-trigger" className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="ALL" className="text-xs font-bold">All Categories</SelectItem>
-                <SelectItem value="AUTH" className="text-xs font-bold">Authentication</SelectItem>
-                <SelectItem value="DATA" className="text-xs font-bold">Data Management</SelectItem>
-                <SelectItem value="SECURITY" className="text-xs font-bold">Security</SelectItem>
-                <SelectItem value="SYSTEM" className="text-xs font-bold">System</SelectItem>
+              <SelectContent>
+                <SelectItem value="ALL">All Categories</SelectItem>
+                <SelectItem value="AUTH">Authentication</SelectItem>
+                <SelectItem value="DATA">Data Management</SelectItem>
+                <SelectItem value="SECURITY">Security</SelectItem>
+                <SelectItem value="SYSTEM">System</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Severity:</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Severity:</span>
             <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
-              <SelectTrigger id="status-filter" className="w-[130px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none text-xs font-bold">
+              <SelectTrigger id="status-filter-trigger" className="w-[140px] rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 !h-8 shadow-none">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="ALL" className="text-xs font-bold">All Status</SelectItem>
-                <SelectItem value="SUCCESS" className="text-xs font-bold text-emerald-600">Success</SelectItem>
-                <SelectItem value="WARNING" className="text-xs font-bold text-orange-600">Warning</SelectItem>
-                <SelectItem value="CRITICAL" className="text-xs font-bold text-red-600">Critical</SelectItem>
-                <SelectItem value="INFO" className="text-xs font-bold text-blue-600">Info</SelectItem>
+              <SelectContent>
+                <SelectItem value="ALL">All Status</SelectItem>
+                <SelectItem value="SUCCESS" className="text-emerald-600">Success</SelectItem>
+                <SelectItem value="WARNING" className="text-orange-600">Warning</SelectItem>
+                <SelectItem value="CRITICAL" className="text-red-600">Critical</SelectItem>
+                <SelectItem value="INFO" className="text-blue-600">Info</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="hidden xl:flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Range:</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 whitespace-nowrap">Range:</span>
             <div className="flex items-center gap-1">
               <Input
+                id="log-start-date-input"
                 type="date"
                 className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-[10px] w-[120px] px-2 font-bold"
                 value={startDate}
@@ -145,6 +146,7 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
               />
               <span className="text-zinc-400 text-[10px] font-black">-</span>
               <Input
+                id="log-end-date-input"
                 type="date"
                 className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-[10px] w-[120px] px-2 font-bold"
                 value={endDate}
