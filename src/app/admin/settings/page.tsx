@@ -129,7 +129,7 @@ export default function AdminSettingsPage() {
               <Button 
                 onClick={handleSave} 
                 disabled={isSaving}
-                className="rounded-xl font-black text-[10px] uppercase tracking-wider h-11 px-8 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 transition-all shadow-xl shadow-zinc-900/10 dark:shadow-white/5 border-none"
+                className="rounded-xl font-black text-[10px] uppercase tracking-wider h-9 px-5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 transition-all shadow-xl shadow-zinc-900/10 dark:shadow-white/5 border-none"
               >
                 {isSaving ? (
                   <RefreshCw className="h-3.5 w-3.5 animate-spin" />
