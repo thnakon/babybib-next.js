@@ -16,6 +16,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
 import { Database, Settings2, Info } from "lucide-react"
+import { AdminSearch } from "@/components/admin/admin-search"
 
 export default function AdminStylesPage() {
   return (
@@ -47,9 +48,12 @@ export default function AdminStylesPage() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="flex items-center gap-2">
-            <LanguageDropdown />
-            <ThemeToggle />
+          <div className="flex items-center gap-4">
+            <AdminSearch />
+            <div className="flex items-center gap-2">
+              <LanguageDropdown />
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 

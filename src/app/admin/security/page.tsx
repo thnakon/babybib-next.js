@@ -20,7 +20,6 @@ import { LanguageDropdown } from "@/components/language-dropdown"
 import { getSecurityOverview } from "@/lib/admin"
 import { 
   ShieldCheck, 
-  ShieldAlert, 
   Lock, 
   Key, 
   Activity, 
@@ -36,6 +35,7 @@ import {
   AlertTriangle,
   History
 } from "lucide-react"
+import { AdminSearch } from "@/components/admin/admin-search"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
@@ -68,20 +68,8 @@ export default async function AdminSecurityPage() {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative hidden md:block w-64 group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-purple-500 transition-colors" />
-              <Input
-                id="admin-security-search"
-                type="search"
-                placeholder="Search security logs..."
-                className="pl-9 h-8.5 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl text-xs focus-visible:ring-1 focus-visible:ring-purple-500/30 shadow-none transition-all"
-              />
-            </div>
+            <AdminSearch />
             <div className="flex items-center gap-2">
-              <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                 <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
-                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
-              </div>
               <LanguageDropdown />
               <ThemeToggle />
             </div>

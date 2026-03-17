@@ -15,7 +15,8 @@ import {
 } from "@/components/animate-ui/components/radix/sidebar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
-import { MessageSquare, LifeBuoy, Clock, CheckCircle2, AlertCircle, ShieldAlert } from "lucide-react"
+import { MessageSquare, LifeBuoy, Clock, CheckCircle2, AlertCircle } from "lucide-react"
+import { AdminSearch } from "@/components/admin/admin-search"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -57,13 +58,12 @@ export default async function AdminSupportPage() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
-               <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
-               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
+          <div className="flex items-center gap-4">
+            <AdminSearch />
+            <div className="flex items-center gap-2">
+              <LanguageDropdown />
+              <ThemeToggle />
             </div>
-            <LanguageDropdown />
-            <ThemeToggle />
           </div>
         </header>
 

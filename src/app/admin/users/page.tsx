@@ -17,7 +17,8 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
 import { getAllUsers } from "@/lib/admin"
 import { UserList } from "@/components/admin/user-list"
-import { Users, ShieldAlert } from "lucide-react"
+import { Users } from "lucide-react"
+import { AdminSearch } from "@/components/admin/admin-search"
 
 export default async function AdminUsersPage() {
   const users = await getAllUsers()
@@ -51,13 +52,12 @@ export default async function AdminUsersPage() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="mr-2 flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
-               <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />
-               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Secure Audit</span>
+          <div className="flex items-center gap-4">
+            <AdminSearch />
+            <div className="flex items-center gap-2">
+              <LanguageDropdown />
+              <ThemeToggle />
             </div>
-            <LanguageDropdown />
-            <ThemeToggle />
           </div>
         </header>
 
