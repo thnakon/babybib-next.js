@@ -126,14 +126,14 @@ export default async function AdminSecurityPage() {
             <Card className="border-zinc-100 dark:border-zinc-800/50 shadow-sm overflow-hidden group hover:shadow-md transition-all">
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-bold text-zinc-500">Security Coverage</CardTitle>
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                <div className="p-2 bg-zinc-900 dark:bg-zinc-100 rounded-lg text-white dark:text-zinc-900 group-hover:scale-110 transition-transform">
                   <Lock className="h-4 w-4" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-black text-zinc-900 dark:text-zinc-100">100%</div>
                 <p className="text-[10px] text-zinc-500 mt-1 flex items-center gap-1 font-medium">
-                  <Globe className="h-3 w-3 text-purple-500" />
+                  <Globe className="h-3 w-3 text-zinc-500" />
                   <span>SSL & Firewall verified</span>
                 </p>
               </CardContent>

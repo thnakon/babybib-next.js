@@ -59,7 +59,7 @@ export default function AdminStylesPage() {
 
         <main className="flex flex-1 flex-col gap-6 p-6 bg-zinc-50/50 dark:bg-zinc-950/50">
           <div className="flex flex-col gap-1 text-center items-center justify-center py-20">
-            <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-2xl text-purple-600 dark:text-purple-400 mb-4 ring-8 ring-purple-500/5 items-center justify-center flex">
+            <div className="p-4 bg-zinc-900 dark:bg-zinc-100 rounded-2xl text-white dark:text-zinc-900 mb-4 ring-8 ring-zinc-500/5 items-center justify-center flex">
               <Database className="h-10 w-10 animate-pulse" />
             </div>
             <h1 className="text-3xl font-black tracking-tighter text-zinc-900 dark:text-zinc-100">Style Engine Configuration</h1>

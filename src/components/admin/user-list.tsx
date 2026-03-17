@@ -209,11 +209,11 @@ export function UserList({ initialUsers }: UserListProps) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-1 items-center gap-2">
           <div className="relative flex-1 max-w-sm group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-purple-500 transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors" />
             <Input
               id="user-search-input"
               placeholder="Search users..."
-              className="pl-9 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl h-8.5 text-xs focus-visible:ring-1 focus-visible:ring-purple-500/30 focus-visible:border-purple-500/30 transition-all shadow-none"
+              className="pl-9 bg-white/50 dark:bg-zinc-900/50 border-zinc-200/60 dark:border-zinc-800/60 rounded-xl h-8.5 text-xs focus-visible:ring-1 focus-visible:ring-zinc-500/30 focus-visible:border-zinc-500/30 transition-all shadow-none outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -305,7 +305,7 @@ export function UserList({ initialUsers }: UserListProps) {
                     <div className={cn(
                       "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all w-fit",
                       user.role === "ADMIN" 
-                        ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 ring-1 ring-purple-500/10" 
+                        ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 ring-1 ring-zinc-950/10" 
                         : "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 ring-1 ring-blue-500/10"
                     )}>
                       {user.role === "ADMIN" ? <ShieldCheck className="h-3 w-3" /> : <Shield className="h-3 w-3" />}
