@@ -132,9 +132,9 @@ export function AdminSearch() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="group relative flex h-9 w-64 items-center gap-2 rounded-xl border border-zinc-200 bg-white/50 px-3 text-xs text-zinc-400 transition-all hover:bg-white hover:ring-1 hover:ring-purple-500/20 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 shadow-sm outline-none focus:ring-1 focus:ring-purple-500/30"
+        className="group relative flex h-9 w-64 items-center gap-2 rounded-xl border border-zinc-200 bg-white/50 px-3 text-xs text-zinc-400 transition-all hover:bg-white hover:ring-1 hover:ring-zinc-500/20 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 shadow-sm outline-none focus:ring-1 focus:ring-zinc-500/30"
       >
-        <Search className="h-3.5 w-3.5 group-hover:text-purple-500 transition-colors" />
+        <Search className="h-3.5 w-3.5 group-hover:text-zinc-600 transition-colors" />
         <span className="flex-1 text-left">Search resources...</span>
         <div className="flex items-center gap-1 rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 font-mono text-[10px] font-bold text-zinc-500 dark:border-zinc-800 dark:bg-zinc-800">
           <span>⌘</span>
@@ -178,7 +178,7 @@ export function AdminSearch() {
                         className="group flex items-center justify-between rounded-xl px-3 py-2.5 text-left transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-50 dark:bg-zinc-900 text-zinc-500 group-hover:text-purple-600 transition-colors ring-1 ring-zinc-100 dark:ring-zinc-800">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-50 dark:bg-zinc-900 text-zinc-500 group-hover:text-zinc-900 transition-colors ring-1 ring-zinc-100 dark:ring-zinc-800">
                             <route.icon className="h-4 w-4" />
                           </div>
                           <div className="flex flex-col">

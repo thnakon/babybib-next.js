@@ -111,79 +111,95 @@ export default function AdminSettingsPage() {
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col p-4 md:p-8 bg-zinc-50/30 dark:bg-zinc-950/20">
-          <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-            
-            {/* Sidebar Navigation */}
-            <aside className="flex flex-col gap-1.5 h-fit lg:sticky lg:top-24">
-              <div className="px-3 mb-2">
-                 <h2 className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-400">Settings Manager</h2>
-              </div>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={cn(
-                    "group flex items-center gap-3 px-3 py-2.5 rounded-2xl text-left transition-all duration-300 relative overflow-hidden",
-                    activeCategory === cat.id 
-                      ? "bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800" 
-                      : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-                  )}
-                >
-                  <div className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-300",
-                    activeCategory === cat.id 
-                      ? "bg-purple-500 text-white shadow-lg shadow-purple-500/20 rotate-0" 
-                      : "bg-zinc-50 dark:bg-zinc-900 text-zinc-400 group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800 -rotate-3 group-hover:rotate-0"
-                  )}>
-                    <cat.icon className="h-4 w-4" />
+        <main className="flex flex-1 flex-col p-4 md:p-8 bg-zinc-50/30 dark:bg-zinc-950/20 gap-8">
+          <div className="max-w-6xl mx-auto w-full flex flex-col gap-8">
+            {/* Page Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center text-zinc-900 dark:text-zinc-100">
+                    <Settings2 className="h-5 w-5" />
                   </div>
-                  <div className="flex flex-col flex-1 overflow-hidden">
-                    <span className={cn(
-                      "text-xs font-bold leading-none mb-0.5",
-                      activeCategory === cat.id ? "text-zinc-900 dark:text-zinc-100" : ""
-                    )}>
-                      {cat.label}
-                    </span>
-                    <span className="text-[9px] text-zinc-400 font-medium truncate">
-                      {cat.description}
-                    </span>
+                  <div className="flex flex-col">
+                    <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">System Settings</h1>
+                    <p className="text-xs text-zinc-500 font-medium">Real-time system configuration and platform management.</p>
                   </div>
-                  {activeCategory === cat.id && (
-                    <motion.div 
-                      layoutId="active-indicator"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-purple-500 rounded-l-full"
-                    />
-                  )}
-                  {activeCategory !== cat.id && (
-                    <ChevronRight className="h-3 w-3 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity -mr-1" />
-                  )}
-                </button>
-              ))}
-            </aside>
-
-            {/* Content Area */}
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center justify-between gap-4 h-12">
-                <div className="flex flex-col">
-                   <h1 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">{activeInfo?.label} Settings</h1>
-                   <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{activeInfo?.description}</p>
                 </div>
-                <Button 
-                  onClick={handleSave} 
-                  disabled={isSaving}
-                  className="rounded-xl font-black text-[10px] uppercase tracking-wider h-10 px-6 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 transition-all shadow-xl shadow-zinc-900/10 dark:shadow-white/5 border-none"
-                >
-                  {isSaving ? (
-                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <div className="flex items-center gap-2">
-                       <span>Apply Changes</span>
-                       <Save className="h-3.5 w-3.5" />
-                    </div>
-                  )}
-                </Button>
               </div>
+              <Button 
+                onClick={handleSave} 
+                disabled={isSaving}
+                className="rounded-xl font-black text-[10px] uppercase tracking-wider h-11 px-8 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 transition-all shadow-xl shadow-zinc-900/10 dark:shadow-white/5 border-none"
+              >
+                {isSaving ? (
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <div className="flex items-center gap-2">
+                     <span>Apply Changes</span>
+                     <Save className="h-3.5 w-3.5" />
+                  </div>
+                )}
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
+              
+              {/* Sidebar Navigation */}
+              <aside className="flex flex-col gap-1.5 h-fit lg:sticky lg:top-24">
+                <div className="px-3 mb-2">
+                  <h2 className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-400">Settings Manager</h2>
+                </div>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={cn(
+                      "group flex items-center gap-3 px-3 py-2.5 rounded-2xl text-left transition-all duration-300 relative overflow-hidden",
+                      activeCategory === cat.id 
+                        ? "bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800" 
+                        : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-300",
+                      activeCategory === cat.id 
+                        ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-lg shadow-zinc-900/10 rotate-0" 
+                        : "bg-zinc-50 dark:bg-zinc-900 text-zinc-400 group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800 -rotate-3 group-hover:rotate-0"
+                    )}>
+                      <cat.icon className="h-4 w-4" />
+                    </div>
+                    <div className="flex flex-col flex-1 overflow-hidden">
+                      <span className={cn(
+                        "text-xs font-bold leading-none mb-0.5",
+                        activeCategory === cat.id ? "text-zinc-900 dark:text-zinc-100" : ""
+                      )}>
+                        {cat.label}
+                      </span>
+                      <span className="text-[9px] text-zinc-400 font-medium truncate">
+                        {cat.description}
+                      </span>
+                    </div>
+                    {activeCategory === cat.id && (
+                      <motion.div 
+                        layoutId="active-indicator"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-zinc-900 dark:bg-zinc-100 rounded-l-full"
+                      />
+                    )}
+                    {activeCategory !== cat.id && (
+                      <ChevronRight className="h-3 w-3 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity -mr-1" />
+                    )}
+                  </button>
+                ))}
+              </aside>
+
+              {/* Content Area */}
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center justify-between gap-4 h-12">
+                  <div className="flex flex-col">
+                    <h2 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">{activeInfo?.label} Settings</h2>
+                    <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{activeInfo?.description}</p>
+                  </div>
+                </div>
 
               <div className="relative min-h-[400px]">
                 <AnimatePresence mode="wait">
@@ -200,7 +216,7 @@ export default function AdminSettingsPage() {
                         <Card className="border-none shadow-sm ring-1 ring-zinc-100 dark:ring-zinc-800 overflow-hidden bg-white/50 dark:bg-zinc-900/30 backdrop-blur-sm">
                           <CardHeader className="p-6 pb-2">
                              <div className="flex items-center gap-2 mb-1">
-                                <Badge className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-none font-black text-[8px] uppercase tracking-widest px-2 py-0.5">Core</Badge>
+                                <Badge className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-none font-black text-[8px] uppercase tracking-widest px-2 py-0.5">Core</Badge>
                              </div>
                              <CardTitle className="text-sm font-bold">Platform Information</CardTitle>
                           </CardHeader>
@@ -208,16 +224,16 @@ export default function AdminSettingsPage() {
                             <div className="grid gap-6 md:grid-cols-2">
                               <div className="space-y-2">
                                 <Label className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Site Title</Label>
-                                <Input defaultValue="Babybib - Smart Book Management" className="rounded-xl h-11 text-xs border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-950 focus:ring-purple-500/20" />
+                                <Input defaultValue="Babybib - Smart Book Management" className="rounded-xl h-11 text-xs border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-950 focus:ring-zinc-500/20" />
                               </div>
                               <div className="space-y-2">
                                 <Label className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Support Inquiry Email</Label>
-                                <Input defaultValue="support@babybib.com" className="rounded-xl h-11 text-xs border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-950 focus:ring-purple-500/20" />
+                                <Input defaultValue="support@babybib.com" className="rounded-xl h-11 text-xs border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-950 focus:ring-zinc-500/20" />
                               </div>
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Default Locale</Label>
-                                <Input defaultValue="Thai (Standard)" className="rounded-xl h-11 text-xs border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-950 focus:ring-purple-500/20" />
+                                <Input defaultValue="Thai (Standard)" className="rounded-xl h-11 text-xs border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-950 focus:ring-zinc-500/20" />
                             </div>
                           </CardContent>
                         </Card>
@@ -301,7 +317,7 @@ export default function AdminSettingsPage() {
                             </div>
                             <div className="flex items-center justify-between p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-950">
                                 <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 flex items-center justify-center">
                                         <Zap className="h-5 w-5" />
                                     </div>
                                     <div className="flex flex-col gap-0.5">
@@ -309,7 +325,7 @@ export default function AdminSettingsPage() {
                                         <span className="text-[10px] text-zinc-500 font-medium">Enable fluid interface transitions</span>
                                     </div>
                                 </div>
-                                <Badge className="bg-purple-500 text-white border-none font-black text-[8px] tracking-widest px-2.5 h-6 uppercase">Enabled</Badge>
+                                <Badge className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 border-none font-black text-[8px] tracking-widest px-2.5 h-6 uppercase">Enabled</Badge>
                             </div>
                           </CardContent>
                         </Card>
@@ -365,7 +381,8 @@ export default function AdminSettingsPage() {
             </div>
 
           </div>
-        </main>
+        </div>
+      </main>
       </SidebarInset>
     </SidebarProvider>
   )
