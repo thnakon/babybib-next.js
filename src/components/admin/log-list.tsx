@@ -279,7 +279,10 @@ export function LogList({ initialLogs }: { initialLogs: LogEntry[] }) {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors outline-none focus-visible:ring-0 ml-auto">
+                      <DropdownMenuTrigger 
+                        id={`log-trigger-${log.id}`}
+                        className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors outline-none focus-visible:ring-0 ml-auto"
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48 rounded-xl">
