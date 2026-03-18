@@ -1213,7 +1213,17 @@ export default function GeneratePage() {
   };
 
   const handleEditProjectClick = (p: any) => {
-    const raw = (fetchedProjects || []).find((pf: any) => pf.id === p.id) || archivedProjects.find((pf: any) => pf.id === p.id);
+    let raw;
+    if (!session) {
+      raw = localProjects.find((pf: any) => pf.id === p.id);
+    } else {
+      const activeList = Array.isArray(fetchedProjects) ? fetchedProjects : [];
+      const archivedList = Array.isArray(archivedProjects) ? archivedProjects : [];
+      raw = activeList.find((pf: any) => pf.id === p.id) || archivedList.find((pf: any) => pf.id === p.id);
+    }
+
+    if (!raw) raw = p; // Fallback to the passed project object
+
     setEditingProject(raw);
     setNewProject({
       name: raw.name,
