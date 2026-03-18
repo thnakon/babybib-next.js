@@ -119,9 +119,9 @@ const data = {
       icon: FileText,
     },
     {
-      name: "Security Settings",
-      url: "/admin/security",
-      icon: ShieldCheck,
+      name: "Database Backup",
+      url: "/admin/backup",
+      icon: Database,
     },
     {
       name: "General Settings",

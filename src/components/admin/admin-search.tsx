@@ -82,10 +82,10 @@ const adminRoutes = [
     category: "System",
   },
   {
-    title: "Security Settings",
-    description: "Hardening and audits",
-    url: "/admin/security",
-    icon: ShieldCheck,
+    title: "Database Backup",
+    description: "Automated snapshots",
+    url: "/admin/backup",
+    icon: Database,
     category: "System",
   },
   {
