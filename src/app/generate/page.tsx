@@ -493,8 +493,8 @@ export default function GeneratePage() {
       return;
     }
     
-    // basic validation
-    if (!newCitationData.title || newCitationData.authors.every((a: any) => !a.lastName && !a.firstName)) {
+    // basic validation: Title is the only strictly required field now
+    if (!newCitationData.title) {
       toast.error(t.toasts.fillRequired);
       return;
     }
@@ -1993,7 +1993,7 @@ export default function GeneratePage() {
               >
                 <h2 className="text-2xl font-serif text-center mb-12 text-zinc-900 dark:text-zinc-100">{t.references}</h2>
                 
-                {citations.length > 0 ? (
+                {processedCitations.length > 0 ? (
                   <div className="flex flex-col gap-1">
                     {processedCitations.map((citation: any, index: number) => (
                       <motion.div 
@@ -3113,7 +3113,7 @@ export default function GeneratePage() {
 
                           <div className="flex flex-col gap-2">
                             <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">
-                              {t.form.title}
+                              {t.form.title} <span className="text-red-500">*</span>
                             </label>
                             <input 
                               type="text" 

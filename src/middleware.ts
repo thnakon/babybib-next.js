@@ -5,27 +5,48 @@ export default withAuth(
   function middleware(req) {
     const token = req.nextauth.token;
     const isVerified = !!token?.emailVerified;
-    const isVerifyPage = req.nextUrl.pathname.startsWith("/signup"); // Signup form actually has the verification step
+    const pathname = req.nextUrl.pathname;
 
-    // If you are going to /generate but not verified, go to signup step 2 (Verification)
-    // Actually, according to the user request, we should probably have a dedicated verify page or force them back to signup
-    // But since the signup form already has the logic, let's see.
-    // User said: "บังคับให้ไปหน้า ยืนยันเมลก่อน" (Force to go to verification page first)
-    
-    console.log("Middleware Check:", { path: req.nextUrl.pathname, role: token?.role });
+    console.log("Middleware Check:", { path: pathname, role: token?.role, isVerified });
 
-    if (req.nextUrl.pathname.startsWith("/admin") && token?.role !== "ADMIN") {
-      console.log("Middleware Redirecting: User is not ADMIN, path is /admin. Redirecting to /generate");
-      return NextResponse.redirect(new URL("/generate", req.url));
+    // 1. Protect Admin Routes: Must be logged in as ADMIN
+    if (pathname.startsWith("/admin")) {
+      if (token?.role !== "ADMIN") {
+        console.log("Middleware: Unauthorized admin access. Redirecting to /generate");
+        return NextResponse.redirect(new URL("/generate", req.url));
+      }
+      return NextResponse.next();
     }
 
-    if (req.nextUrl.pathname.startsWith("/generate") && !isVerified) {
+    // 2. Handle /generate route: 
+    // - Guests: Allowed
+    // - Logged in + Verified: Allowed
+    // - Logged in + UNVERIFIED: Redirect to /verify
+    if (pathname.startsWith("/generate")) {
+      if (token && !isVerified) {
+        console.log("Middleware: Logged-in user is unverified. Redirecting to /verify");
         return NextResponse.redirect(new URL("/verify", req.url));
+      }
+      return NextResponse.next();
     }
+
+    return NextResponse.next();
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      // Return true to always let the middleware function handle the logic,
+      // or false to automatically redirect to the login page.
+      authorized: ({ token, req }) => {
+        const pathname = req.nextUrl.pathname;
+        
+        // Allow public access to /generate for guests
+        if (pathname.startsWith("/generate")) {
+          return true;
+        }
+
+        // Require a token for everything else matched (like /admin)
+        return !!token;
+      },
     },
   }
 );
