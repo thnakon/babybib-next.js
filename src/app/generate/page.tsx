@@ -101,6 +101,12 @@ export default function GeneratePage() {
   const [projectToDelete, setProjectToDelete] = React.useState<any>(null);
   const [deleteConfirmName, setDeleteConfirmName] = React.useState("");
 
+  // AI Scanner State
+  const [isAiScannerModalOpen, setIsAiScannerModalOpen] = React.useState(false);
+  const [isAiScanning, setIsAiScanning] = React.useState(false);
+  const [aiScanResult, setAiScanResult] = React.useState<any>(null);
+  const [isAiTooltipVisible, setIsAiTooltipVisible] = React.useState(false);
+
   // Smart Search State
   const [mainSearchQuery, setMainSearchQuery] = React.useState("");
   const [isMainSearchDropdownOpen, setIsMainSearchDropdownOpen] = React.useState(false);
@@ -1659,6 +1665,56 @@ export default function GeneratePage() {
                       <FileUp className="h-4 w-4" />
                       {t.import}
                     </button>
+
+                    <div className="relative group/ai-container">
+                      {/* Tooltip */}
+                      <AnimatePresence>
+                        {isAiTooltipVisible && (
+                          <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 10, x: "-50%" }}
+                            animate={{ opacity: 1, scale: 1, y: 0, x: "-50%" }}
+                            exit={{ opacity: 0, scale: 0.95, y: 5, x: "-50%" }}
+                            className="absolute -top-12 left-1/2 px-3 py-1.5 bg-zinc-900 dark:bg-zinc-800 text-white text-[10px] font-bold rounded-lg pointer-events-none whitespace-nowrap z-[100] shadow-xl border border-white/10 flex items-center gap-2"
+                          >
+                            <Sparkles className="h-3 w-3 text-indigo-400 animate-pulse" />
+                            {t.aiScanTooltip}
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-900 dark:bg-zinc-800 rotate-45 border-r border-b border-white/10" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Horizontal Shimmer Border Wrapper */}
+                      <div 
+                        onMouseEnter={() => setIsAiTooltipVisible(true)}
+                        onMouseLeave={() => setIsAiTooltipVisible(false)}
+                        className="relative p-[1px] rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800 group-hover/ai-container:shadow-lg group-hover/ai-container:shadow-indigo-500/20 transition-all cursor-default"
+                      >
+                        {/* Constant Shimmer Beam (Left to Right) */}
+                        <motion.div 
+                          animate={{ 
+                            x: ['-200%', '200%'],
+                          }}
+                          transition={{ 
+                            duration: 3, 
+                            repeat: Infinity, 
+                            ease: "linear",
+                          }}
+                          className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent skew-x-12 opacity-80"
+                        />
+                        
+                        {/* Interactive Glow (Only on Hover) */}
+                        <div className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#4f46e5_0%,#a855f7_50%,#4f46e5_100%)] opacity-0 group-hover/ai-container:opacity-20 transition-opacity blur-sm" />
+                        
+                        <button 
+                          type="button"
+                          onClick={() => setIsAiScannerModalOpen(true)}
+                          className="relative flex h-9 items-center gap-2 rounded-xl bg-white dark:bg-zinc-950 px-4 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-white dark:hover:bg-zinc-950 transition-all active:scale-95 border border-transparent z-10"
+                        >
+                          <Sparkles className="h-4 w-4 text-indigo-500 group-hover/ai:animate-pulse" />
+                          AI Scan
+                        </button>
+                      </div>
+                    </div>
                 </div>
                 
                 <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
@@ -3412,6 +3468,213 @@ export default function GeneratePage() {
                     {t.deleteTitle}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* AI Scanner Modal */}
+      <AnimatePresence>
+        {isAiScannerModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => { if (!isAiScanning) { setIsAiScannerModalOpen(false); setAiScanResult(null); } }}
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-zinc-200/50 dark:border-zinc-800 overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <Sparkles className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">AI Smart Scanner</h3>
+                    <p className="text-xs text-zinc-500">Upload a PDF to auto-extract citation data</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => { if (!isAiScanning) { setIsAiScannerModalOpen(false); setAiScanResult(null); } }}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                {isAiScanning ? (
+                  <div className="flex flex-col items-center justify-center py-12 gap-4">
+                    <div className="relative">
+                      <div className="h-16 w-16 rounded-full border-4 border-indigo-100 dark:border-indigo-900 border-t-indigo-500 animate-spin" />
+                      <Sparkles className="h-6 w-6 text-indigo-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+                    </div>
+                    <p className="text-sm font-bold text-zinc-600 dark:text-zinc-400">AI is analyzing your document...</p>
+                    <p className="text-xs text-zinc-400">This may take a few seconds</p>
+                  </div>
+                ) : aiScanResult ? (
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-900/20 border border-green-200/50 dark:border-green-800/30">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span className="text-sm font-bold text-green-700 dark:text-green-400">Extraction Complete!</span>
+                      </div>
+                      <p className="text-xs text-green-600 dark:text-green-500">Review the data below, then click "Use This Data" to fill the citation form.</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs font-bold text-zinc-500 mb-1 block">Title</label>
+                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-800 rounded-xl px-3 py-2">{aiScanResult.title || '—'}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-zinc-500 mb-1 block">Authors</label>
+                        <p className="text-sm text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800 rounded-xl px-3 py-2">
+                          {aiScanResult.authors?.map((a: any) => `${a.firstName} ${a.lastName}`.trim()).join(', ') || '—'}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-bold text-zinc-500 mb-1 block">Year</label>
+                          <p className="text-sm text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800 rounded-xl px-3 py-2">{aiScanResult.year || '—'}</p>
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-zinc-500 mb-1 block">Type</label>
+                          <p className="text-sm text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800 rounded-xl px-3 py-2 capitalize">{aiScanResult.type || '—'}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-zinc-500 mb-1 block">Source</label>
+                        <p className="text-sm text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800 rounded-xl px-3 py-2">{aiScanResult.source || '—'}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button
+                        onClick={() => { setAiScanResult(null); }}
+                        className="flex-1 h-11 rounded-xl text-sm font-bold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                      >
+                        Scan Another
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingCitationId(null);
+                          setNewCitationData({
+                            authors: aiScanResult.authors?.length > 0 
+                              ? aiScanResult.authors.map((a: any) => ({
+                                  firstName: a.firstName || '',
+                                  middleName: a.middleName || '',
+                                  lastName: a.lastName || '',
+                                  prefix: '',
+                                  condition: a.condition || 'general'
+                                }))
+                              : [{ firstName: '', middleName: '', lastName: '', prefix: '', condition: 'general' }],
+                            year: aiScanResult.year || '',
+                            title: aiScanResult.title || '',
+                            source: aiScanResult.source || '',
+                            url: aiScanResult.url || ''
+                          });
+                          setSelectedType(aiScanResult.type || 'article');
+                          setCitationStep(1);
+                          setIsAddCitationModalOpen(true);
+                          setIsAiScannerModalOpen(false);
+                          setAiScanResult(null);
+                          toast.success('Citation data extracted! Review and save.');
+                        }}
+                        className="flex-[2] h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-bold hover:from-indigo-600 hover:to-purple-700 transition-all shadow-lg shadow-indigo-500/20 active:scale-95"
+                      >
+                        Use This Data
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label
+                      htmlFor="ai-pdf-upload"
+                      className="flex flex-col items-center justify-center py-12 px-6 border-2 border-dashed border-indigo-200 dark:border-indigo-800/50 rounded-2xl cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-600 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all group"
+                    >
+                      <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <FileText className="h-7 w-7 text-indigo-500" />
+                      </div>
+                      <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1">
+                        Click to select a PDF file
+                      </p>
+                      <p className="text-xs text-zinc-400 text-center">
+                        AI will read the first pages and extract title, authors, year & source
+                      </p>
+                    </label>
+                    <input
+                      id="ai-pdf-upload"
+                      type="file"
+                      accept=".pdf"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        setIsAiScanning(true);
+                        try {
+                          // Use pdfjs-dist to extract text
+                          const pdfjsLib = await import('pdfjs-dist');
+                          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.mjs`;
+
+                          const arrayBuffer = await file.arrayBuffer();
+                          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                          
+                          let extractedText = '';
+                          const pagesToRead = Math.min(pdf.numPages, 3);
+                          
+                          for (let i = 1; i <= pagesToRead; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items
+                              .map((item: any) => item.str)
+                              .join(' ');
+                            extractedText += pageText + '\n\n';
+                          }
+
+                          if (extractedText.trim().length < 20) {
+                            toast.error('Could not extract enough text from the PDF. The file may be image-based.');
+                            setIsAiScanning(false);
+                            return;
+                          }
+
+                          // Send to AI API
+                          const res = await fetch('/api/ai/scan-pdf', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text: extractedText })
+                          });
+
+                          if (!res.ok) {
+                            const err = await res.json();
+                            throw new Error(err.error || 'AI scan failed');
+                          }
+
+                          const result = await res.json();
+                          setAiScanResult(result);
+                        } catch (error: any) {
+                          console.error('AI Scan Error:', error);
+                          toast.error(error.message || 'Failed to scan PDF');
+                        } finally {
+                          setIsAiScanning(false);
+                          // Reset file input
+                          e.target.value = '';
+                        }
+                      }}
+                    />
+                    <p className="text-[11px] text-zinc-400 text-center mt-4">
+                      Powered by AI · Your document is processed securely
+                    </p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>

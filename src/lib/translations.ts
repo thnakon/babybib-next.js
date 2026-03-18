@@ -179,6 +179,7 @@ export const translations = {
       moreResources: "More Resources",
       resourceCondition: "Condition",
       authorIndex: "Author",
+      aiScanTooltip: "Scan PDF research paper to auto-fill",
     },
     home: {
       badge: "Smart ISBN Search",
@@ -375,6 +376,7 @@ export const translations = {
       moreResources: "ทรัพยากรเพิ่มเติม",
       resourceCondition: "เงื่อนไข",
       authorIndex: "ผู้แต่งคนที่",
+      aiScanTooltip: "สแกนไฟล์ PDF งานวิจัยเพื่อกรอกข้อมูลอัตโนมัติ",
     },
     home: {
       badge: "ค้นหา ISBN อัจฉริยะ",
@@ -571,6 +573,7 @@ export const translations = {
       moreResources: "更多资源",
       resourceCondition: "条件",
       authorIndex: "作者",
+      aiScanTooltip: "扫描 PDF 研究论文自动填写",
     },
     home: {
       badge: "智能 ISBN 搜索",
