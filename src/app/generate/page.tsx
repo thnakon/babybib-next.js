@@ -155,6 +155,19 @@ export default function GeneratePage() {
   };
 
   const paperRef = React.useRef<HTMLDivElement>(null);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Command/Ctrl + K to focus search
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const mockSearchResults = [
     { id: '1', title: 'The Design of Everyday Things', authors: [{ firstName: 'Donald', middleName: 'A.', lastName: 'Norman' }], year: '2013', source: 'Basic Books', type: 'book' },
@@ -657,33 +670,41 @@ export default function GeneratePage() {
       const dateStr = c.year ? `(${c.year}).` : '(n.d.).';
       const titleStr = c.title ? `${c.title}.` : '';
       const sourceStr = c.source ? ` ${c.source}.` : '';
-      content = <>{authorsStr} {dateStr} <i>{titleStr}</i>{sourceStr}</>;
-      html = `${authorsStr} ${dateStr} <i>${titleStr}</i>${sourceStr}`;
-      plainText = `${authorsStr} ${dateStr} ${titleStr}${sourceStr}`;
+      const urlStr = c.url ? ` ${c.url}` : '';
+      
+      content = <>{authorsStr} {dateStr} <i>{titleStr}</i>{sourceStr}{urlStr}</>;
+      html = `${authorsStr} ${dateStr} <i>${titleStr}</i>${sourceStr}${urlStr}`;
+      plainText = `${authorsStr} ${dateStr} ${titleStr}${sourceStr}${urlStr}`;
       inText = `(${authorLast}${numAuthors > 1 ? ' et al.' : ''}, ${c.year || 'n.d.'})`;
     } else if (style.includes('MLA')) {
       const authorsStr = authorsList.map((a: string, i: number) => i === 0 ? a : a.split(', ').reverse().join(' ')).join(', and ') || 'Unknown';
       const titleStr = c.title ? ` <i>${c.title}</i>.` : '';
       const sourceStr = c.source ? ` ${c.source},` : '';
       const dateStr = c.year ? ` ${c.year}.` : '';
-      content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}</>;
-      html = `${authorsStr}.${titleStr}${sourceStr}${dateStr}`;
-      plainText = `${authorsStr}. ${c.title || ''}.${sourceStr}${dateStr}`;
+      const urlStr = c.url ? ` ${c.url}.` : '';
+      
+      content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}{urlStr}</>;
+      html = `${authorsStr}.${titleStr}${sourceStr}${dateStr}${urlStr}`;
+      plainText = `${authorsStr}. ${c.title || ''}.${sourceStr}${dateStr}${urlStr}`;
       inText = `(${authorLast})`;
     } else if (style.includes('Chicago')) {
       const authorsStr = authorsList.map((a: string, i: number) => i === 0 ? a : a.split(', ').reverse().join(' ')).join(', and ') || 'Unknown';
       const titleStr = c.title ? ` <i>${c.title}</i>.` : '';
       const sourceStr = c.source ? ` ${c.source},` : '';
       const dateStr = c.year ? ` ${c.year}.` : '';
-      content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}</>;
-      html = `${authorsStr}.${titleStr}${sourceStr}${dateStr}`;
-      plainText = `${authorsStr}. ${c.title || ''}.${sourceStr}${dateStr}`;
+      const urlStr = c.url ? ` ${c.url}.` : '';
+      
+      content = <>{authorsStr}.<span dangerouslySetInnerHTML={{ __html: titleStr }} />{sourceStr}{dateStr}{urlStr}</>;
+      html = `${authorsStr}.${titleStr}${sourceStr}${dateStr}${urlStr}`;
+      plainText = `${authorsStr}. ${c.title || ''}.${sourceStr}${dateStr}${urlStr}`;
       inText = `(${authorLast} ${c.year || 'n.d.'})`;
     } else {
       const authorsStr = authorsList.map((a: string) => a.split(', ').reverse().join(' ')).join(', ') || 'Unknown';
-      content = <>{authorsStr}. "{c.title}". <i>{c.source}</i> ({c.year}).</>;
-      html = `${authorsStr}. "${c.title}". <i>${c.source}</i> (${c.year}).`;
-      plainText = `${authorsStr}. "${c.title}". ${c.source} (${c.year}).`;
+      const urlStr = c.url ? ` ${c.url}` : '';
+      
+      content = <>{authorsStr}. "{c.title}". <i>{c.source}</i> ({c.year}).{urlStr}</>;
+      html = `${authorsStr}. "${c.title}". <i>${c.source}</i> (${c.year}).${urlStr}`;
+      plainText = `${authorsStr}. "${c.title}". ${c.source} (${c.year}).${urlStr}`;
       inText = `[${c.id}]`;
     }
 
@@ -1631,6 +1652,7 @@ export default function GeneratePage() {
                   )}
                 </div>
                 <input 
+                  ref={searchInputRef}
                   type="text" 
                   value={mainSearchQuery}
                   onChange={(e) => handleMainSearch(e.target.value)}
