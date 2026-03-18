@@ -5,10 +5,16 @@ export async function PATCH(request: Request, context: any) {
   try {
     const { id } = await context.params;
     const body = await request.json();
+    const updateData = { ...body };
+    if (updateData.authors && Array.isArray(updateData.authors)) {
+      updateData.authors = JSON.stringify(updateData.authors);
+    }
+
     const citation = await prisma.citation.update({
       where: { id: parseInt(id) },
-      data: body
+      data: updateData
     });
+    
     return NextResponse.json(citation);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update citation' }, { status: 500 });

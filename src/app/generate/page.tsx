@@ -268,7 +268,11 @@ export default function GeneratePage() {
       });
       
       if (res.ok) {
-        const newCitation = await res.json();
+        const rawCitation = await res.json();
+        const newCitation = { 
+          ...rawCitation, 
+          authors: typeof rawCitation.authors === 'string' ? JSON.parse(rawCitation.authors) : rawCitation.authors 
+        };
         // Optimistic update
         mutateCitations([...citations, newCitation], false);
         setHighlightedId(newCitation.id);
@@ -277,9 +281,10 @@ export default function GeneratePage() {
       } else {
         throw new Error("Failed to save citation");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error(t.toasts.importError);
+      const errorMsg = error.message || t.toasts.importError;
+      toast.error(errorMsg);
     }
     
     setIsMainSearchDropdownOpen(false);
@@ -593,7 +598,11 @@ export default function GeneratePage() {
       });
 
       if (res.ok) {
-        const savedCitation = await res.json();
+        const rawCitation = await res.json();
+        const savedCitation = { 
+          ...rawCitation, 
+          authors: typeof rawCitation.authors === 'string' ? JSON.parse(rawCitation.authors) : rawCitation.authors 
+        };
         // Optimistic update
         if (editingCitationId) {
           mutateCitations(citations.map((c: any) => c.id === editingCitationId ? savedCitation : c), false);
@@ -642,6 +651,17 @@ export default function GeneratePage() {
   const { data: deletedCitations = [], mutate: mutateDeletedCitations } = useSWR(activeProjectId ? `/api/citations?projectId=${activeProjectId}&isDeleted=true` : null, fetcher);
 
   const getFormattedCitation = (c: any, style: string) => {
+    let authorsArr: any[] = [];
+    try {
+      if (typeof c.authors === 'string' && c.authors.trim().length > 0) {
+        authorsArr = JSON.parse(c.authors);
+      } else if (Array.isArray(c.authors)) {
+        authorsArr = c.authors;
+      }
+    } catch (e) {
+      authorsArr = [];
+    }
+
     let content;
     let html;
     let plainText;
@@ -661,9 +681,9 @@ export default function GeneratePage() {
       }
     };
 
-    const authorsList = c.authors?.map((a: any) => formatAuthor(a, style.includes('APA'))).filter(Boolean) || [];
+    const authorsList = authorsArr.map((a: any) => formatAuthor(a, style.includes('APA'))).filter(Boolean) || [];
     const numAuthors = authorsList.length;
-    const authorLast = c.authors?.[0]?.condition === 'org' ? c.authors[0].firstName : (c.authors?.[0]?.lastName || 'Unknown');
+    const authorLast = authorsArr?.[0]?.condition === 'org' ? authorsArr[0].firstName : (authorsArr?.[0]?.lastName || 'Unknown');
 
     if (style.includes('APA')) {
       const authorsStr = authorsList.join(' & ') || 'Unknown';
@@ -855,8 +875,15 @@ export default function GeneratePage() {
   const handleEditCitation = (citation: any) => {
     // citation here is the processed one, but we need the raw fields for the form
     const raw = citation.original;
+    let authorsArr = Array.isArray(raw.authors) ? raw.authors : [];
+    if (typeof raw.authors === 'string' && raw.authors.trim().length > 0) {
+      try {
+        authorsArr = JSON.parse(raw.authors);
+      } catch (e) { authorsArr = []; }
+    }
+
     setNewCitationData({
-      authors: raw.authors?.map((a: any) => ({
+      authors: authorsArr?.map((a: any) => ({
         firstName: a.firstName || '',
         middleName: a.middleName || '',
         lastName: a.lastName || '',

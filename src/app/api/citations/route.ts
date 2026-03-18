@@ -24,7 +24,22 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' }
     });
     
-    return NextResponse.json(citations);
+    const parsedCitations = citations.map((c: any) => {
+      let authors = [];
+      try {
+        if (typeof c.authors === 'string' && c.authors.trim().length > 0) {
+          authors = JSON.parse(c.authors);
+        } else if (Array.isArray(c.authors)) {
+          authors = c.authors;
+        }
+      } catch (e) {
+        console.error('Failed to parse authors for citation', c.id, e);
+        authors = [];
+      }
+      return { ...c, authors: Array.isArray(authors) ? authors : [] };
+    });
+    
+    return NextResponse.json(parsedCitations);
   } catch (error) {
     console.error('GET /api/citations failed:', error); // Improved logging
     return NextResponse.json({ error: 'Failed to fetch citations' }, { status: 500 });
@@ -50,7 +65,7 @@ export async function POST(request: Request) {
       data: {
         projectId: parsedProjectId,
         type: body.type || 'book',
-        authors: body.authors || [],
+        authors: typeof body.authors === 'string' ? body.authors : JSON.stringify(body.authors || []),
         authorCondition: body.authorCondition || 'general',
         year: body.year?.toString() || '',
         title: body.title,
@@ -60,8 +75,8 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(citation, { status: 201 });
-  } catch (error) {
-    console.error('POST /api/citations failed:', error); // Improved logging
-    return NextResponse.json({ error: 'Failed to create citation' }, { status: 500 });
+  } catch (error: any) {
+    console.error('POST /api/citations failed:', error);
+    return NextResponse.json({ error: 'Failed to create citation', details: error.message }, { status: 500 });
   }
 }
