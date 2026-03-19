@@ -16,7 +16,7 @@ import {
   FileText, Globe, Smartphone, Bot, ShoppingCart, LayoutDashboard, Briefcase, Library,
   Heart, ShieldCheck, Search, HelpCircle, Book, Download, FileJson, FileCode, FileSpreadsheet,
   List, LayoutList, Settings2, Info, Trash2, Quote, GripVertical, Sparkles, Archive, MoreVertical, 
-  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star, AlertTriangle
+  Type, ChevronRight, X, FilePlus, FileUp, Eye, Palette, Hash, Scale, Gavel, Mic2, Tv, Film, Music, Award, Mail, MessageSquare, Map as MapIcon, Languages, Newspaper, Video, ClipboardList, Star, AlertTriangle, ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -35,6 +35,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function GeneratePage() {
   const { language } = useLanguage();
   const t = translations[language].generate;
+  const commonT = translations[language].common;
   const { data: session } = useSession();
   const [style, setStyle] = React.useState("APA - 7th Edition");
   const [isStyleOpen, setIsStyleOpen] = React.useState(false);
@@ -2246,6 +2247,13 @@ export default function GeneratePage() {
               citationCount={session ? citations.length : localCitations.length}
               projectCount={projects.length}
             />
+
+            <div className="p-4 rounded-xl bg-gradient-to-br from-[#407bc4]/5 to-[#f58e58]/5 border border-[#407bc4]/10 dark:border-[#407bc4]/20">
+              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-2">{commonT.needHelp}</p>
+              <Link href="/contact" className="text-xs font-bold text-[#407bc4] hover:underline flex items-center gap-1">
+                {commonT.contactSupport} <ExternalLink className="h-2.5 w-2.5" />
+              </Link>
+            </div>
 
           </div>
         </motion.aside>

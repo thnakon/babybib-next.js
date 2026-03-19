@@ -10,6 +10,7 @@ import { Mail, CheckCircle2 } from "lucide-react"
 import { toast } from "sonner"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageDropdown } from "@/components/language-dropdown"
+import { Footer } from "@/components/footer"
 
 export default function VerifyPage() {
   const { data: session, status, update } = useSession()
@@ -108,60 +109,63 @@ export default function VerifyPage() {
   if (status === "loading") return null
 
   return (
-    <div className="relative flex min-h-svh flex-col items-center justify-center bg-background p-6 md:p-10 font-sans">
-      <div className="absolute top-6 right-6 z-50 flex items-center gap-1">
-        <LanguageDropdown />
-        <ThemeToggle />
-      </div>
+    <div className="flex min-h-svh flex-col bg-background font-sans">
+      <div className="relative flex flex-1 flex-col items-center justify-center p-6 md:p-10">
+        <div className="absolute top-6 right-6 z-50 flex items-center gap-1">
+          <LanguageDropdown />
+          <ThemeToggle />
+        </div>
 
-      <div className="w-full max-w-sm md:max-w-md z-10">
-        <Card className="overflow-hidden p-0 border-none shadow-2xl bg-card text-card-foreground">
-          <CardContent className="flex flex-col items-center justify-center p-8 md:p-12 text-center">
-            <div className="size-16 rounded-full bg-[#407bc4]/10 flex items-center justify-center mb-6">
-              <Mail className="size-8 text-[#407bc4]" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight mb-2">Verify your email</h1>
-            <p className="text-muted-foreground mb-8">
-              We've sent a 6-digit verification code to <br />
-              <span className="text-foreground font-semibold">{session?.user?.email}</span>
-            </p>
+        <div className="w-full max-w-sm md:max-w-md z-10">
+          <Card className="overflow-hidden p-0 border-none shadow-2xl bg-card text-card-foreground">
+            <CardContent className="flex flex-col items-center justify-center p-8 md:p-12 text-center">
+              <div className="size-16 rounded-full bg-[#407bc4]/10 flex items-center justify-center mb-6">
+                <Mail className="size-8 text-[#407bc4]" />
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight mb-2">Verify your email</h1>
+              <p className="text-muted-foreground mb-8">
+                We've sent a 6-digit verification code to <br />
+                <span className="text-foreground font-semibold">{session?.user?.email}</span>
+              </p>
 
-            <div className="flex gap-2 mb-8">
-              {otp.map((digit, i) => (
-                <input
-                  key={i}
-                  id={`otp-${i}`}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleOtpChange(i, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(i, e)}
-                  className="size-11 sm:size-12 text-center text-xl font-bold rounded-lg border border-input bg-background focus:border-[#407bc4] focus:ring-2 focus:ring-[#407bc4]/20 outline-none transition-all"
-                />
-              ))}
-            </div>
+              <div className="flex gap-2 mb-8">
+                {otp.map((digit, i) => (
+                  <input
+                    key={i}
+                    id={`otp-${i}`}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(i, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(i, e)}
+                    className="size-11 sm:size-12 text-center text-xl font-bold rounded-lg border border-input bg-background focus:border-[#407bc4] focus:ring-2 focus:ring-[#407bc4]/20 outline-none transition-all"
+                  />
+                ))}
+              </div>
 
-            <Button 
-              onClick={verifyOtp} 
-              disabled={otp.join("").length !== 6 || verifying}
-              className="w-full bg-[#407bc4] hover:bg-[#32629e] h-11 text-base font-bold shadow-md border-none mb-4"
-            >
-              {verifying ? "Verifying..." : "Verify & Continue"}
-            </Button>
-
-            <p className="text-sm text-muted-foreground">
-              Didn't receive the code?{" "}
-              <button 
-                onClick={resendOtp}
-                disabled={resending}
-                className="text-[#407bc4] font-semibold hover:underline disabled:opacity-50"
+              <Button 
+                onClick={verifyOtp} 
+                disabled={otp.join("").length !== 6 || verifying}
+                className="w-full bg-[#407bc4] hover:bg-[#32629e] h-11 text-base font-bold shadow-md border-none mb-4"
               >
-                {resending ? "Sending..." : "Resend code"}
-              </button>
-            </p>
-          </CardContent>
-        </Card>
+                {verifying ? "Verifying..." : "Verify & Continue"}
+              </Button>
+
+              <p className="text-sm text-muted-foreground">
+                Didn't receive the code?{" "}
+                <button 
+                  onClick={resendOtp}
+                  disabled={resending}
+                  className="text-[#407bc4] font-semibold hover:underline disabled:opacity-50"
+                >
+                  {resending ? "Sending..." : "Resend code"}
+                </button>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+      <Footer />
     </div>
   )
 }

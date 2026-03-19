@@ -24,6 +24,14 @@ export const translations = {
       guest: "Guest",
       member: "Member",
     },
+    common: {
+      back: "Back",
+      next: "Next",
+      save: "Save",
+      cancel: "Cancel",
+      needHelp: "Need more help?",
+      contactSupport: "Contact Support"
+    },
     usage: {
       title: "Usage",
       citations: "Citations",
@@ -194,6 +202,168 @@ export const translations = {
       gridComponents: "Components",
       gridIcons: "Icons",
       gridSoon: "Soon...",
+    },
+    help: {
+      title: "Help Center",
+      description: "Everything you need to know about Babybib, the smart bibliography manager.",
+      searchPlaceholder: "Search help articles...",
+      gettingStarted: {
+        title: "Getting Started",
+        intro: "Welcome to Babybib! Learn how to create your first bibliography in minutes.",
+        steps: [
+          "Create a project to organize your citations.",
+          "Search for books, articles, or websites using the search bar.",
+          "Select a citation style (APA, MLA, etc.) to format your work.",
+          "Export your bibliography to Word, PDF, or BibTeX."
+        ]
+      },
+      features: {
+        title: "Key Features",
+        smartSearch: "Smart Search: Find accurate citation data using title, author, or ISBN.",
+        aiScan: "AI Scanner: Upload a PDF and let our AI extract citation details automatically.",
+        projects: "Projects: Organize different papers or research topics into separate projects.",
+        export: "Multi-format Export: Download your work in Word, PDF, BibTeX, or RIS formats."
+      },
+      faq: {
+        title: "Frequently Asked Questions",
+        q1: "How many citations can I add as a guest?",
+        a1: "Guests can add up to 5 citations. Sign up for a free account to add more.",
+        q2: "Can I use Babybib for free?",
+        a2: "Yes! Our basic features are free for everyone. We also offer Pro features for advanced users.",
+        q3: "Does Babybib support Thai citation styles?",
+        a3: "Absolutely. We support various Thai citation styles including Sarabun and others."
+      },
+      sections: {
+        guide: "Guide",
+        introduction: "Introduction",
+        features: "Features",
+        faq: "FAQ",
+        support: "Support",
+        contact: "Contact Us"
+      }
+    },
+    guides: {
+        title: "Citation Guides",
+        description: "Master the art of citing sources with our comprehensive guides for every major style.",
+        searchPlaceholder: "Search guides...",
+        ui: {
+            overview: "Overview",
+            inText: "In-Text Citation",
+            bibliography: "Bibliography / Reference"
+        },
+        categories: {
+            all: "All Guides",
+            popular: "Popular Styles",
+            academic: "Academic",
+            technical: "Technical",
+            thai: "Thai Styles"
+        },
+        items: {
+            apa: {
+                title: "APA - 7th Edition",
+                version: "7th Edition",
+                description: "The official guide for APA 7th edition. Common in Social Sciences and Education.",
+                content: {
+                    inText: { title: "In-Text Citation", example: "(Author, Year)", rules: "Use parenthetical citations with the author's last name and the year of publication." },
+                    bibliography: { title: "Bibliography / Reference", example: "Author, A. A. (Year). Title of work. Publisher.", rules: "List entries alphabetically. Use a hanging indent for all entries." }
+                }
+            },
+            mla: {
+                title: "MLA - 9th Edition",
+                version: "9th Edition",
+                description: "Modern Language Association style. Primarily used in humanities and arts.",
+                content: {
+                    inText: { title: "In-Text Citation", example: "(Author Page)", rules: "Use parenthetical citations with the author's last name and the page number." },
+                    bibliography: { title: "Works Cited", example: "Author's Last Name, First Name. Title of Book. Publisher, Year.", rules: "List entries alphabetically. Use 'Works Cited' as the heading." }
+                }
+            },
+            harvard: { 
+                title: "Harvard", 
+                version: "Standard", 
+                description: "Author-date system used widely in many academic disciplines.",
+                content: {
+                    inText: { title: "In-Text Citation", example: "(Author Year)", rules: "Uses author-date format within brackets." },
+                    bibliography: { title: "Reference List", example: "Author, Year. Title. City: Publisher.", rules: "List alphabetically by author." }
+                }
+            },
+            chicago: { 
+                title: "Chicago", 
+                version: "17th Edition", 
+                description: "Notes and Bibliography or Author-Date systems for history and business.",
+                content: {
+                    inText: { title: "In-Text Citation", example: "(Author Year, Page)", rules: "Uses author-date and page number in parentheses." },
+                    bibliography: { title: "References", example: "Author. Year. Title. Publisher.", rules: "Entries are arranged alphabetically." }
+                }
+            },
+            ama: { 
+                title: "AMA", 
+                version: "11th Edition", 
+                description: "American Medical Association style for medicine and biological sciences.",
+                content: {
+                    inText: { title: "In-Text Citation", example: "Text.1", rules: "Uses superscript numbers in the text." },
+                    bibliography: { title: "References", example: "1. Author. Title. Journal. Year.", rules: "Numbered in order of appearance." }
+                }
+            },
+            cse: { 
+                title: "CSE", 
+                version: "8th Edition", 
+                description: "Council of Science Editors style for various scientific disciplines.",
+                content: {
+                    inText: { title: "In-Text Citation", example: "(Author Year)", rules: "Name-year system used in scientific papers." },
+                    bibliography: { title: "References", example: "Author. Year. Title. Journal.", rules: "List alphabetically by author." }
+                }
+            },
+            thaiSarabun: {
+                title: "Thai Sarabun",
+                version: "B.E. 2564",
+                description: "The standard citation format for Thai government and academic documents.",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(ชื่อผู้แต่ง, ปีที่พิมพ์)", rules: "ระบุชื่อผู้แต่งตามด้วยเครื่องหมายจุลภาคและปีที่พิมพ์" },
+                    bibliography: { title: "บรรณานุกรม", example: "ชื่อผู้แต่ง. (ปีที่พิมพ์). ชื่อเรื่อง. สำนักพิมพ์.", rules: "เรียงตามตัวอักษรของชื่อผู้แต่ง" }
+                }
+            }
+        }
+    },
+    contact: {
+        title: "Contact Us",
+        description: "Have questions or feedback? We'd love to hear from you. Our team usually responds within 24 hours.",
+        form: {
+            name: "Full Name",
+            namePlaceholder: "John Doe",
+            email: "Email Address",
+            emailPlaceholder: "john@example.com",
+            subject: "Subject",
+            subjectPlaceholder: "How can we help?",
+            message: "Message",
+            messagePlaceholder: "Go ahead, we're listening...",
+            submit: "Send Message",
+            success: "Message sent! We'll get back to you soon.",
+        },
+        options: {
+            email: { title: "Email Support", desc: "support@babybib.com" },
+            chat: { title: "Live Chat", desc: "Mon-Fri, 9am - 6pm" },
+            social: { title: "Social Media", desc: "@babybib_official" }
+        },
+        backToHelp: "Back to Help Center",
+        trustedBy: "Trusted by researchers worldwide",
+        successDesc: "Our support advocates have received your request and will follow up shortly via email.",
+        sendAnother: "Send another message",
+        privacyNote: {
+            start: "By submitting this form, you agree to our ",
+            link: "Privacy Policy",
+            end: " regarding the processing of your data."
+        },
+        faqTitle: "Frequently Asked Questions",
+        selfServiceTitle: "Prefer self-service?",
+        selfServiceDesc: "Find instant answers to common questions about citations, AI scanning, and account management in our Help Center.",
+        browseHelp: "Browse Help Center",
+        citationGuides: "Citation Guides"
+    },
+    footer: {
+        copyright: "© 2026 Babybib. Built with passion for academia.",
+        social: "Follow us",
+        terms: "Terms of Service",
+        privacy: "Privacy Policy"
     }
   },
   TH: {
@@ -220,6 +390,14 @@ export const translations = {
       logout: "ออกจากระบบ",
       guest: "ผู้เยี่ยมชม",
       member: "สมาชิก",
+    },
+    common: {
+      back: "กลับ",
+      next: "ถัดไป",
+      save: "บันทึก",
+      cancel: "ยกเลิก",
+      needHelp: "ต้องการความช่วยเหลือเพิ่มเติม?",
+      contactSupport: "ติดต่อฝ่ายสนับสนุน"
     },
     usage: {
       title: "การใช้งาน",
@@ -391,6 +569,168 @@ export const translations = {
       gridComponents: "ส่วนประกอบ",
       gridIcons: "ไอคอน",
       gridSoon: "เร็วๆ นี้...",
+    },
+    help: {
+      title: "ศูนย์ช่วยเหลือ",
+      description: "ทุกสิ่งที่คุณจำเป็นต้องรู้เกี่ยวกับ Babybib ระบบจัดการบรรณานุกรมอัจฉริยะ",
+      searchPlaceholder: "ค้นหาหัวข้อช่วยเหลือ...",
+      gettingStarted: {
+        title: "เริ่มต้นใช้งาน",
+        intro: "ยินดีต้อนรับสู่ Babybib! เรียนรู้วิธีสร้างบรรณานุกรมแรกของคุณในไม่กี่นาที",
+        steps: [
+          "สร้างโปรเจกต์เพื่อจัดระเบียบรายการอ้างอิงของคุณ",
+          "ค้นหาหนังสือ บทความ หรือเว็บไซต์โดยใช้แถบค้นหา",
+          "เลือกรูปแบบการอ้างอิง (APA, MLA, ฯลฯ) เพื่อจัดรูปแบบงานของคุณ",
+          "ส่งออกบรรณานุกรมของคุณเป็น Word, PDF หรือ BibTeX"
+        ]
+      },
+      features: {
+        title: "ฟีเจอร์หลัก",
+        smartSearch: "Smart Search: ค้นหาข้อมูลการอ้างอิงที่ถูกต้องด้วยชื่อเรื่อง ผู้แต่ง หรือ ISBN",
+        aiScan: "AI Scanner: อัปโหลด PDF และให้ AI ของเราดึงรายละเอียดการอ้างอิงให้อัตโนมัติ",
+        projects: "โปรเจกต์: จัดระเบียบงานวิจัยหรือหัวข้อต่างๆ แยกเป็นโปรเจกต์",
+        export: "ส่งออกหลายรูปแบบ: ดาวน์โหลดงานของคุณในรูปแบบ Word, PDF, BibTeX หรือ RIS"
+      },
+      faq: {
+        title: "คำถามที่พบบ่อย",
+        q1: "ในฐานะผู้เยี่ยมชม (Guest) ฉันสามารถเพิ่มรายการอ้างอิงได้กี่รายการ?",
+        a1: "ผู้เยี่ยมชมสามารถเพิ่มได้สูงสุด 5 รายการ สมัครสมาชิกฟรีเพื่อเพิ่มได้มากขึ้น",
+        q2: "ฉันสามารถใช้งาน Babybib ฟรีได้หรือไม่?",
+        a2: "ใช่! ฟีเจอร์พื้นฐานของเราฟรีสำหรับทุกคน และเรายังมีฟีเจอร์ Pro สำหรับผู้ใช้งานขั้นสูง",
+        q3: "Babybib รองรับรูปแบบการอ้างอิงภาษาไทยหรือไม่?",
+        a3: "แน่นอน เรา รองรับรูปแบบการอ้างอิงภาษาไทยที่หลากหลาย รวมถึงรูปแบบสารบรรณและอื่นๆ"
+      },
+      sections: {
+        guide: "คู่มือ",
+        introduction: "บทนำ",
+        features: "ฟีเจอร์",
+        faq: "คำถามที่พบบ่อย",
+        support: "การสนับสนุน",
+        contact: "ติดต่อเรา"
+      }
+    },
+    guides: {
+        title: "คู่มือการอ้างอิง",
+        description: "รวบรวมรูปแบบการอ้างอิงมาตรฐานที่นิยมใช้ พร้อมตัวอย่างการเขียนที่ถูกต้อง",
+        searchPlaceholder: "ค้นหาคู่มือ...",
+        ui: {
+            overview: "ภาพรวม",
+            inText: "การอ้างอิงในเนื้อหา",
+            bibliography: "บรรณานุกรม / รายการอ้างอิง"
+        },
+        categories: {
+            all: "คู่มือทั้งหมด",
+            popular: "รูปแบบยอดนิยม",
+            academic: "วิชาการ",
+            technical: "เทคนิค/วิศวกรรม",
+            thai: "รูปแบบไทย"
+        },
+        items: {
+            apa: {
+                title: "APA - ฉบับพิมพ์ครั้งที่ 7",
+                version: "ฉบับที่ 7",
+                description: "การอ้างอิงแบบ APA ฉบับพิมพ์ครั้งที่ 7 นิยมใช้ในสาขาสังคมศาสตร์และศึกษาศาสตร์",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(ชื่อผู้แต่ง, ปีที่พิมพ์)", rules: "ใช้การอ้างอิงในวงเล็บโดยระบุชื่อนามสกุลผู้แต่งและปีที่พิมพ์" },
+                    bibliography: { title: "บรรณานุกรม", example: "ชื่อผู้แต่ง. (ปีที่พิมพ์). ชื่อเรื่อง. สำนักพิมพ์.", rules: "เรียงตามตัวอักษร และใช้การเยื้องบรรทัด (Hanging Indent)" }
+                }
+            },
+            mla: {
+                title: "MLA - ฉบับพิมพ์ครั้งที่ 9",
+                version: "ฉบับที่ 9",
+                description: "รูปแบบ Modern Language Association นิยมใช้ในสาขามนุษยศาสตร์และศิลปศาสตร์",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(ชื่อผู้แต่ง หน้า)", rules: "ระบุนามสกุลผู้แต่งและเลขหน้าที่อ้างอิงในวงเล็บ" },
+                    bibliography: { title: "รายการอ้างอิง (Works Cited)", example: "นามสกุล, ชื่อผู้แต่ง. ชื่อหนังสือ. สำนักพิมพ์, ปีที่พิมพ์.", rules: "เรียงตามตัวอักษร โดยมีหัวข้อว่า Works Cited" }
+                }
+            },
+            harvard: {
+                title: "Harvard",
+                version: "มาตรฐาน",
+                description: "ระบบการอ้างอิงแบบชื่อผู้แต่ง-ปีที่พิมพ์ ที่ใช้กันอย่างแพร่หลายในหลายสาขาวิชา",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(Author Year)", rules: "ใช้ระบบชื่อผู้แต่งและปีที่พิมพ์ในวงเล็บ" },
+                    bibliography: { title: "รายการอ้างอิง", example: "Author, Year. Title. City: Publisher.", rules: "เรียงตามลำดับตัวอักษรของชื่อผู้แต่ง" }
+                }
+            },
+            chicago: {
+                title: "Chicago",
+                version: "ฉบับที่ 17",
+                description: "ระบบการอ้างอิงแบบ Chicago สำหรับสาขาประวัติศาสตร์และธุรกิจ",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(Author Year, Page)", rules: "ระบุชื่อผู้แต่ง ปีที่พิมพ์ และเลขหน้าในวงเล็บ" },
+                    bibliography: { title: "บรรณานุกรม", example: "Author. Year. Title. Publisher.", rules: "เรียงรายการอ้างอิงตามลำดับตัวอักษร" }
+                }
+            },
+            ama: { 
+                title: "AMA", 
+                version: "ฉบับที่ 11", 
+                description: "แบบแผนการอ้างอิง American Medical Association สำหรับการแพทย์และวิทยาศาสตร์ชีวภาพ",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "เนื้อหา.1", rules: "ใช้ตัวเลขยกกำลังตามลำดับการอ้างอิง" },
+                    bibliography: { title: "รายการอ้างอิง", example: "1. Author. Title. Journal. Year.", rules: "เรียงลำดับตามตัวเลขที่ปรากฏในเนื้อหา" }
+                }
+            },
+            cse: { 
+                title: "CSE", 
+                version: "ฉบับที่ 8", 
+                description: "แบบแผนการอ้างอิง Council of Science Editors สำหรับสาขาวิทยาศาสตร์ต่างๆ",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(Author Year)", rules: "ระบบชื่อผู้แต่งและปีที่พิมพ์สำหรับงานทางวิทยาศาสตร์" },
+                    bibliography: { title: "รายการอ้างอิง", example: "Author. Year. Title. Journal.", rules: "เรียงลำดับตามตัวอักษร" }
+                }
+            },
+            thaiSarabun: {
+                title: "Thai Sarabun",
+                version: "พ.ศ. 2564",
+                description: "มาตรฐานการอ้างอิงสำหรับเอกสารราชการและงานวิชาการไทย (TH Sarabun)",
+                content: {
+                    inText: { title: "การอ้างอิงในเนื้อหา", example: "(ชื่อผู้แต่ง, ปีที่พิมพ์)", rules: "ระบุชื่อผู้แต่งตามด้วยเครื่องหมายจุลภาคและปีที่พิมพ์" },
+                    bibliography: { title: "บรรณานุกรม", example: "ชื่อผู้แต่ง. (ปีที่พิมพ์). ชื่อเรื่อง. สำนักพิมพ์.", rules: "เรียงตามตัวอักษรของชื่อผู้แต่ง" }
+                }
+            }
+        }
+    },
+    contact: {
+        title: "ติดต่อเรา",
+        description: "มีคำถามหรือข้อเสนอแนะ? เรายินดีที่จะรับฟังจากคุณ ทีมงานของเรามักจะตอบกลับภายใน 24 ชั่วโมง",
+        form: {
+            name: "ชื่อ-นามสกุล",
+            namePlaceholder: "ชื่อของคุณ",
+            email: "อีเมล",
+            emailPlaceholder: "example@email.com",
+            subject: "หัวข้อ",
+            subjectPlaceholder: "เราสามารถช่วยอะไรคุณได้บ้าง?",
+            message: "ข้อความ",
+            messagePlaceholder: "ระบุรายละเอียดที่นี่...",
+            submit: "ส่งข้อความ",
+            success: "ส่งข้อความเรียบร้อยแล้ว! เราจะติดต่อกลับโดยเร็วที่สุด",
+        },
+        options: {
+            email: { title: "ฝ่ายสนับสนุนทางอีเมล", desc: "support@babybib.com" },
+            chat: { title: "แชทสด", desc: "จันทร์-ศุกร์, 9:00 - 18:00" },
+            social: { title: "โซเชียลมีเดีย", desc: "@babybib_official" }
+        },
+        backToHelp: "กลับไปที่ศูนย์ช่วยเหลือ",
+        trustedBy: "ได้รับความไว้วางใจจากนักวิจัยทั่วโลก",
+        successDesc: "ทีมงานฝ่ายสนับสนุนของเราได้รับคำขอของคุณแล้ว และจะติดต่อกลับทางอีเมลโดยเร็วที่สุด",
+        sendAnother: "ส่งข้อความอื่น",
+        privacyNote: {
+            start: "การส่งแบบฟอร์มนี้แสดงว่าคุณตกลงตาม ",
+            link: "นโยบายความเป็นส่วนตัว",
+            end: " ของเราเกี่ยวกับการประมวลผลข้อมูลของคุณ"
+        },
+        faqTitle: "คำถามที่พบบ่อย",
+        selfServiceTitle: "ต้องการช่วยเหลือตัวเอง?",
+        selfServiceDesc: "ค้นหาคำตอบสำหรับคำถามทั่วไปเกี่ยวกับการอ้างอิง การสแกนด้วย AI และการจัดการบัญชีในศูนย์ช่วยเหลือของเรา",
+        browseHelp: "ดูศูนย์ช่วยเหลือ",
+        citationGuides: "คู่มือการอ้างอิง"
+    },
+    footer: {
+        copyright: "© 2026 Babybib. สร้างขึ้นด้วยความรักเพื่อวิชาการ",
+        social: "ติดตามเรา",
+        terms: "ข้อตกลงการใช้งาน",
+        privacy: "นโยบายความเป็นส่วนตัว"
     }
   },
   ZH: {
@@ -417,6 +757,14 @@ export const translations = {
       logout: "退出登录",
       guest: "游客",
       member: "正式会员",
+    },
+    common: {
+      back: "返回",
+      next: "下一步",
+      save: "保存",
+      cancel: "取消",
+      needHelp: "需要更多帮助吗？",
+      contactSupport: "联系客服"
     },
     usage: {
       title: "使用额度",
@@ -588,6 +936,168 @@ export const translations = {
       gridComponents: "核心组件",
       gridIcons: "图标素材",
       gridSoon: "敬请期待...",
+    },
+    help: {
+      title: "帮助中心",
+      description: "关于 Babybib 智能文献管理系统的所有相关信息。",
+      searchPlaceholder: "搜索帮助文章...",
+      gettingStarted: {
+        title: "快速入门",
+        intro: "欢迎来到 Babybib！在几分钟内学会创建您的第一篇参考文献。",
+        steps: [
+          "创建项目以组织您的引文。",
+          "使用搜索栏搜索书籍、文章或网站。",
+          "选择引用样式（APA、MLA 等）来编排您的作品。",
+          "将您的参考文献导出为 Word、PDF 或 BibTeX。"
+        ]
+      },
+      features: {
+        title: "核心功能",
+        smartSearch: "智能搜索：使用书名、作者或 ISBN 查找准确的引文数据。",
+        aiScan: "AI 扫描：上传 PDF，让我们的 AI 自动提取引文详情。",
+        projects: "项目管理：将不同的论文或研究主题组织到独立的项目中。",
+        export: "多格式导出：下载 Word、PDF、BibTeX 或 RIS 格式的作品。"
+      },
+      faq: {
+        title: "常见问题",
+        q1: "作为游客我可以添加多少条引文？",
+        a1: "游客最多可以添加 5 条引文。注册免费账户以添加更多。",
+        q2: "我可以免费使用 Babybib 吗？",
+        a2: "是的！我们的基础功能对所有人免费。我们还为高级用户提供 Pro 功能。",
+        q3: "Babybib 支持泰语引用格式吗？",
+        a3: "当然。我们支持包括 Sarabun 在内的多种泰语引用格式。"
+      },
+      sections: {
+        guide: "指南",
+        introduction: "介绍",
+        features: "功能",
+        faq: "常见问题",
+        support: "支持",
+        contact: "联系我们"
+      }
+    },
+    guides: {
+        title: "引用指南",
+        description: "通过我们针对每种主要风格的综合指南，掌握引用来源的艺术。",
+        searchPlaceholder: "搜索指南...",
+        ui: {
+            overview: "概览",
+            inText: "文中引用",
+            bibliography: "参考文献"
+        },
+        categories: {
+            all: "所有指南",
+            popular: "流行样式",
+            academic: "学术",
+            technical: "技术",
+            thai: "泰语格式"
+        },
+        items: {
+            apa: {
+                title: "APA - 第 7 版",
+                version: "第 7 版",
+                description: "APA 第 7 版官方指南。常用于社会科学和教育学。",
+                content: {
+                    inText: { title: "文中引用", example: "(作者, 年份)", rules: "在括号内使用作者、年份格式。" },
+                    bibliography: { title: "参考文献列表", example: "作者. (年份). 标题. 出版商.", rules: "按作者姓名拼音排序。" }
+                }
+            },
+            mla: {
+                title: "MLA - 第 9 版",
+                version: "第 9 版",
+                description: "现代语言协会样式。主要用于人文学科和艺术。",
+                content: {
+                    inText: { title: "文中引用", example: "(作者 页码)", rules: "在括号内使用作者和页码格式。" },
+                    bibliography: { title: "引用作品", example: "作者. 书名. 出版商, 年份.", rules: "按作者姓名全称首字母排序。" }
+                }
+            },
+            harvard: { 
+                title: "Harvard", 
+                version: "标准型", 
+                description: "广泛用于各学科的作者-日期引用系统。",
+                content: {
+                    inText: { title: "文中引用", example: "(作者 年份)", rules: "在括号内使用作者和年份格式。" },
+                    bibliography: { title: "参考文献", example: "作者, 年份. 标题. 城市: 出版商.", rules: "按字母顺序排列。" }
+                }
+            },
+            chicago: { 
+                title: "芝加哥格式", 
+                version: "第 17 版", 
+                description: "历史和商业领域的注释和参考文献或作者-日期系统。",
+                content: {
+                    inText: { title: "文中引用", example: "(作者 年份, 页码)", rules: "在括号内使用作者、年份和页码。" },
+                    bibliography: { title: "参考文献", example: "作者. 年份. 标题. 出版商.", rules: "按字母顺序排列。" }
+                }
+            },
+            ama: { 
+                title: "AMA", 
+                version: "第 11 版", 
+                description: "美国医学会样式，常用于医学和生物科学。",
+                content: {
+                    inText: { title: "文中引用", example: "正文.1", rules: "在正文中使用上标数字。" },
+                    bibliography: { title: "参考文献", example: "1. 作者. 标题. 期刊. 年份.", rules: "按文中出现的顺序编号。" }
+                }
+            },
+            cse: { 
+                title: "CSE", 
+                version: "第 8 版", 
+                description: "科学编辑委员会样式，适用于各种科学学科。",
+                content: {
+                    inText: { title: "文中引用", example: "(作者 年份)", rules: "科学论文中常用的姓名-年份系统。" },
+                    bibliography: { title: "参考文献", example: "作者. 年份. 标题. 期刊.", rules: "按字母顺序排列。" }
+                }
+            },
+            thaiSarabun: {
+                title: "Thai Sarabun",
+                version: "佛历 2564",
+                description: "泰国政府和学术文件的标准引用格式。",
+                content: {
+                    inText: { title: "文中引用", example: "(作者, 年份)", rules: "在括号内使用作者和年份。" },
+                    bibliography: { title: "参考文献", example: "作者. (年份). 标题. 出版商.", rules: "按作者姓名排序。" }
+                }
+            }
+        }
+    },
+    contact: {
+        title: "联系我们",
+        description: "有疑问或反馈？我们很乐意听取您的意见。我们的团队通常会在 24 小时内回复。",
+        form: {
+            name: "全名",
+            namePlaceholder: "您的姓名",
+            email: "电子邮箱",
+            emailPlaceholder: "example@email.com",
+            subject: "主题",
+            subjectPlaceholder: "有什么可以帮您的？",
+            message: "留言",
+            messagePlaceholder: "请说，我们在听...",
+            submit: "发送消息",
+            success: "消息已发送！我们会尽快回复您。",
+        },
+        options: {
+            email: { title: "邮件支持", desc: "support@babybib.com" },
+            chat: { title: "在线聊天", desc: "周一至周五，9am - 6pm" },
+            social: { title: "社交媒体", desc: "@babybib_official" }
+        },
+        backToHelp: "回到帮助中心",
+        trustedBy: "全球研究人员信赖",
+        successDesc: "我们的支持团队已收到您的请求，并将很快通过电子邮件回复您。",
+        sendAnother: "再发一条消息",
+        privacyNote: {
+            start: "提交此表格即表示您同意我们的 ",
+            link: "隐私政策",
+            end: " 关于数据处理的规定。"
+        },
+        faqTitle: "常见问题",
+        selfServiceTitle: "更喜欢自助服务？",
+        selfServiceDesc: "在我们的帮助中心找到关于引文、AI 扫描和账户管理的常见问题的即时答案。",
+        browseHelp: "浏览帮助中心",
+        citationGuides: "引文指南"
+    },
+    footer: {
+        copyright: "© 2026 Babybib. 为学术而生。",
+        social: "关注我们",
+        terms: "服务条款",
+        privacy: "隐私政策"
     }
   }
 } as const;

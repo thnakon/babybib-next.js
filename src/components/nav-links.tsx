@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronRight, Facebook, Instagram, Twitter, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
@@ -8,16 +9,34 @@ import { translations } from "@/lib/translations";
 export function NavLinks() {
   const { language } = useLanguage();
   const t = translations[language].nav;
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
   return (
-    <div className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-400">
-      <Link href="/help" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+    <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+      <Link 
+        href="/help" 
+        className={`transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 ${
+          isActive("/help") ? "text-[#407bc4] dark:text-[#6ba1e6]" : "text-zinc-600 dark:text-zinc-400"
+        }`}
+      >
         {t.help}
       </Link>
-      <Link href="/guides" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+      <Link 
+        href="/guides" 
+        className={`transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 ${
+          isActive("/guides") ? "text-[#407bc4] dark:text-[#6ba1e6]" : "text-zinc-600 dark:text-zinc-400"
+        }`}
+      >
         {t.guides}
       </Link>
-      <Link href="/generate" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+      <Link 
+        href="/generate" 
+        className={`transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 ${
+          isActive("/generate") ? "text-[#407bc4] dark:text-[#6ba1e6]" : "text-zinc-600 dark:text-zinc-400"
+        }`}
+      >
         {t.generate}
       </Link>
       

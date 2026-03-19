@@ -11,6 +11,7 @@ import { Sparkles, Book, Library, PenTool, Bookmark } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
 import { motion, AnimatePresence } from "framer-motion";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   const { language } = useLanguage();
@@ -142,6 +143,7 @@ export default function Home() {
           ))}
         </div>
       </motion.main>
+      <Footer />
     </div>
   );
 }
