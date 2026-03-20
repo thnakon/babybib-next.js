@@ -379,40 +379,55 @@ export const translations = {
             }
         }
     },
-    contact: {
-        title: "Contact Us",
-        description: "Have questions or feedback? We'd love to hear from you. Our team usually responds within 24 hours.",
-        form: {
-            name: "Full Name",
-            namePlaceholder: "John Doe",
-            email: "Email Address",
-            emailPlaceholder: "john@example.com",
-            subject: "Subject",
-            subjectPlaceholder: "How can we help?",
-            message: "Message",
-            messagePlaceholder: "Go ahead, we're listening...",
-            submit: "Send Message",
-            success: "Message sent! We'll get back to you soon.",
-        },
-        options: {
-            email: { title: "Email Support", desc: "support@babybib.com" },
-            chat: { title: "Live Chat", desc: "Mon-Fri, 9am - 6pm" },
-            social: { title: "Social Media", desc: "@babybib_official" }
-        },
-        backToHelp: "Back to Help Center",
-        trustedBy: "Trusted by researchers worldwide",
-        successDesc: "Our support advocates have received your request and will follow up shortly via email.",
-        sendAnother: "Send another message",
-        privacyNote: {
-            start: "By submitting this form, you agree to our ",
-            link: "Privacy Policy",
-            end: " regarding the processing of your data."
-        },
-        faqTitle: "Frequently Asked Questions",
-        selfServiceTitle: "Prefer self-service?",
-        selfServiceDesc: "Find instant answers to common questions about citations, AI scanning, and account management in our Help Center.",
-        browseHelp: "Browse Help Center",
-        citationGuides: "Citation Guides"
+    terms: {
+      title: "Terms of Service",
+      description: "Please read these terms of service carefully before using Babybib.",
+      searchPlaceholder: "Search terms...",
+      sections: {
+        introduction: "Introduction",
+        accounts: "User Accounts",
+        intellectual: "Intellectual Property",
+        termination: "Termination",
+        disclaimer: "Disclaimer",
+        contact: "Contact Us"
+      },
+      intro: {
+        title: "Welcome to Babybib",
+        overview: "Last Updated: March 20, 2026",
+        content: "By accessing or using Babybib, you agree to be bound by these Terms of Service. These terms govern your use of the Babybib website, applications, and services. If you do not agree to these terms, please do not use our services."
+      },
+      topics: [
+        { title: "User Accounts", content: "To access certain features of Babybib, you may be required to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must notify us immediately of any unauthorized use of your account." },
+        { title: "Acceptable Use", content: "You agree not to use Babybib for any unlawful purpose or in any way that interrupts, damages, or impairs the service. Prohibited activities include attempting to gain unauthorized access to our systems, spreading malware, or harassing other users." },
+        { title: "Intellectual Property", content: "All content, features, and functionality of Babybib, including but not limited to text, graphics, logos, and software, are the exclusive property of Babybib and its licensors. You may not reproduce, distribute, or create derivative works from our content without explicit permission." },
+        { title: "Termination", content: "We reserve the right to terminate or suspend your account and access to Babybib at our sole discretion, without notice, for conduct that we believe violates these Terms of Service or is harmful to other users, us, or third parties." },
+        { title: "Disclaimer of Warranties", content: "Babybib is provided 'as is' and 'as available' without any warranties, express or implied. We do not guarantee that the service will be uninterrupted, secure, or error-free. Your use of the service is at your own risk." }
+      ]
+    },
+    privacy: {
+      title: "Privacy Policy",
+      description: "Your privacy is important to us. Here is how we handle your data.",
+      searchPlaceholder: "Search privacy policy...",
+      sections: {
+        introduction: "Introduction",
+        collection: "Data Collection",
+        usage: "Data Usage",
+        sharing: "Data Sharing",
+        security: "Security",
+        rights: "Your Rights"
+      },
+      intro: {
+        title: "Privacy at Babybib",
+        overview: "Last Updated: March 20, 2026",
+        content: "At Babybib, we are committed to protecting your privacy and ensuring your personal information is handled safely and responsibly. This Privacy Policy explains how we collect, use, and protect your data when you use our services."
+      },
+      topics: [
+        { title: "Information We Collect", content: "We collect information you provide directly to us (e.g., name, email when creating an account) and information generated automatically (e.g., IP address, browser type, usage data via cookies)." },
+        { title: "How We Use Your Data", content: "We use your information to provide and improve our services, communicate with you about your account, personalize your experience, and ensure the security of our platform." },
+        { title: "Data Sharing & Disclosure", content: "We do not sell your personal data. We may share information with trusted third-party service providers who assist us in operating our service, provided they agree to keep this information confidential." },
+        { title: "Data Security", content: "We implement a variety of security measures to maintain the safety of your personal information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security." },
+        { title: "Cookies & Tracking", content: "We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies, but some parts of our service may not function correctly." }
+      ]
     },
     footer: {
         copyright: "© 2026 Babybib. Built with passion for academia.",
@@ -801,40 +816,55 @@ export const translations = {
             }
         }
     },
-    contact: {
-        title: "ติดต่อเรา",
-        description: "มีคำถามหรือข้อเสนอแนะ? เรายินดีที่จะรับฟังจากคุณ ทีมงานของเรามักจะตอบกลับภายใน 24 ชั่วโมง",
-        form: {
-            name: "ชื่อ-นามสกุล",
-            namePlaceholder: "ชื่อของคุณ",
-            email: "อีเมล",
-            emailPlaceholder: "example@email.com",
-            subject: "หัวข้อ",
-            subjectPlaceholder: "เราสามารถช่วยอะไรคุณได้บ้าง?",
-            message: "ข้อความ",
-            messagePlaceholder: "ระบุรายละเอียดที่นี่...",
-            submit: "ส่งข้อความ",
-            success: "ส่งข้อความเรียบร้อยแล้ว! เราจะติดต่อกลับโดยเร็วที่สุด",
-        },
-        options: {
-            email: { title: "ฝ่ายสนับสนุนทางอีเมล", desc: "support@babybib.com" },
-            chat: { title: "แชทสด", desc: "จันทร์-ศุกร์, 9:00 - 18:00" },
-            social: { title: "โซเชียลมีเดีย", desc: "@babybib_official" }
-        },
-        backToHelp: "กลับไปที่ศูนย์ช่วยเหลือ",
-        trustedBy: "ได้รับความไว้วางใจจากนักวิจัยทั่วโลก",
-        successDesc: "ทีมงานฝ่ายสนับสนุนของเราได้รับคำขอของคุณแล้ว และจะติดต่อกลับทางอีเมลโดยเร็วที่สุด",
-        sendAnother: "ส่งข้อความอื่น",
-        privacyNote: {
-            start: "การส่งแบบฟอร์มนี้แสดงว่าคุณตกลงตาม ",
-            link: "นโยบายความเป็นส่วนตัว",
-            end: " ของเราเกี่ยวกับการประมวลผลข้อมูลของคุณ"
-        },
-        faqTitle: "คำถามที่พบบ่อย",
-        selfServiceTitle: "ต้องการช่วยเหลือตัวเอง?",
-        selfServiceDesc: "ค้นหาคำตอบสำหรับคำถามทั่วไปเกี่ยวกับการอ้างอิง การสแกนด้วย AI และการจัดการบัญชีในศูนย์ช่วยเหลือของเรา",
-        browseHelp: "ดูศูนย์ช่วยเหลือ",
-        citationGuides: "คู่มือการอ้างอิง"
+    terms: {
+      title: "ข้อตกลงการใช้งาน",
+      description: "โปรดอ่านข้อตกลงการใช้งานเหล่านี้อย่างละเอียดก่อนใช้งาน Babybib",
+      searchPlaceholder: "ค้นหาข้อตกลง...",
+      sections: {
+        introduction: "บทนำ",
+        accounts: "บัญชีผู้ใช้",
+        intellectual: "ทรัพย์สินทางปัญญา",
+        termination: "การยกเลิกบริการ",
+        disclaimer: "ข้อปฏิเสธความรับผิดชอบ",
+        contact: "ติดต่อเรา"
+      },
+      intro: {
+        title: "ยินดีต้อนรับสู่ Babybib",
+        overview: "อัปเดตล่าสุด: 20 มีนาคม 2026",
+        content: "ในการเข้าถึงหรือใช้งาน Babybib คุณตกลงที่จะผูกพันตามข้อตกลงการใช้งานเหล่านี้ ข้อตกลงเหล่านี้ควบคุมการใช้งานเว็บไซต์ แอปพลิเคชัน และบริการของ Babybib หากคุณไม่ตกลงตามข้อตกลงเหล่านี้ โปรดอย่าใช้บริการของเรา"
+      },
+      topics: [
+        { title: "บัญชีผู้ใช้", content: "ในการเข้าถึงฟีเจอร์บางอย่างของ Babybib คุณอาจต้องสร้างบัญชี คุณมีหน้าที่รับผิดชอบในการรักษาความลับของข้อมูลประจำตัวของบัญชีและกิจกรรมทั้งหมดที่เกิดขึ้นภายใต้บัญชีของคุณ คุณต้องแจ้งให้เราทราบทันทีหากมีการใช้บัญชีของคุณโดยไม่ได้รับอนุญาต" },
+        { title: "การใช้งานที่ยอมรับได้", content: "คุณตกลงที่จะไม่ใช้ Babybib เพื่อวัตถุประสงค์ที่ผิดกฎหมายหรือในทางใดทางหนึ่งที่ขัดขวาง ทำให้เสียหาย หรือทำให้บริการบกพร่อง กิจกรรมที่ต้องห้ามรวมถึงการพยายามเข้าถึงระบบของเราโดยไม่ได้รับอนุญาต การแพร่กระจายมัลแวร์ หรือการคุกคามผู้ใช้อื่น" },
+        { title: "ทรัพย์สินทางปัญญา", content: "เนื้อหา ฟีเจอร์ และฟังก์ชันทั้งหมดของ Babybib รวมถึงแต่ไม่จำกัดเพียง ข้อความ กราฟิก โลโก้ และซอฟต์แวร์ เป็นทรัพย์สินแต่เพียงผู้เดียวของ Babybib และผู้อนุญาต คุณไม่สามารถทำซ้ำ แจกจ่าย หรือสร้างงานต่อเนื่องจากเนื้อหาของเราโดยไม่ได้รับอนุญาตอย่างชัดแจ้ง" },
+        { title: "การยกเลิกบริการ", content: "เราขอสงวนสิทธิ์ในการยกเลิกหรือระงับบัญชีและการเข้าถึง Babybib ของคุณตามดุลยพินิจของเราแต่เพียงผู้เดียว โดยไม่ต้องแจ้งให้ทราบล่วงหน้า สำหรับพฤติกรรมที่เราเชื่อว่าละเมิดข้อตกลงการใช้งานเหล่านี้ หรือเป็นอันตรายต่อผู้ใช้อื่น เรา หรือบุคคลที่สาม" },
+        { title: "ข้อปฏิเสธความรับผิดชอบ", content: "Babybib ให้บริการ 'ตามสภาพที่เป็นอยู่' และ 'ตามที่มีอยู่' โดยไม่มีการรับประกันใดๆ ไม่ว่าโดยชัดแจ้งหรือโดยนัย เราไม่รับประกันว่าบริการจะไม่ถูกขัดจังหวะ มีความปลอดภัย หรือปราศจากข้อผิดพลาด การใช้งานบริการของคุณถือเป็นความเสี่ยงของคุณเอง" }
+      ]
+    },
+    privacy: {
+      title: "นโยบายความเป็นส่วนตัว",
+      description: "ความเป็นส่วนตัวของคุณเป็นสิ่งสำคัญสำหรับเรา นี่คือวิธีที่เราจัดการข้อมูลของคุณ",
+      searchPlaceholder: "ค้นหานโยบายความเป็นส่วนตัว...",
+      sections: {
+        introduction: "บทนำ",
+        collection: "การเก็บรวบรวมข้อมูล",
+        usage: "การใช้ข้อมูล",
+        sharing: "การแบ่งปันข้อมูล",
+        security: "ความปลอดภัย",
+        rights: "สิทธิของคุณ"
+      },
+      intro: {
+        title: "ความเป็นส่วนตัวที่ Babybib",
+        overview: "อัปเดตล่าสุด: 20 มีนาคม 2026",
+        content: "ที่ Babybib เรามุ่งมั่นที่จะปกป้องความเป็นส่วนตัวของคุณและรับประกันว่าข้อมูลส่วนบุคคลของคุณจะได้รับการจัดการอย่างปลอดภัยและมีความรับผิดชอบ นโยบายความเป็นส่วนตัวนี้อธิบายวิธีที่เราเก็บรวบรวม ใช้ และปกป้องข้อมูลของคุณเมื่อคุณใช้บริการของเรา"
+      },
+      topics: [
+        { title: "ข้อมูลที่เราเก็บรวบรวม", content: "เราเก็บรวบรวมข้อมูลที่คุณให้ไว้กับเราโดยตรง (เช่น ชื่อ อีเมล เมื่อสร้างบัญชี) และข้อมูลที่สร้างขึ้นโดยอัตโนมัติ (เช่น ที่อยู่ IP ประเภทเบราว์เซอร์ ข้อมูลการใช้งานผ่านคุกกี้)" },
+        { title: "วิธีที่เราใช้ข้อมูลของคุณ", content: "เราใช้ข้อมูลของคุณเพื่อให้บริการและปรับปรุงบริการของเรา สื่อสารกับคุณเกี่ยวกับบัญชีของคุณ ปรับแต่งประสบการณ์ของคุณ และรับประกันความปลอดภัยของแพลตฟอร์มของเรา" },
+        { title: "การแบ่งปันและเปิดเผยข้อมูล", content: "เราไม่ขายข้อมูลส่วนบุคคลของคุณ เราอาจแบ่งปันข้อมูลกับผู้ให้บริการบุคคลที่สามที่เชื่อถือได้ซึ่งช่วยเหลือเราในการดำเนินงานบริการของเรา โดยมีเงื่อนไขว่าพวกเขาตกลงที่จะเก็บข้อมูลนี้ไว้เป็นความลับ" },
+        { title: "ความปลอดภัยของข้อมูล", content: "เราใช้มาตรการรักษาความปลอดภัยที่หลากหลายเพื่อรักษาความปลอดภัยของข้อมูลส่วนบุคคลของคุณ อย่างไรก็ตาม ไม่มีวิธีการส่งข้อมูลผ่านอินเทอร์เน็ตที่ปลอดภัย 100% และเราไม่สามารถรับประกันความปลอดภัยที่สมบูรณ์ได้" },
+        { title: "คุกกี้และการติดตาม", content: "เราใช้คุกกี้และเทคโนโลยีการติดตามที่คล้ายคลึงกันเพื่อติดตามกิจกรรมในบริการของเราและเก็บข้อมูลบางอย่าง คุณสามารถตั้งค่าเบราว์เซอร์ให้ปฏิเสธคุกกี้ทั้งหมดได้ แต่บางส่วนของบริการของเราอาจทำงานไม่ถูกต้อง" }
+      ]
     },
     footer: {
         copyright: "© 2026 Babybib. สร้างขึ้นด้วยความรักเพื่อวิชาการ",

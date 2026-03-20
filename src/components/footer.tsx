@@ -24,6 +24,8 @@ export function Footer() {
         </div>
         <p>{t.copyright}</p>
         <div className="flex items-center gap-6">
+          <a href="/terms" className="hover:text-zinc-900 dark:hover:text-white transition-colors">{t.terms}</a>
+          <a href="/privacy" className="hover:text-zinc-900 dark:hover:text-white transition-colors">{t.privacy}</a>
           <Twitter className="h-4 w-4 hover:text-zinc-900 dark:hover:text-white cursor-pointer transition-colors" />
           <Github className="h-4 w-4 hover:text-zinc-900 dark:hover:text-white cursor-pointer transition-colors" />
           <Globe className="h-4 w-4 hover:text-zinc-900 dark:hover:text-white cursor-pointer transition-colors" />
