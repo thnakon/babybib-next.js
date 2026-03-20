@@ -16,6 +16,12 @@ import { LanguageDropdown } from "@/components/language-dropdown";
 import { NavLinks } from "@/components/nav-links";
 import { UserNav } from "@/components/user-nav";
 import { Footer } from "@/components/footer";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionPanel,
+} from "@/components/animate-ui/components/base/accordion";
 
 export default function HelpPage() {
   const { language } = useLanguage();
@@ -143,27 +149,45 @@ export default function HelpPage() {
           
           {/* Left Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <nav className="sticky top-32 space-y-1">
-              <div className="mb-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 px-3">
-                {t.sections.guide}
+            <nav className="sticky top-32 space-y-8">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 px-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                    <BookOpen className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wide">
+                    {t.sections.help}
+                  </span>
+                </div>
+
+                <div className="relative border-l border-zinc-100 dark:border-zinc-800 ml-7 pl-6 space-y-1">
+                  {sections.map((section) => {
+                    const isActive = activeSection === section.id && !searchQuery;
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => {
+                          setActiveSection(section.id);
+                          setSearchQuery("");
+                        }}
+                        className={`group relative flex w-full items-center py-2 text-[15px] font-medium transition-all ${
+                          isActive
+                            ? "text-zinc-900 dark:text-white"
+                            : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                        }`}
+                      >
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeIndicator"
+                            className="absolute -left-[25.5px] top-1/2 -translate-y-1/2 w-[3px] h-6 bg-zinc-900 dark:bg-zinc-100 rounded-r-full"
+                          />
+                        )}
+                        {section.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => {
-                    setActiveSection(section.id);
-                    setSearchQuery("");
-                  }}
-                  className={`flex w-full items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all ${
-                    activeSection === section.id && !searchQuery
-                      ? "bg-[#407bc4]/10 text-[#407bc4] dark:bg-[#407bc4]/20 dark:text-[#6ba1e6]"
-                      : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:text-zinc-900 dark:hover:text-zinc-100"
-                  }`}
-                >
-                  {section.icon}
-                  {section.label}
-                </button>
-              ))}
             </nav>
           </aside>
 
@@ -171,10 +195,10 @@ export default function HelpPage() {
           <div className="flex-1 max-w-3xl">
             <div className="space-y-12">
               <header className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
+                <h1 className="text-[30px] font-bold tracking-tight">
                   {searchQuery ? "Search Results" : (activeSection === "introduction" ? t.title : sections.find(s => s.id === activeSection)?.label)}
                 </h1>
-                <p className="text-lg text-zinc-600 dark:text-zinc-400">
+                <p className="text-[18px] text-zinc-600 dark:text-zinc-400">
                   {searchQuery ? `Found ${filteredResults.length} matches for "${searchQuery}"` : (activeSection === "introduction" ? t.description : "")}
                 </p>
               </header>
@@ -251,20 +275,22 @@ export default function HelpPage() {
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-orange-600 dark:text-orange-400">
                               <Zap className="h-5 w-5" />
                             </span>
-                            <h2 className="text-2xl font-bold">{t.gettingStarted.title}</h2>
+                            <h2 className="text-[24px] font-bold">{t.gettingStarted.title}</h2>
                           </div>
                           <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                             {t.gettingStarted.intro}
                           </p>
-                          <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="relative space-y-12 ml-6 border-l border-zinc-100 dark:border-zinc-800 pb-4">
                             {t.gettingStarted.steps.map((step, idx) => (
-                              <div key={idx} className="flex gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:translate-y-[-2px] transition-transform">
-                                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#407bc4] text-[10px] font-bold text-white">
+                              <div key={idx} className="relative pl-12">
+                                <div className="absolute left-[-21px] top-0 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[15px] font-bold text-zinc-900 dark:text-zinc-100 shadow-sm">
                                   {idx + 1}
                                 </div>
-                                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-snug">
-                                  {step}
-                                </p>
+                                <div className="pt-1.5 min-h-[40px] flex items-center">
+                                  <p className="text-[16px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
+                                    {step}
+                                  </p>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -277,7 +303,7 @@ export default function HelpPage() {
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 dark:text-blue-400">
                               <Sparkles className="h-5 w-5" />
                             </span>
-                            <h2 className="text-2xl font-bold">{t.features.title}</h2>
+                            <h2 className="text-[24px] font-bold">{t.features.title}</h2>
                           </div>
                           <div className="space-y-4">
                             <FeatureItem icon={<Search className="h-4 w-4" />} title="Smart Search" description={t.features.smartSearch} />
@@ -294,13 +320,28 @@ export default function HelpPage() {
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-600 dark:text-emerald-400">
                               <HelpCircle className="h-5 w-5" />
                             </span>
-                            <h2 className="text-2xl font-bold">{t.faq.title}</h2>
+                            <h2 className="text-[24px] font-bold">{t.faq.title}</h2>
                           </div>
-                          <div className="grid gap-6">
-                            <FaqItem question={t.faq.q1} answer={t.faq.a1} />
-                            <FaqItem question={t.faq.q2} answer={t.faq.a2} />
-                            <FaqItem question={t.faq.q3} answer={t.faq.a3} />
-                          </div>
+                          <Accordion className="w-full border-t border-zinc-100 dark:border-zinc-800">
+                            <AccordionItem value="item-1">
+                              <AccordionTrigger className="text-base font-semibold py-6">{t.faq.q1}</AccordionTrigger>
+                              <AccordionPanel className="text-zinc-600 dark:text-zinc-400 leading-relaxed pb-6">
+                                {t.faq.a1}
+                              </AccordionPanel>
+                            </AccordionItem>
+                            <AccordionItem value="item-2">
+                              <AccordionTrigger className="text-base font-semibold py-6">{t.faq.q2}</AccordionTrigger>
+                              <AccordionPanel className="text-zinc-600 dark:text-zinc-400 leading-relaxed pb-6">
+                                {t.faq.a2}
+                              </AccordionPanel>
+                            </AccordionItem>
+                            <AccordionItem value="item-3">
+                              <AccordionTrigger className="text-base font-semibold py-6">{t.faq.q3}</AccordionTrigger>
+                              <AccordionPanel className="text-zinc-600 dark:text-zinc-400 leading-relaxed pb-6">
+                                {t.faq.a3}
+                              </AccordionPanel>
+                            </AccordionItem>
+                          </Accordion>
                         </section>
                       )}
 
@@ -310,7 +351,7 @@ export default function HelpPage() {
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-purple-600 dark:text-purple-400">
                               <MessageCircle className="h-5 w-5" />
                             </span>
-                            <h2 className="text-2xl font-bold">{t.sections.contact}</h2>
+                            <h2 className="text-[24px] font-bold">{t.sections.contact}</h2>
                           </div>
                           <div className="grid gap-4 sm:grid-cols-2">
                              <a href="mailto:support@babybib.com" className="flex items-center gap-4 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 hover:border-[#407bc4]/50 transition-all group">
@@ -415,15 +456,3 @@ function FeatureItem({ icon, title, description }: { icon: React.ReactNode, titl
   );
 }
 
-function FaqItem({ question, answer }: { question: string, answer: string }) {
-  return (
-    <div className="space-y-2 group">
-      <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-[#407bc4] transition-colors">
-        {question}
-      </h3>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-        {answer}
-      </p>
-    </div>
-  );
-}

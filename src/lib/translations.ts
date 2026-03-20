@@ -234,7 +234,7 @@ export const translations = {
         a3: "Absolutely. We support various Thai citation styles including Sarabun and others."
       },
       sections: {
-        guide: "Guide",
+        help: "Help",
         introduction: "Introduction",
         features: "Features",
         faq: "FAQ",
@@ -601,7 +601,7 @@ export const translations = {
         a3: "แน่นอน เรา รองรับรูปแบบการอ้างอิงภาษาไทยที่หลากหลาย รวมถึงรูปแบบสารบรรณและอื่นๆ"
       },
       sections: {
-        guide: "คู่มือ",
+        help: "ช่วยเหลือ",
         introduction: "บทนำ",
         features: "ฟีเจอร์",
         faq: "คำถามที่พบบ่อย",
@@ -968,7 +968,7 @@ export const translations = {
         a3: "当然。我们支持包括 Sarabun 在内的多种泰语引用格式。"
       },
       sections: {
-        guide: "指南",
+        help: "帮助",
         introduction: "介绍",
         features: "功能",
         faq: "常见问题",

@@ -32,10 +32,10 @@ export default function GuideSlugPage() {
             <Sparkles className="h-4 w-4" />
             {currentStyle.version || "Citation Standard"}
           </div>
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl text-zinc-900 dark:text-white">
+          <h1 className="text-[30px] font-bold tracking-tight text-zinc-900 dark:text-white">
             {currentStyle.title}
           </h1>
-          <p className="text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <p className="text-[18px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
             {currentStyle.description}
           </p>
         </header>
@@ -45,7 +45,7 @@ export default function GuideSlugPage() {
         {/* Guide Sections */}
         <div className="space-y-16">
           <section id="overview" className="scroll-mt-32 space-y-6">
-            <h2 className="text-2xl font-bold flex items-center gap-3 text-zinc-900 dark:text-white">
+            <h2 className="text-[24px] font-bold flex items-center gap-3 text-zinc-900 dark:text-white">
               <div className="flex items-center justify-center text-[#407bc4]">
                 <Book className="h-6 w-6" />
               </div>
@@ -60,7 +60,7 @@ export default function GuideSlugPage() {
           {"content" in currentStyle && currentStyle.content && (
             <>
               <section id="in-text" className="scroll-mt-32 space-y-6">
-                <h2 className="text-2xl font-bold flex items-center gap-3 text-zinc-900 dark:text-white">
+                <h2 className="text-[24px] font-bold flex items-center gap-3 text-zinc-900 dark:text-white">
                   <div className="flex items-center justify-center text-[#f58e58]">
                     <PenTool className="h-6 w-6" />
                   </div>
@@ -76,7 +76,7 @@ export default function GuideSlugPage() {
               </section>
 
               <section id="bibliography" className="scroll-mt-32 space-y-6">
-                <h2 className="text-2xl font-bold flex items-center gap-3 text-zinc-900 dark:text-white">
+                <h2 className="text-[24px] font-bold flex items-center gap-3 text-zinc-900 dark:text-white">
                   <div className="flex items-center justify-center text-emerald-600">
                     <List className="h-6 w-6" />
                   </div>
