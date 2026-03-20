@@ -1711,7 +1711,22 @@ export default function GeneratePage() {
                         
                         <button 
                           type="button"
-                          onClick={() => setIsAiScannerModalOpen(true)}
+                          onClick={() => {
+                            if (!session) {
+                              toast(
+                                translations[language].usage.signInPrompt,
+                                {
+                                  action: {
+                                    label: translations[language].usage.signUp,
+                                    onClick: () => window.location.href = '/signup'
+                                  },
+                                  duration: 5000
+                                }
+                              );
+                            } else {
+                              setIsAiScannerModalOpen(true);
+                            }
+                          }}
                           className="relative flex h-9 items-center gap-2 rounded-xl bg-white dark:bg-zinc-950 px-4 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-white dark:hover:bg-zinc-950 transition-all active:scale-95 border border-transparent z-10"
                         >
                           <Sparkles className="h-4 w-4 text-indigo-500 group-hover/ai:animate-pulse" />
