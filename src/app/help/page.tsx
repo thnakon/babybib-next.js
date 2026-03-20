@@ -5,9 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  BookOpen, Search, HelpCircle, ChevronRight, 
-  MessageCircle, Mail, ExternalLink, ArrowRight,
-  Sparkles, Zap, ShieldCheck, Download, List, Globe, Book, PenTool, Layout, FileText
+  Sparkles, Zap, ShieldCheck, Download, List, Globe, Book, PenTool, Layout, FileText,
+  User, ShieldAlert, FolderOpen, CreditCard, BookOpen, HelpCircle, MessageCircle,
+  Search, ArrowRight, Mail, ExternalLink
 } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
 import { translations } from "@/lib/translations";
@@ -46,17 +46,76 @@ export default function HelpPage() {
   const sections = [
     { id: "introduction", label: t.sections.introduction, icon: <BookOpen className="h-4 w-4" /> },
     { id: "getting-started", label: t.gettingStarted.title, icon: <Zap className="h-4 w-4" /> },
+    { id: "projects", label: t.sections.projects, icon: <Layout className="h-4 w-4" /> },
+    { id: "citations", label: t.sections.citations, icon: <Book className="h-4 w-4" /> },
     { id: "features", label: t.features.title, icon: <Sparkles className="h-4 w-4" /> },
+    { id: "account", label: t.sections.account, icon: <Globe className="h-4 w-4" /> },
+    { id: "limits", label: t.sections.limits, icon: <ShieldCheck className="h-4 w-4" /> },
     { id: "faq", label: t.faq.title, icon: <HelpCircle className="h-4 w-4" /> },
     { id: "contact", label: t.sections.contact, icon: <MessageCircle className="h-4 w-4" /> },
   ];
 
-  const onThisPage = [
-    { id: "getting-started", label: t.gettingStarted.title },
-    { id: "features", label: t.features.title },
-    { id: "faq", label: t.faq.title },
-    { id: "contact", label: t.sections.contact },
-  ];
+  const onThisPage = React.useMemo(() => {
+    if (activeSection === "introduction") {
+      return [
+        { id: "intro-overview", label: t.intro.overview },
+        { id: "intro-mission", label: t.intro.mission },
+        { id: "intro-why", label: t.intro.why },
+      ];
+    }
+    if (activeSection === "projects") {
+      return t.projectsPage.topics.map((topic, i) => ({ id: `proj-${i}`, label: topic.title }));
+    }
+    if (activeSection === "citations") {
+      return t.citationsPage.topics.map((topic, i) => ({ id: `cite-${i}`, label: topic.title }));
+    }
+    if (activeSection === "account") {
+      return t.accountPage.topics.map((topic, i) => ({ id: `acc-${i}`, label: topic.title }));
+    }
+    if (activeSection === "limits") {
+      return t.limitsPage.topics.map((topic, i) => ({ id: `lim-${i}`, label: topic.title }));
+    }
+    if (activeSection === "getting-started") {
+      return [
+        { id: "getting-started", label: t.gettingStarted.title },
+      ];
+    }
+    if (activeSection === "features") {
+      return [
+        { id: "features", label: t.features.title },
+      ];
+    }
+    if (activeSection === "introduction") {
+      return [
+        { id: "intro-overview", label: t.intro.overview },
+        { id: "intro-mission", label: t.intro.mission },
+        { id: "intro-why", label: t.intro.why },
+      ];
+    }
+    if (activeSection === "projects") {
+      return t.projectsPage.topics.map((topic, i) => ({ id: `proj-${i}`, label: topic.title }));
+    }
+    if (activeSection === "citations") {
+      return t.citationsPage.topics.map((topic, i) => ({ id: `cite-${i}`, label: topic.title }));
+    }
+    if (activeSection === "account") {
+      return t.accountPage.topics.map((topic, i) => ({ id: `acc-${i}`, label: topic.title }));
+    }
+    if (activeSection === "limits") {
+      return t.limitsPage.topics.map((topic, i) => ({ id: `lim-${i}`, label: topic.title }));
+    }
+    if (activeSection === "faq") {
+      return [
+        { id: "faq", label: t.faq.title },
+      ];
+    }
+    if (activeSection === "contact") {
+      return [
+        { id: "contact", label: t.sections.contact },
+      ];
+    }
+    return [];
+  }, [activeSection, t]);
 
   const [activeOnPage, setActiveOnPage] = React.useState("");
 
@@ -85,21 +144,37 @@ export default function HelpPage() {
   const searchableContent = React.useMemo(() => {
     const results: { sectionId: string; title: string; text: string; id: string }[] = [];
     
+    // Introduction
+    results.push({ sectionId: "introduction", title: t.intro.overview, text: t.intro.overviewContent, id: "intro-overview" });
+    results.push({ sectionId: "introduction", title: t.intro.mission, text: t.intro.missionContent, id: "intro-mission" });
+    results.push({ sectionId: "introduction", title: t.intro.why, text: t.intro.whyContent, id: "intro-why" });
+
     // Getting Started
     t.gettingStarted.steps.forEach((step, idx) => {
       results.push({ sectionId: "getting-started", title: `${t.gettingStarted.title} - Step ${idx + 1}`, text: step, id: `step-${idx}` });
     });
 
-    // Features
-    results.push({ sectionId: "features", title: "Smart Search", text: t.features.smartSearch, id: "feat-search" });
-    results.push({ sectionId: "features", title: "AI Scanner", text: t.features.aiScan, id: "feat-ai" });
-    results.push({ sectionId: "features", title: "Projects", text: t.features.projects, id: "feat-proj" });
-    results.push({ sectionId: "features", title: "Export", text: t.features.export, id: "feat-export" });
-
     // FAQ
     results.push({ sectionId: "faq", title: t.faq.q1, text: t.faq.a1, id: "faq-1" });
     results.push({ sectionId: "faq", title: t.faq.q2, text: t.faq.a2, id: "faq-2" });
     results.push({ sectionId: "faq", title: t.faq.q3, text: t.faq.a3, id: "faq-3" });
+
+    // Projects
+    t.projectsPage.topics.forEach((topic, i) => {
+      results.push({ sectionId: "projects", title: topic.title, text: topic.content, id: `proj-${i}` });
+    });
+    // Citations
+    t.citationsPage.topics.forEach((topic, i) => {
+      results.push({ sectionId: "citations", title: topic.title, text: topic.content, id: `cite-${i}` });
+    });
+    // Account
+    t.accountPage.topics.forEach((topic, i) => {
+      results.push({ sectionId: "account", title: topic.title, text: topic.content, id: `acc-${i}` });
+    });
+    // Limits
+    t.limitsPage.topics.forEach((topic, i) => {
+      results.push({ sectionId: "limits", title: topic.title, text: topic.content, id: `lim-${i}` });
+    });
 
     return results;
   }, [t]);
@@ -236,7 +311,7 @@ export default function HelpPage() {
                             setActiveSection(result.sectionId);
                             setSearchQuery("");
                             setTimeout(() => {
-                              const el = document.getElementById(result.sectionId);
+                              const el = document.getElementById(result.id);
                               el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             }, 100);
                           }}
@@ -269,15 +344,55 @@ export default function HelpPage() {
                       transition={{ duration: 0.3 }}
                       className="space-y-16"
                     >
-                      {activeSection === "introduction" || activeSection === "getting-started" ? (
-                        <section id="getting-started" className="scroll-mt-32 space-y-6">
+                      {activeSection === "introduction" && (
+                        <div className="space-y-16">
+                          <section id="intro-overview" className="scroll-mt-32 space-y-6">
+                            <div className="flex items-center gap-3">
+                              <span className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 dark:text-blue-400">
+                                <BookOpen className="h-5 w-5" />
+                              </span>
+                              <h2 className="text-[24px] font-bold">{t.intro.overview}</h2>
+                            </div>
+                            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[17px]">
+                              {t.intro.overviewContent}
+                            </p>
+                          </section>
+
+                          <section id="intro-mission" className="scroll-mt-32 space-y-6">
+                            <div className="flex items-center gap-3">
+                              <span className="flex h-8 w-8 items-center justify-center rounded-lg text-purple-600 dark:text-purple-400">
+                                <Sparkles className="h-5 w-5" />
+                              </span>
+                              <h2 className="text-[24px] font-bold">{t.intro.mission}</h2>
+                            </div>
+                            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[17px]">
+                              {t.intro.missionContent}
+                            </p>
+                          </section>
+
+                          <section id="intro-why" className="scroll-mt-32 space-y-6">
+                            <div className="flex items-center gap-3">
+                              <span className="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-600 dark:text-emerald-400">
+                                <Zap className="h-5 w-5" />
+                              </span>
+                              <h2 className="text-[24px] font-bold">{t.intro.why}</h2>
+                            </div>
+                            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[17px]">
+                              {t.intro.whyContent}
+                            </p>
+                          </section>
+                        </div>
+                      )}
+
+                      {activeSection === "getting-started" && (
+                        <section id="getting-started" className="scroll-mt-32 space-y-8">
                           <div className="flex items-center gap-3">
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-orange-600 dark:text-orange-400">
                               <Zap className="h-5 w-5" />
                             </span>
                             <h2 className="text-[24px] font-bold">{t.gettingStarted.title}</h2>
                           </div>
-                          <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                          <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[17px]">
                             {t.gettingStarted.intro}
                           </p>
                           <div className="relative space-y-12 ml-6 border-l border-zinc-100 dark:border-zinc-800 pb-4">
@@ -295,9 +410,43 @@ export default function HelpPage() {
                             ))}
                           </div>
                         </section>
-                      ) : null}
+                      )}
 
-                      {(activeSection === "introduction" || activeSection === "features") && (
+                      {activeSection === "projects" && (
+                        <div className="space-y-16">
+                          <header className="space-y-4">
+                            <h2 className="text-[24px] font-bold">{t.projectsPage.title}</h2>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.projectsPage.description}</p>
+                          </header>
+                          <div className="grid gap-6">
+                            {t.projectsPage.topics.map((topic, i) => (
+                              <section key={i} id={`proj-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
+                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
+                              </section>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeSection === "citations" && (
+                        <div className="space-y-16">
+                          <header className="space-y-4">
+                            <h2 className="text-[24px] font-bold">{t.citationsPage.title}</h2>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.citationsPage.description}</p>
+                          </header>
+                          <div className="grid gap-6">
+                            {t.citationsPage.topics.map((topic, i) => (
+                              <section key={i} id={`cite-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
+                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
+                              </section>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeSection === "features" && (
                         <section id="features" className="scroll-mt-32 space-y-6">
                           <div className="flex items-center gap-3">
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 dark:text-blue-400">
@@ -306,15 +455,83 @@ export default function HelpPage() {
                             <h2 className="text-[24px] font-bold">{t.features.title}</h2>
                           </div>
                           <div className="space-y-4">
-                            <FeatureItem icon={<Search className="h-4 w-4" />} title="Smart Search" description={t.features.smartSearch} />
-                            <FeatureItem icon={<FileText className="h-4 w-4" />} title="AI Scanner" description={t.features.aiScan} />
-                            <FeatureItem icon={<Layout className="h-4 w-4" />} title="Projects" description={t.features.projects} />
-                            <FeatureItem icon={<Download className="h-4 w-4" />} title="Export" description={t.features.export} />
+                            <FeatureItem id="feat-search" icon={<Search className="h-4 w-4" />} title="Smart Search" description={t.features.smartSearch} />
+                            <FeatureItem id="feat-ai" icon={<FileText className="h-4 w-4" />} title="AI Scanner" description={t.features.aiScan} />
+                            <FeatureItem id="feat-proj" icon={<Layout className="h-4 w-4" />} title="Projects" description={t.features.projects} />
+                            <FeatureItem id="feat-export" icon={<Download className="h-4 w-4" />} title="Export" description={t.features.export} />
                           </div>
                         </section>
                       )}
 
-                      {(activeSection === "introduction" || activeSection === "faq") && (
+                      {activeSection === "projects" && (
+                        <div className="space-y-16">
+                          <header className="space-y-4">
+                            <h2 className="text-[24px] font-bold">{t.projectsPage.title}</h2>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.projectsPage.description}</p>
+                          </header>
+                          <div className="grid gap-6">
+                            {t.projectsPage.topics.map((topic, i) => (
+                              <section key={i} id={`proj-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
+                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
+                              </section>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeSection === "citations" && (
+                        <div className="space-y-16">
+                          <header className="space-y-4">
+                            <h2 className="text-[24px] font-bold">{t.citationsPage.title}</h2>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.citationsPage.description}</p>
+                          </header>
+                          <div className="grid gap-6">
+                            {t.citationsPage.topics.map((topic, i) => (
+                              <section key={i} id={`cite-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
+                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
+                              </section>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeSection === "account" && (
+                        <div className="space-y-16">
+                          <header className="space-y-4">
+                            <h2 className="text-[24px] font-bold">{t.accountPage.title}</h2>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.accountPage.description}</p>
+                          </header>
+                          <div className="grid gap-6">
+                            {t.accountPage.topics.map((topic, i) => (
+                              <section key={i} id={`acc-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
+                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
+                              </section>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeSection === "limits" && (
+                        <div className="space-y-16">
+                          <header className="space-y-4">
+                            <h2 className="text-[24px] font-bold">{t.limitsPage.title}</h2>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.limitsPage.description}</p>
+                          </header>
+                          <div className="grid gap-6">
+                            {t.limitsPage.topics.map((topic, i) => (
+                              <section key={i} id={`lim-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
+                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
+                              </section>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeSection === "faq" && (
                         <section id="faq" className="scroll-mt-32 space-y-8">
                           <div className="flex items-center gap-3">
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-600 dark:text-emerald-400">
@@ -440,9 +657,9 @@ export default function HelpPage() {
   );
 }
 
-function FeatureItem({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+function FeatureItem({ id, icon, title, description }: { id?: string, icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group">
+    <div id={id} className="flex items-start gap-4 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group scroll-mt-32">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 shadow-sm group-hover:border-[#407bc4]/50 transition-colors text-zinc-400 group-hover:text-[#407bc4]">
         {icon}
       </div>

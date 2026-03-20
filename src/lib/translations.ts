@@ -207,6 +207,15 @@ export const translations = {
       title: "Help Center",
       description: "Everything you need to know about Babybib, the smart bibliography manager.",
       searchPlaceholder: "Search help articles...",
+      intro: {
+        title: "Welcome to Babybib",
+        overview: "Overview",
+        overviewContent: "Babybib is a modern, intuitive bibliography and citation management tool designed to take the stress out of academic writing. Whether you're a student working on your first essay or a professional researcher managing a complex bibliography, Babybib provides the tools you need to organize your sources and format your citations with ease.",
+        mission: "Our Mission",
+        missionContent: "We believe that researchers should focus on their ideas, not the mechanics of citation formatting. Our mission is to automate the tedious parts of research—finding sources, extracting metadata, and applying complex style rules—so you can focus on what matters most: your work.",
+        why: "Why Babybib?",
+        whyContent: "Unlike traditional citation tools, Babybib leverages cutting-edge AI to make bibliography creation faster and more accurate. From AI-powered PDF scanning to a smart search engine that queries multiple databases simultaneously, we provide a unified platform for all your research needs.",
+      },
       gettingStarted: {
         title: "Getting Started",
         intro: "Welcome to Babybib! Learn how to create your first bibliography in minutes.",
@@ -224,6 +233,46 @@ export const translations = {
         projects: "Projects: Organize different papers or research topics into separate projects.",
         export: "Multi-format Export: Download your work in Word, PDF, BibTeX, or RIS formats."
       },
+      projectsPage: {
+        title: "Project Management",
+        description: "Learn how to create, organize, and manage your projects in Babybib.",
+        topics: [
+          { title: "Creating a New Project", content: "Create projects to group citations for different research papers or subjects." },
+          { title: "Editing & Deleting Projects", content: "How to edit project names, descriptions, or remove projects you no longer need." },
+          { title: "Archiving & Restoring", content: "Move projects to archives for long-term storage and restore them whenever needed." },
+          { title: "Duplicating Projects", content: "Create a copy of an existing project to use as a template or backup." }
+        ]
+      },
+      citationsPage: {
+        title: "Citation Management",
+        description: "Detailed instructions on adding, editing, and formatting your citations.",
+        topics: [
+          { title: "Adding Citations", content: "Search and add citations using Smart Search, AI Scan, or manual entry." },
+          { title: "Editing Citation Details", content: "How to update author names, publication year, titles, and more." },
+          { title: "Formatting Citations", content: "Select and apply different citation styles (APA, MLA, Harvard, etc.)." },
+          { title: "Exporting Bibliography", content: "Export your bibliography in Word, PDF, BibTeX, or RIS formats." },
+          { title: "Trash Management", content: "Restore or permanently delete citations from the trash." }
+        ]
+      },
+      accountPage: {
+        title: "Account Settings",
+        description: "Manage your profile, subscription, and privacy settings.",
+        topics: [
+          { title: "Account Creation & Login", content: "Steps to register and log in to Babybib." },
+          { title: "Updating Profile Info", content: "Change your name, email, and password." },
+          { title: "Subscription Management", content: "Information about Pro plans and how to upgrade or cancel." },
+          { title: "Privacy & Security", content: "Control your data and set up security preferences." }
+        ]
+      },
+      limitsPage: {
+        title: "Usage Limits",
+        description: "Understand the usage limits for Guest users and members.",
+        topics: [
+          { title: "Guest User Limits", content: "Number of citations and projects a guest user can create." },
+          { title: "Member Benefits", content: "Unlock all limits and access Pro features." },
+          { title: "Usage Monitoring", content: "How to view your current usage and when limits will reset." }
+        ]
+      },
       faq: {
         title: "Frequently Asked Questions",
         q1: "How many citations can I add as a guest?",
@@ -238,6 +287,10 @@ export const translations = {
         introduction: "Introduction",
         features: "Features",
         faq: "FAQ",
+        projects: "Projects",
+        citations: "Citations",
+        account: "Account",
+        limits: "Limits",
         support: "Support",
         contact: "Contact Us"
       }
@@ -574,6 +627,15 @@ export const translations = {
       title: "ศูนย์ช่วยเหลือ",
       description: "ทุกสิ่งที่คุณจำเป็นต้องรู้เกี่ยวกับ Babybib ระบบจัดการบรรณานุกรมอัจฉริยะ",
       searchPlaceholder: "ค้นหาหัวข้อช่วยเหลือ...",
+      intro: {
+        title: "ยินดีต้อนรับสู่ Babybib",
+        overview: "ภาพรวม",
+        overviewContent: "Babybib เป็นเครื่องมือจัดการบรรณานุกรมและการอ้างอิงที่ทันสมัยและใช้งานง่าย ออกแบบมาเพื่อลดความยุ่งยากในการเขียนงานวิชาการ ไม่ว่าคุณจะเป็นนักศึกษาที่กำลังเขียนรายงานฉบับแรก หรือนักวิจัยมืออาชีพที่ต้องจัดการบรรณานุกรมจำนวนมาก Babybib มีเครื่องมือที่คุณต้องการในการจัดระเบียบแหล่งข้อมูลและจัดรูปแบบการอ้างอิงของคุณได้อย่างง่ายดาย",
+        mission: "พันธกิจของเรา",
+        missionContent: "เราเชื่อว่านักวิจัยควรให้ความสำคัญกับความคิดสร้างสรรค์มากกว่ากลไกการจัดรูปแบบการอ้างอิง พันธกิจของเราคือการทำให้ส่วนที่ซ้ำซากจำเจของการวิจัยเป็นแบบอัตโนมัติ—การค้นหาแหล่งข้อมูล การดึงข้อมูลเมตา และการใช้กฎรูปแบบที่ซับซ้อน—เพื่อให้คุณสามารถจดจ่อกับสิ่งที่สำคัญที่สุด: งานของคุณ",
+        why: "ทำไมต้อง Babybib?",
+        whyContent: "ที่แตกต่างจากเครื่องมืออ้างอิงแบบดั้งเดิม Babybib ใช้ประโยชน์จาก AI ที่ล้ำสมัยเพื่อให้การสร้างบรรณานุกรมรวดเร็วและแม่นยำยิ่งขึ้น ตั้งแต่การสแกน PDF ที่ขับเคลื่อนด้วย AI ไปจนถึงเครื่องมือค้นหาอัจฉริยะที่สืบค้นฐานข้อมูลหลายแห่งพร้อมกัน เราจัดเตรียมแพลตฟอร์มแบบครบวงจรสำหรับทุกความต้องการในการวิจัยของคุณ",
+      },
       gettingStarted: {
         title: "เริ่มต้นใช้งาน",
         intro: "ยินดีต้อนรับสู่ Babybib! เรียนรู้วิธีสร้างบรรณานุกรมแรกของคุณในไม่กี่นาที",
@@ -591,21 +653,65 @@ export const translations = {
         projects: "โปรเจกต์: จัดระเบียบงานวิจัยหรือหัวข้อต่างๆ แยกเป็นโปรเจกต์",
         export: "ส่งออกหลายรูปแบบ: ดาวน์โหลดงานของคุณในรูปแบบ Word, PDF, BibTeX หรือ RIS"
       },
+      projectsPage: {
+        title: "การจัดการโปรเจกต์",
+        description: "เรียนรู้วิธีสร้าง จัดระเบียบ และจัดการโปรเจกต์ของคุณใน Babybib",
+        topics: [
+          { title: "การสร้างโปรเจกต์ใหม่", content: "สร้างโปรเจกต์เพื่อจัดกลุ่มรายการอ้างอิงสำหรับงานวิจัยหรือหัวข้อต่างๆ" },
+          { title: "การแก้ไขและลบโปรเจกต์", content: "วิธีแก้ไขชื่อโปรเจกต์ คำอธิบาย หรือลบโปรเจกต์ที่ไม่ต้องการ" },
+          { title: "การจัดเก็บและกู้คืนโปรเจกต์", content: "ย้ายโปรเจกต์ไปยังคลังเก็บถาวรและกู้คืนได้ทุกเมื่อ" },
+          { title: "การทำสำเนาโปรเจกต์", content: "สร้างสำเนาของโปรเจกต์ที่มีอยู่เพื่อใช้เป็นแม่แบบหรือสำรองข้อมูล" }
+        ]
+      },
+      citationsPage: {
+        title: "การจัดการรายการอ้างอิง",
+        description: "คำแนะนำโดยละเอียดเกี่ยวกับการเพิ่ม แก้ไข และจัดรูปแบบรายการอ้างอิงของคุณ",
+        topics: [
+          { title: "การเพิ่มรายการอ้างอิง", content: "ค้นหาและเพิ่มรายการอ้างอิงโดยใช้ Smart Search, AI Scan หรือการป้อนข้อมูลด้วยตนเอง" },
+          { title: "การแก้ไขรายละเอียดรายการอ้างอิง", content: "วิธีอัปเดตข้อมูลผู้แต่ง ปีที่พิมพ์ ชื่อเรื่อง และอื่นๆ" },
+          { title: "การจัดรูปแบบการอ้างอิง", content: "เลือกและปรับใช้รูปแบบการอ้างอิงต่างๆ (APA, MLA, Harvard ฯลฯ)" },
+          { title: "การส่งออกบรรณานุกรม", content: "ส่งออกบรรณานุกรมของคุณในรูปแบบ Word, PDF, BibTeX หรือ RIS" },
+          { title: "การจัดการถังขยะ", content: "กู้คืนหรือลบรายการอ้างอิงออกจากถังขยะอย่างถาวร" }
+        ]
+      },
+      accountPage: {
+        title: "การตั้งค่าบัญชี",
+        description: "จัดการโปรไฟล์ การสมัครสมาชิก และการตั้งค่าความเป็นส่วนตัวของคุณ",
+        topics: [
+          { title: "การสร้างและเข้าสู่ระบบบัญชี", content: "ขั้นตอนการลงทะเบียนและเข้าสู่ระบบ Babybib" },
+          { title: "การอัปเดตข้อมูลโปรไฟล์", content: "เปลี่ยนชื่อ อีเมล และรหัสผ่านของคุณ" },
+          { title: "การจัดการการสมัครสมาชิก", content: "ข้อมูลเกี่ยวกับแผน Pro และวิธีอัปเกรดหรือยกเลิก" },
+          { title: "การตั้งค่าความเป็นส่วนตัวและความปลอดภัย", content: "ควบคุมข้อมูลของคุณและตั้งค่าความปลอดภัย" }
+        ]
+      },
+      limitsPage: {
+        title: "ขีดจำกัดการใช้งาน",
+        description: "ทำความเข้าใจขีดจำกัดการใช้งานสำหรับผู้ใช้ Guest และสมาชิก",
+        topics: [
+          { title: "ขีดจำกัดสำหรับผู้ใช้ Guest", content: "จำนวนรายการอ้างอิงและโปรเจกต์ที่ผู้ใช้ Guest สามารถสร้างได้" },
+          { title: "ประโยชน์ของการเป็นสมาชิก", content: "ปลดล็อกขีดจำกัดทั้งหมดและเข้าถึงฟีเจอร์ Pro" },
+          { title: "การตรวจสอบการใช้งาน", content: "วิธีดูการใช้งานปัจจุบันของคุณและเวลาที่ขีดจำกัดจะรีเซ็ต" }
+        ]
+      },
       faq: {
         title: "คำถามที่พบบ่อย",
-        q1: "ในฐานะผู้เยี่ยมชม (Guest) ฉันสามารถเพิ่มรายการอ้างอิงได้กี่รายการ?",
-        a1: "ผู้เยี่ยมชมสามารถเพิ่มได้สูงสุด 5 รายการ สมัครสมาชิกฟรีเพื่อเพิ่มได้มากขึ้น",
-        q2: "ฉันสามารถใช้งาน Babybib ฟรีได้หรือไม่?",
-        a2: "ใช่! ฟีเจอร์พื้นฐานของเราฟรีสำหรับทุกคน และเรายังมีฟีเจอร์ Pro สำหรับผู้ใช้งานขั้นสูง",
+        q1: "ฉันสามารถเพิ่มรายการอ้างอิงได้เท่าไหร่ในฐานะ Guest?",
+        a1: "ผู้ใช้ Guest สามารถเพิ่มได้สูงสุด 5 รายการอ้างอิง ลงทะเบียนบัญชีฟรีเพื่อเพิ่มรายการอ้างอิงได้มากขึ้น",
+        q2: "ฉันสามารถใช้ Babybib ได้ฟรีหรือไม่?",
+        a2: "ใช่! ฟีเจอร์พื้นฐานของเรานั้นฟรีสำหรับทุกคน เรายังเสนอความสามารถระดับ Pro สำหรับผู้ใช้ขั้นสูง",
         q3: "Babybib รองรับรูปแบบการอ้างอิงภาษาไทยหรือไม่?",
-        a3: "แน่นอน เรา รองรับรูปแบบการอ้างอิงภาษาไทยที่หลากหลาย รวมถึงรูปแบบสารบรรณและอื่นๆ"
+        a3: "แน่นอน เราขอรับรองว่าเรารองรับรูปแบบการอ้างอิงภาษาไทยที่หลากหลาย รวมถึง Sarabun และอื่นๆ"
       },
       sections: {
-        help: "ช่วยเหลือ",
+        help: "ความช่วยเหลือ",
         introduction: "บทนำ",
         features: "ฟีเจอร์",
         faq: "คำถามที่พบบ่อย",
-        support: "การสนับสนุน",
+        projects: "โปรเจกต์",
+        citations: "รายการอ้างอิง",
+        account: "บัญชี",
+        limits: "ขีดจำกัด",
+        support: "ความช่วยเหลือ",
         contact: "ติดต่อเรา"
       }
     },
@@ -941,6 +1047,15 @@ export const translations = {
       title: "帮助中心",
       description: "关于 Babybib 智能文献管理系统的所有相关信息。",
       searchPlaceholder: "搜索帮助文章...",
+      intro: {
+        title: "欢迎使用 Babybib",
+        overview: "概述",
+        overviewContent: "Babybib 是一款现代、直观的书目和引用管理工具，旨在减轻学术写作的压力。无论您是正在撰写第一篇论文的学生，还是管理复杂书目的专业研究人员，Babybib 都能提供您整理来源并轻松格式化引用所需的工具。",
+        mission: "我们的使命",
+        missionContent: "我们相信研究人员应该专注于他们的想法，而不是引文格式。我们的使命是将研究中乏味的部分自动化——寻找来源、提取元数据以及应用复杂的样式规则——这样您就可以专注于最重要的事情：您的研究工作。",
+        why: "为什么选择 Babybib？",
+        whyContent: "与传统引用工具不同，Babybib 利用尖端的人工智能技术，使书目创建更快、更准确。从人工智能驱动的 PDF 扫描，到同时查询多个数据库的智能搜索引擎，我们为您所有的研究需求提供了一个统一的平台。",
+      },
       gettingStarted: {
         title: "快速入门",
         intro: "欢迎来到 Babybib！在几分钟内学会创建您的第一篇参考文献。",
@@ -958,6 +1073,46 @@ export const translations = {
         projects: "项目管理：将不同的论文或研究主题组织到独立的项目中。",
         export: "多格式导出：下载 Word、PDF、BibTeX 或 RIS 格式的作品。"
       },
+      projectsPage: {
+        title: "项目管理",
+        description: "了解如何在 Babybib 中创建、组织和管理您的项目。",
+        topics: [
+          { title: "创建新项目", content: "为不同的研究论文或主题创建项目以对引文进行分组。" },
+          { title: "编辑与删除项目", content: "如何编辑项目名称、描述或删除您不再需要的项目。" },
+          { title: "存档与恢复", content: "将项目移动到存档以进行长期存储，并随时恢复它们。" },
+          { title: "复制项目", content: "创建现有项目的副本以用作模板或备份。" }
+        ]
+      },
+      citationsPage: {
+        title: "引文管理",
+        description: "有关添加、编辑和格式化引文的详细说明。",
+        topics: [
+          { title: "添加引文", content: "使用智能搜索、AI 扫描或手动输入搜索并添加引文。" },
+          { title: "编辑引文详情", content: "如何更新作者姓名、出版年份、标题等。" },
+          { title: "格式化引文", content: "选择并应用不同的引用样式（APA、MLA、Harvard 等）。" },
+          { title: "导出参考文献", content: "将您的参考文献导出为 Word、PDF、BibTeX 或 RIS 格式。" },
+          { title: "垃圾箱管理", content: "从垃圾箱中恢复或永久删除引文。" }
+        ]
+      },
+      accountPage: {
+        title: "账户设置",
+        description: "管理您的个人资料、订阅和隐私设置。",
+        topics: [
+          { title: "账户创建与登录", content: "注册并登录 Babybib 的步骤。" },
+          { title: "更新资料信息", content: "更改您的姓名、电子邮件和密码。" },
+          { title: "订阅管理", content: "关于 Pro 计划的信息以及如何升级或取消。" },
+          { title: "隐私与安全", content: "控制您的数据并设置安全偏好。" }
+        ]
+      },
+      limitsPage: {
+        title: "使用限制",
+        description: "了解游客用户和会员的使用限制。",
+        topics: [
+          { title: "游客用户限制", content: "访客用户可以创建的引文和项目数量。" },
+          { title: "会员权益", content: "解锁所有限制并访问 Pro 功能。" },
+          { title: "使用情况监控", content: "如何查看当前使用情况以及限制何时重置。" }
+        ]
+      },
       faq: {
         title: "常见问题",
         q1: "作为游客我可以添加多少条引文？",
@@ -972,6 +1127,10 @@ export const translations = {
         introduction: "介绍",
         features: "功能",
         faq: "常见问题",
+        projects: "项目管理",
+        citations: "文献引用",
+        account: "账户管理",
+        limits: "限制与使用",
         support: "支持",
         contact: "联系我们"
       }
