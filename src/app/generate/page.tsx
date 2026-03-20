@@ -102,6 +102,9 @@ export default function GeneratePage() {
   const [projectToDelete, setProjectToDelete] = React.useState<any>(null);
   const [deleteConfirmName, setDeleteConfirmName] = React.useState("");
 
+  const [isMoreStylesModalOpen, setIsMoreStylesModalOpen] = React.useState(false);
+  const [styleSearchQuery, setStyleSearchQuery] = React.useState("");
+
   // AI Scanner State
   const [isAiScannerModalOpen, setIsAiScannerModalOpen] = React.useState(false);
   const [isAiScanning, setIsAiScanning] = React.useState(false);
@@ -1718,10 +1721,10 @@ export default function GeneratePage() {
                     </div>
                 </div>
                 
-                <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
+                <Link href="/help" className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group">
                   <HelpCircle className="h-4 w-4" />
                   <span className="text-sm font-medium">{translations[language].nav.help}</span>
-                </button>
+                </Link>
               </div>
 
             {/* Focus Backdrop for Smart Search */}
@@ -1851,7 +1854,7 @@ export default function GeneratePage() {
                     <div className="absolute top-full left-0 mt-1 w-64 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-50 overflow-hidden flex flex-col">
                       <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30">
                         <p className="text-[10px] text-zinc-500 leading-relaxed">
-                          {t.styleHelp} <Link href="#" className="text-[#407bc4] hover:underline">{translations[language].nav.help}</Link>
+                          {t.styleHelp} <Link href="/help" className="text-[#407bc4] hover:underline">{translations[language].nav.help}</Link>
                         </p>
                       </div>
                       <div className="py-1">
@@ -1869,7 +1872,13 @@ export default function GeneratePage() {
                         ))}
                       </div>
                       <div className="px-3 py-2 border-t border-zinc-100 dark:border-zinc-800">
-                        <button className="flex items-center justify-between w-full text-[10px] font-bold text-[#407bc4] hover:underline group">
+                        <button 
+                          onClick={() => {
+                            setIsStyleOpen(false);
+                            setIsMoreStylesModalOpen(true);
+                          }}
+                          className="flex items-center justify-between w-full text-[10px] font-bold text-[#407bc4] hover:underline group"
+                        >
                           <span>{t.moreCitationStyles}</span>
                           <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
                         </button>
@@ -3683,6 +3692,118 @@ export default function GeneratePage() {
                     </p>
                   </div>
                 )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isMoreStylesModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMoreStylesModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[85vh] z-10"
+            >
+              <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-500 to-[#407bc4] flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <Quote className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{t.moreCitationStyles}</h3>
+                    <p className="text-xs text-zinc-500">Pick from over 10,000+ citation styles</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsMoreStylesModalOpen(false)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Search for styles (e.g. IEEE, Vancouver, Nature...)"
+                    value={styleSearchQuery}
+                    onChange={(e) => setStyleSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#407bc4]/20 focus:border-[#407bc4] transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="px-2 py-4 overflow-y-auto custom-scrollbar">
+                {[
+                  "APA - 7th Edition",
+                  "MLA - 9th Edition",
+                  "Harvard",
+                  "Chicago - 17th Edition",
+                  "AMA - American Medical Association",
+                  "CSE - Council of Science Editors",
+                  "Vancouver",
+                  "IEEE",
+                  "ACM - Association for Computing Machinery",
+                  "Nature",
+                  "Bluebook - Law Reviews",
+                  "Bluebook - Briefs",
+                  "ASCE - American Society of Civil Engineers",
+                  "ASME - American Society of Mechanical Engineers",
+                  "APSA - American Political Science Association",
+                  "Turabian - 9th Edition",
+                  "MHRA - Modern Humanities Research Association",
+                  "OSCOLA",
+                  "Sarabun (Thai Style)",
+                  "APS - American Physical Society",
+                  "RSC - Royal Society of Chemistry",
+                  "AIP - American Institute of Physics",
+                  "ACS - American Chemical Society",
+                  "NoodleTools",
+                  "RefWorks"
+                ].filter(s => s.toLowerCase().includes(styleSearchQuery.toLowerCase()))
+                 .map((s, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setStyle(s);
+                      setIsMoreStylesModalOpen(false);
+                      toast.success(`Style changed to ${s}`);
+                    }}
+                    className={`w-full flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#407bc4]/5 dark:hover:bg-[#407bc4]/10 transition-all group text-left ${style === s ? 'bg-[#407bc4]/5 dark:bg-[#407bc4]/10' : ''}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center border transition-all ${style === s ? 'bg-white dark:bg-zinc-800 border-transparent shadow-sm' : 'bg-transparent border-zinc-200 dark:border-zinc-800'}`}>
+                        <span className={`text-[10px] font-bold ${style === s ? 'text-[#407bc4]' : 'text-zinc-400'}`}>
+                          {s.substring(0, 2).toUpperCase()}
+                        </span>
+                      </div>
+                      <span className={`text-sm font-medium ${style === s ? 'text-[#407bc4] font-bold' : 'text-zinc-600 dark:text-zinc-400'}`}>
+                        {s}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       {style === s && (
+                        <Check className="h-4 w-4 text-[#407bc4] group-hover:scale-110 transition-transform" />
+                      )}
+                      <ChevronRight className={`h-4 w-4 text-zinc-300 group-hover:text-zinc-600 dark:group-hover:text-zinc-400 transition-all ${style === s ? 'hidden' : ''}`} />
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-100 dark:border-zinc-800 text-center">
+                <p className="text-[10px] text-zinc-500">Can't find your style? Contact our support team to request it.</p>
               </div>
             </motion.div>
           </div>
