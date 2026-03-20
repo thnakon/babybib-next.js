@@ -224,45 +224,65 @@ export default function HelpPage() {
           
           {/* Left Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <nav className="sticky top-32 space-y-8">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 px-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
-                    <BookOpen className="h-4 w-4" />
+            <nav className="sticky top-32 space-y-10">
+              {[
+                {
+                  title: t.sections.guide,
+                  items: ["introduction", "getting-started", "features"],
+                },
+                {
+                  title: t.sections.category,
+                  items: ["projects", "citations", "account", "limits"],
+                },
+                {
+                  title: t.sections.help,
+                  items: ["faq", "contact"],
+                },
+              ].map((group, groupIdx) => (
+                <div key={groupIdx} className="space-y-4">
+                  <div className="flex items-center gap-3 px-3">
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
+                      {group.title}
+                    </span>
                   </div>
-                  <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wide">
-                    {t.sections.help}
-                  </span>
-                </div>
 
-                <div className="relative border-l border-zinc-100 dark:border-zinc-800 ml-7 pl-6 space-y-1">
-                  {sections.map((section) => {
-                    const isActive = activeSection === section.id && !searchQuery;
-                    return (
-                      <button
-                        key={section.id}
-                        onClick={() => {
-                          setActiveSection(section.id);
-                          setSearchQuery("");
-                        }}
-                        className={`group relative flex w-full items-center py-2 text-[15px] font-medium transition-all ${
-                          isActive
-                            ? "text-zinc-900 dark:text-white"
-                            : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
-                        }`}
-                      >
-                        {isActive && (
-                          <motion.div
-                            layoutId="activeIndicator"
-                            className="absolute -left-[25.5px] top-1/2 -translate-y-1/2 w-[3px] h-6 bg-zinc-900 dark:bg-zinc-100 rounded-r-full"
-                          />
-                        )}
-                        {section.label}
-                      </button>
-                    );
-                  })}
+                  <div className="relative border-l border-zinc-100 dark:border-zinc-800 ml-3 pl-4 space-y-1">
+                    {group.items.map((itemId) => {
+                      const section = sections.find(s => s.id === itemId);
+                      if (!section) return null;
+                      
+                      const isActive = activeSection === section.id && !searchQuery;
+                      return (
+                        <button
+                          key={section.id}
+                          onClick={() => {
+                            setActiveSection(section.id);
+                            setSearchQuery("");
+                          }}
+                          className={`group relative flex w-full items-center py-2 text-[15px] font-medium transition-all ${
+                            isActive
+                              ? "text-zinc-900 dark:text-white"
+                              : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                          }`}
+                        >
+                          {isActive && (
+                            <motion.div
+                              layoutId="activeIndicator"
+                              className="absolute -left-[17.5px] top-1/2 -translate-y-1/2 w-[3px] h-6 bg-[#407bc4] dark:bg-[#407bc4] rounded-r-full"
+                            />
+                          )}
+                          <span className="flex items-center gap-3">
+                            <span className={`transition-colors ${isActive ? "text-[#407bc4]" : "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-400"}`}>
+                              {React.cloneElement(section.icon as React.ReactElement<{ className?: string }>, { className: "h-4 w-4" })}
+                            </span>
+                            {section.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              ))}
             </nav>
           </aside>
 
@@ -412,39 +432,6 @@ export default function HelpPage() {
                         </section>
                       )}
 
-                      {activeSection === "projects" && (
-                        <div className="space-y-16">
-                          <header className="space-y-4">
-                            <h2 className="text-[24px] font-bold">{t.projectsPage.title}</h2>
-                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.projectsPage.description}</p>
-                          </header>
-                          <div className="grid gap-6">
-                            {t.projectsPage.topics.map((topic, i) => (
-                              <section key={i} id={`proj-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
-                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
-                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
-                              </section>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {activeSection === "citations" && (
-                        <div className="space-y-16">
-                          <header className="space-y-4">
-                            <h2 className="text-[24px] font-bold">{t.citationsPage.title}</h2>
-                            <p className="text-zinc-600 dark:text-zinc-400 text-[17px]">{t.citationsPage.description}</p>
-                          </header>
-                          <div className="grid gap-6">
-                            {t.citationsPage.topics.map((topic, i) => (
-                              <section key={i} id={`cite-${i}`} className="scroll-mt-32 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-[#407bc4]/30 transition-all">
-                                <h3 className="text-lg font-bold mb-3 group-hover:text-[#407bc4] transition-colors">{topic.title}</h3>
-                                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-[16px]">{topic.content}</p>
-                              </section>
-                            ))}
-                          </div>
-                        </div>
-                      )}
 
                       {activeSection === "features" && (
                         <section id="features" className="scroll-mt-32 space-y-6">
@@ -623,12 +610,8 @@ export default function HelpPage() {
                   <li key={item.id}>
                     <button
                       onClick={() => {
-                        const targetId = item.id;
-                        setActiveSection(targetId === "contact" ? "contact" : (targetId === "features" ? "features" : (targetId === "faq" ? "faq" : "getting-started")));
-                        setTimeout(() => {
-                           const el = document.getElementById(item.id);
-                           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 50);
+                        const el = document.getElementById(item.id);
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                       }}
                       className={`block text-xs transition-colors py-1 text-left ${
                         activeOnPage === item.id 
