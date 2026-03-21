@@ -4,8 +4,6 @@ import { LanguageDropdown } from "@/components/language-dropdown"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
-import { Footer } from "@/components/footer"
-
 export default function LoginPage() {
   return (
     <div className="flex min-h-svh flex-col bg-background font-sans">
@@ -31,7 +29,6 @@ export default function LoginPage() {
           <LoginForm />
         </div>
       </div>
-      <Footer />
     </div>
   )
 }
