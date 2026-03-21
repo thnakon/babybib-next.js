@@ -13,8 +13,27 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const isArchivedStr = searchParams.get('isArchived');
     
+    if (!(session.user as any).id) {
+      return NextResponse.json({ error: 'User ID missing in session' }, { status: 400 });
+    }
+
+    const userId = parseInt((session.user as any).id);
+    if (isNaN(userId)) {
+      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+    }
+
+    // Check user existence
+    const userExists = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true }
+    });
+
+    if (!userExists) {
+      return NextResponse.json({ error: 'Session stale, please log out and log in again' }, { status: 401 });
+    }
+
     const where: any = {
-      userId: parseInt((session.user as any).id)
+      userId: userId
     };
     if (isArchivedStr !== null) {
       where.isArchived = isArchivedStr === 'true';
@@ -26,7 +45,8 @@ export async function GET(request: Request) {
     });
     return NextResponse.json(projects);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 });
+    console.error('Projects GET error:', error);
+    return NextResponse.json({ error: 'Failed to fetch projects', details: (error as any).message }, { status: 500 });
   }
 }
 
@@ -38,19 +58,42 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    if (!body.name) {
+      return NextResponse.json({ error: 'Project name is required' }, { status: 400 });
+    }
+
+    if (!(session.user as any).id) {
+       return NextResponse.json({ error: 'User ID missing in session' }, { status: 400 });
+    }
+
+    const userId = parseInt((session.user as any).id);
+    if (isNaN(userId)) {
+      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+    }
+
+    // Verify user exists to handle stale sessions
+    const userExists = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true }
+    });
+
+    if (!userExists) {
+      return NextResponse.json({ error: 'Session stale, please log out and log in again' }, { status: 401 });
+    }
+
     const project = await prisma.project.create({
       data: {
         name: body.name,
         description: body.description || '',
         color: body.color || '#407bc4',
         icon: body.icon || 'BookOpen',
-        userId: parseInt((session.user as any).id)
+        userId: userId
       }
     });
     return NextResponse.json(project, { status: 201 });
   } catch (error) {
     console.error('Project create error:', error);
-    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create project', details: (error as any).message }, { status: 500 });
   }
 }
 

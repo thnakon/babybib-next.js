@@ -1071,7 +1071,8 @@ export default function GeneratePage() {
   };
 
   const { data: fetchedProjects, mutate: mutateProjects } = useSWR<any[]>('/api/projects?isArchived=false', fetcher);
-  const { data: archivedProjects = [], mutate: mutateArchivedProjects } = useSWR('/api/projects?isArchived=true', fetcher);
+  const { data: rawArchivedProjects, mutate: mutateArchivedProjects } = useSWR<any[]>('/api/projects?isArchived=true', fetcher);
+  const archivedProjects = Array.isArray(rawArchivedProjects) ? rawArchivedProjects : [];
   
   const iconComponents: Record<string, React.ReactNode> = {
     BookOpen: <BookOpen />,
@@ -1098,7 +1099,7 @@ export default function GeneratePage() {
 
   const displayProjects = React.useMemo(() => {
     if (session) {
-      return fetchedProjects || [];
+      return Array.isArray(fetchedProjects) ? fetchedProjects : [];
     }
     return localProjects || [];
   }, [session, fetchedProjects, localProjects]);
