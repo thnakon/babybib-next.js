@@ -99,10 +99,13 @@ export function UserNav() {
               
               <div className="my-1.5 h-px bg-border/50 mx-1.5" />
               
-              <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group">
+              <Link 
+                href="/users/profile"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group"
+              >
                 <BadgeCheck className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 <span className="font-medium">{t.account}</span>
-              </button>
+              </Link>
               
               <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/80 hover:text-foreground transition-colors group">
                 <CreditCard className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />

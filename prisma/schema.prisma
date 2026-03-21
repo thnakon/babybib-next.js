@@ -25,6 +25,9 @@ model User {
   emailVerified    DateTime?
   verificationCode String?
   role             Role       @default(USER)
+  bio              String?    @db.LongText
+  image            String?
+  urls             String?    @db.LongText
   auditLogs        AuditLog[]
   projects         Project[]
 }

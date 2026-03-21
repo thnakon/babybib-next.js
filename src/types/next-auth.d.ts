@@ -7,6 +7,9 @@ declare module "next-auth" {
       username: string
       emailVerified: Date | null
       role: string
+      bio?: string | null
+      image?: string | null
+      urls?: string | null
     } & DefaultSession["user"]
   }
 
@@ -15,6 +18,9 @@ declare module "next-auth" {
     username: string
     emailVerified: Date | null
     role: string
+    bio?: string | null
+    image?: string | null
+    urls?: string | null
   }
 }
 
@@ -24,5 +30,8 @@ declare module "next-auth/jwt" {
     username: string
     emailVerified: Date | null
     role: string
+    bio?: string | null
+    image?: string | null
+    urls?: string | null
   }
 }

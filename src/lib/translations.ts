@@ -429,6 +429,41 @@ export const translations = {
         { title: "Cookies & Tracking", content: "We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies, but some parts of our service may not function correctly." }
       ]
     },
+    contact: {
+        title: "Contact Us",
+        description: "Have questions or feedback? We'd love to hear from you. Our team usually responds within 24 hours.",
+        form: {
+            name: "Full Name",
+            namePlaceholder: "Your Name",
+            email: "Email Address",
+            emailPlaceholder: "example@email.com",
+            subject: "Subject",
+            subjectPlaceholder: "How can we help you?",
+            message: "Message",
+            messagePlaceholder: "Go ahead, we're listening...",
+            submit: "Send Message",
+            success: "Message sent! We'll get back to you soon.",
+        },
+        options: {
+            email: { title: "Email Support", desc: "support@babybib.com" },
+            chat: { title: "Live Chat", desc: "Mon-Fri, 9am - 6pm" },
+            social: { title: "Social Media", desc: "@babybib_official" }
+        },
+        backToHelp: "Back to Help Center",
+        trustedBy: "Trusted by researchers worldwide",
+        successDesc: "Our support team has received your request and will follow up with you via email shortly.",
+        sendAnother: "Send another message",
+        privacyNote: {
+            start: "By submitting this form, you agree to our ",
+            link: "Privacy Policy",
+            end: " regarding data processing."
+        },
+        faqTitle: "Frequently Asked Questions",
+        selfServiceTitle: "Prefer self-service?",
+        selfServiceDesc: "Find instant answers to common questions about citations, AI scanning, and account management in our Help Center.",
+        browseHelp: "Browse Help Center",
+        citationGuides: "Citation Guides"
+    },
     footer: {
         copyright: "© 2026 Babybib. Built with passion for academia.",
         social: "Follow us",
@@ -866,6 +901,41 @@ export const translations = {
         { title: "คุกกี้และการติดตาม", content: "เราใช้คุกกี้และเทคโนโลยีการติดตามที่คล้ายคลึงกันเพื่อติดตามกิจกรรมในบริการของเราและเก็บข้อมูลบางอย่าง คุณสามารถตั้งค่าเบราว์เซอร์ให้ปฏิเสธคุกกี้ทั้งหมดได้ แต่บางส่วนของบริการของเราอาจทำงานไม่ถูกต้อง" }
       ]
     },
+    contact: {
+        title: "ติดต่อเรา",
+        description: "มีคำถามหรือข้อเสนอแนะ? เรายินดีที่จะรับฟังจากคุณ ทีมงานของเรามักจะตอบกลับภายใน 24 ชั่วโมง",
+        form: {
+            name: "ชื่อ-นามสกุล",
+            namePlaceholder: "ชื่อของคุณ",
+            email: "ที่อยู่อีเมล",
+            emailPlaceholder: "example@email.com",
+            subject: "หัวข้อ",
+            subjectPlaceholder: "เราจะช่วยคุณได้อย่างไร?",
+            message: "ข้อความ",
+            messagePlaceholder: "เขียนข้อความของคุณที่นี่...",
+            submit: "ส่งข้อความ",
+            success: "ส่งข้อความแล้ว! เราจะติดต่อกลับหาคุณโดยเร็วที่สุด",
+        },
+        options: {
+            email: { title: "ฝ่ายสนับสนุนทางอีเมล", desc: "support@babybib.com" },
+            chat: { title: "แชทสด", desc: "จันทร์-ศุกร์, 9:00 - 18:00 น." },
+            social: { title: "โซเชีบลมีเดีย", desc: "@babybib_official" }
+        },
+        backToHelp: "กลับสู่ศูนย์ช่วยเหลือ",
+        trustedBy: "ได้รับความไว้วางใจจากนักวิจัยทั่วโลก",
+        successDesc: "ทีมสนับสนุนของเราได้รับคำขอของคุณแล้ว และจะแจ้งให้คุณทราบทางอีเมลในไม่ช้า",
+        sendAnother: "ส่งข้อความอื่น",
+        privacyNote: {
+            start: "การส่งแบบฟอร์มนี้แสดงว่าคุณยอมรับ ",
+            link: "นโยบายความเป็นส่วนตัว",
+            end: " เกี่ยวกับการประมวลผลข้อมูล"
+        },
+        faqTitle: "คำถามที่พบบ่อย",
+        selfServiceTitle: "ต้องการช่วยเหลือตนเอง?",
+        selfServiceDesc: "ค้นหาคำตอบสำหรับคำถามทั่วไปเกี่ยวกับการอ้างอิง การสแกน AI และการจัดการบัญชีได้ทันทีในศูนย์ช่วยเหลือของเรา",
+        browseHelp: "เรียกดูศูนย์ช่วยเหลือ",
+        citationGuides: "คู่มือการอ้างอิง"
+    },
     footer: {
         copyright: "© 2026 Babybib. สร้างขึ้นด้วยความรักเพื่อวิชาการ",
         social: "ติดตามเรา",
@@ -1287,6 +1357,56 @@ export const translations = {
         selfServiceDesc: "在我们的帮助中心找到关于引文、AI 扫描和账户管理的常见问题的即时答案。",
         browseHelp: "浏览帮助中心",
         citationGuides: "引文指南"
+    },
+    terms: {
+      title: "服务条款",
+      description: "在使用 Babybib 之前，请仔细阅读本服务条款。",
+      searchPlaceholder: "搜索条款...",
+      sections: {
+        introduction: "引言",
+        accounts: "用户账户",
+        intellectual: "知识产权",
+        termination: "终止",
+        disclaimer: "免责声明",
+        contact: "联系我们"
+      },
+      intro: {
+        title: "欢迎来到 Babybib",
+        overview: "最后更新：2026年3月20日",
+        content: "通过访问或使用 Babybib，您同意受这些服务条款的约束。这些条款管理您对 Babybib 网站、应用和服务的访问。如果您不同意这些条款，请勿使用我们的服务。"
+      },
+      topics: [
+        { title: "用户账户", content: "要访问 Babybib 的某些功能，您可能需要创建一个账户。您负责维护账户凭据的机密性，并对在您账户下发生的所有活动负责。如果您发现任何未经授权使用您账户的情况，必须立即通知我们。" },
+        { title: "可接受的使用", content: "您同意不将 Babybib 用于任何非法目的，或以任何干扰、损坏或损害服务的方式。禁止的行为包括尝试未经授权访问我们的系统、传播恶意软件或骚扰其他用户。" },
+        { title: "知识产权", content: "Babybib 的所有内容、功能和特性，包括但不限于文本、图形、徽标和软件，都是 Babybib 及其许可方的独有财产。未经明确许可，您不得复制、分发或创作我们内容的衍生作品。" },
+        { title: "终止", content: "我们保留完全由我们自行决定在不另行通知的情况下终止或暂停您的账户以及访问 Babybib 的权利，原因包括我们认为违反本服务条款的行为，或是对其他用户、我们或第三方有害的行为。" },
+        { title: "免责声明", content: "Babybib 按“原样”且“可用”的状态提供，不附带任何明示或暗示的保证。我们不保证服务将不间断、安全或无错误。您对服务的使用风险自担。" }
+      ]
+    },
+    privacy: {
+      title: "隐私政策",
+      description: "您的隐私对我们非常重要。以下是我们处理您数据的方式。",
+      searchPlaceholder: "搜索隐私政策...",
+      sections: {
+        introduction: "引言",
+        collection: "数据收集",
+        usage: "数据使用",
+        sharing: "数据共享",
+        security: "安全",
+        rights: "您的权利"
+      },
+      intro: {
+        title: "Babybib 的隐私保护",
+        overview: "最后更新：2026年3月20日",
+        content: "在 Babybib，我们致力于保护您的隐私，并确保您的个人信息得到安全负责的处理。本隐私政策解释了当您使用我们的服务时，我们如何收集、使用和保护您的数据。"
+      },
+      topics: [
+        { title: "我们收集的信息", content: "我们收集您直接提供给我们的信息（例如，创建账户时的姓名、电子邮件）以及自动生成的信息（例如，IP 地址、浏览器类型、通过 cookie 收集的使用数据）。" },
+        { title: "我们如何使用您的数据", content: "我们使用您的信息来提供和改进我们的服务，就您的账户与您沟通，个性化您的体验，并确保我们平台的安全性。" },
+        { title: "数据共享与披露", content: "我们不会出售您的个人数据。我们可能会与协助我们运行服务的受信任第三方服务提供商共享信息，前提是他们同意对这些信息保密。" },
+        { title: "数据安全", content: "我们实施各种安全措施来保护您个人信息的安全。然而，没有任何通过互联网传输的方法是 100% 安全的，我们无法保证绝对的安全。" },
+        { title: "Cookie 与追踪", content: "我们使用 cookie 和类似的追踪技术来追踪我们服务的活动并保留某些信息。您可以指示浏览器拒绝所有 cookie，但我们服务的某些部分可能无法正常运行。" }
+      ]
     },
     footer: {
         copyright: "© 2026 Babybib. 为学术而生。",
